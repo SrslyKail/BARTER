@@ -1,0 +1,17 @@
+#linguist-vendored flag on a file type will make it 
+# so they arent counted towards your total lines coded.
+*.svg linguist-vendored
+*.png linguist-vendored
+*.ai linguist-vendored
+*.psd linguist-vendored
+images/* linguist-vendored
+package-lock.json linguist-vendored
+package.json linguist-vendored
+.firebase/* linguist-vendored
+
+*.js linguist-language=js
+*.html linguist-language=html
+*.css linguist-language=css
+
+#Can be used to change 
+#git diff --stat fd6f264ea95f4f6cbd8680911ff134c6aa20a78d..8247806cfaf248cfebc0a6ad7a6808b85a70a4a2 --author="YourName" --pretty=oneline --numstat :(exclude)images

@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.autoSave": "afterDelay",
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+    "editor.rulers": [80],
+    "editor.autoClosingBrackets": "always",
+    "editor.autoClosingComments": "always",
+    "editor.autoClosingOvertype": "auto",
+    "editor.autoClosingQuotes": "always",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "liveServer.settings.port": 5500
+  },
+  "extensions": {
+    "recommendations": [
+      "cschlosser.doxdocgen",
+      "figma.figma-vscode-extension",
+      "toba.vsfire",
+      "bradgashler.htmltagwrap",
+      "xabikos.javascriptsnippets",
+      "ms-vscode.js-debug-nightly",
+      "ritwickdey.liveserver",
+      "pdconsec.vscode-print",
+      "visualstudioexptteam.vscodeintellicode",
+      "visualstudioexptteam.intellicode-api-usage-examples",
+      "aaron-bond.better-comments",
+      "eamodio.gitlens"
+    ]
+  }
+}
