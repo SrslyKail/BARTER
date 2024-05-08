@@ -1,4 +1,8 @@
-# 2800_202410_BBY14
-2800 Project repo
-
-Members: Corey Buchan, Mansib Talukder, Vincent Fung, Ben Henry, Polina Omelyantseva.
+## About Us
+Team Name: BBY-14
+Team Members: 
+- Corey Buchan
+- Mansib Talukder
+- Vincent Fung
+- Ben Henry
+- Polina Omelyantseva
