@@ -1,27 +1,31 @@
 /* Global variables and settings. Great for creating colorcodes. */
 :root {
+  --headerFontSize: calc(2rem + 3vh);
   --testBlue: #003c71;
   --testYellow: #fff400;
   --testPurple: #602aa9;
+  --iconColor: #ff0000;
   /* These can be called with the var function */
   /* background-color: var(--testBlue); */
 }
 
 /* #region header */
 .navBar {
-  display: flex;
   background-color: var(--testYellow);
-  flex-direction: row;
-  flex-wrap: nowrap;
   justify-content: space-between;
-}
-
-.profileIcon {
-  width: 5em;
-  height: 5em;
+  font-size: var(--headerFontSize);
 }
 
 /* #region headerButtons */
+.headerButton {
+  width: var(--headerFontSize);
+  height: var(--headerFontSize);
+  fill: var(--iconColor);
+}
+
+.headerButton :hover {
+  fill: color-mix(in srgb, var(--iconColor) 50%, #0000ff);
+}
 /* #endregion headerButtons */
 /* #region nestedExample */
 
@@ -31,5 +35,16 @@
 /* #region generics */
 .d-none {
   display: none;
+}
+.alignItem-c {
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.iflex {
+  display: inline-flex;
 }
 /* #endregion generics */
