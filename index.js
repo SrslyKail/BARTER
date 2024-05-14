@@ -153,6 +153,9 @@ app.get("/logout", (req, res) => {
   res.redirect("/", {}); // Sends back to the homepage
 });
 
+app.post("/searchSubmit", (req, res) => {
+    //TODO: Search Code.
+});
 /**
  * handles all routes that are not matched by any other route.
  * renders a 404 page and sets the response status to 404.
