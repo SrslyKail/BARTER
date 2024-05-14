@@ -8,6 +8,18 @@
 }
 
 /* #region header */
+.navBar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.profileIcon {
+  width: 5em;
+  height: 5em;
+}
+
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
@@ -15,5 +27,8 @@
 /* #endregion nestedExample*/
 /* #endregion header*/
 
-/* #region exampleOther */
-/* #endregion exampleOther*/
+/* #region generics */
+.d-none {
+  display: none;
+}
+/* #endregion generics */
