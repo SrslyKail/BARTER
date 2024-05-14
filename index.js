@@ -15,13 +15,6 @@ const Joi = require("joi");
 
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 
-/**
- * sets the view engine to ejs, configures the express app, 
- * and sets up the middleware for parsing url-encoded data.
- */
-app.set('view engine', 'ejs');
-app.use(express.urlencoded({extended: false})); 
-
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
 const mongodb_user = process.env.MONGODB_USER;
@@ -40,8 +33,7 @@ var { database } = include("databaseConnection");
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 
-/** creates a mondodb store for session data*/
-let url = `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`;
+
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
   crypto: {
