@@ -1,10 +1,21 @@
 <%- include("templates/header") %>
+<title>Join BARTER!</title>
 
+    <div>
+        <h2>Join</h2>
+        <h1>BARTER!</h1>
+    </div>
 
+    <%- include("templates/card-image-icon") %>
 
-
-
-
-
+    <div>
+        <form action='/submitUser' method='post'>
+            <input name='name' type='text' placeholder='name'><br>
+            <input name='email' type='email' placeholder='email'><br>
+            <input name='password' type='password' id='signupPass' placeholder='password'>
+            <input type="checkbox" onclick="">Show Password <br>
+            <button>Submit</button>
+        </form>
+    </div>
 
 <%- include("templates/footer") %>
