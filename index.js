@@ -13,9 +13,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
-
 const app = express();
-
 const Joi = require("joi");
 
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
@@ -26,18 +24,10 @@ const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
-
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
 
 var { database } = include("databaseConnection");
-
-/**
- * sets the view engine to ejs, configures the express app,
- * and sets up the middleware for parsing url-encoded data.
- */
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: false }));
 
 /* creates a mondodb store for session data*/
 var mongoStore = MongoStore.create({
@@ -56,6 +46,13 @@ app.use(
     resave: true,
   })
 );
+
+/**
+ * sets the view engine to ejs, configures the express app,
+ * and sets up the middleware for parsing url-encoded data.
+ */
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
 
 /* #endregion middleware */
 
