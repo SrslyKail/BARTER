@@ -1,0 +1,75 @@
+/* Global variables and settings. Great for creating colorcodes. */
+:root {
+  /* --testBlue: #003c71;
+  --testYellow: #fff400;
+  --testPurple: #602aa9; */
+  --barterBackground: #ffffff;
+  --barterButtons: #000000;
+  --barterText: #ffffff;
+  --barterAccent: #808080;
+  --barterAccentText: #ffffff;
+  /* These can be called with the var function */
+  /* background-color: var(--testBlue); */
+}
+
+/* #region global */
+* {
+    margin: 0;
+    padding: 0;
+}
+/* #endregion global */
+
+/* #region searchbar component */
+.searchbarComponent {
+    display: flex;
+    height: 2em;
+    width: 100%;
+    align-items: center;
+}
+/* #endregion searchbar component */
+
+/* #region header */
+/* #region headerButtons */
+/* #endregion headerButtons */
+/* #region nestedExample */
+
+/* #endregion nestedExample*/
+/* #endregion header*/
+
+/* #region exampleOther */
+/* #endregion exampleOther*/
+
+/* #region index.ejs */
+.searchHero {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--barterAccent);
+    color: var(--barterAccentText);
+    padding: 4vh;
+    justify-content: center;
+}
+
+.heroHeaderText {
+    font-size: 2em;
+    padding-bottom: 2vh;
+    text-align: center;
+}
+
+.iconsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-top: 4vh;
+}
+
+.profileIcon {
+    display: flex;
+    padding-bottom: 4vh;
+    justify-items: center;
+}
+
+.profileIcon img {
+    width: 40vw;
+    height: auto;
+}
+/* #endregion index.ejs*/
