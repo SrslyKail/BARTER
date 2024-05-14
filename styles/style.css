@@ -10,6 +10,7 @@
 /* #region header */
 .navBar {
   display: flex;
+  background-color: var(--testBlue);
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
