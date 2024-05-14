@@ -1,10 +1,17 @@
-<%- include("templates/header") %>
-
-
-
-
-
-
-
-
-<%- include("templates/footer") %>
+<link href="styles/style.css" rel="stylesheet">
+<body>
+    <%- include("templates/header") %>
+    <div class="searchHero">
+        <div class="heroHeaderText">
+            <h1>Barter, helping you exchange goods and services in our post neo-capitalist world.</h1>
+        </div>
+        <%- include("components/searchbar") %>
+    </div>
+    <div class="iconsContainer">
+        <% let maxIcons = 12; %>
+        <% for (let i = 0; i < maxIcons; i ++) { %>
+            <%- include("components/profileIcon") %>
+        <% } %>
+    </div>
+    <%- include("templates/footer") %>
+</body>
