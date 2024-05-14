@@ -1,4 +1,3 @@
-
 /**@type {GeolocationPosition} */
 var userPosition;
 
@@ -25,4 +24,4 @@ function setupLocation() {
   );
 }
 
-export {userPosition, setupLocation};
+module.exports = { userPosition, setupLocation };
