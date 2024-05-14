@@ -54,6 +54,12 @@ app.use(session({
 ));
 app.use(express.static(__dirname + "/public"));
 
+/** renders the signup page*/
+app.get('/signup', (req, res) => {
+    res.render("signup", {req:req});
+});
+
+
 /**
  * handles all routes that are not matched by any other route.
  * renders a 404 page and sets the response status to 404.
