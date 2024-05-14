@@ -1,0 +1,30 @@
+{
+  "name": "2800-202410-bby14",
+  "version": "1.0.0",
+  "description": "2800 project for BBY14",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SrslyKail/2800-202410-BBY14.git"
+  },
+  "author": "BBY14",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SrslyKail/2800-202410-BBY14/issues"
+  },
+  "homepage": "https://github.com/SrslyKail/2800-202410-BBY14#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "joi": "^17.13.1",
+    "mongodb": "^6.6.1",
+    "utils.js": "^1.0.1"
+  }
+}
