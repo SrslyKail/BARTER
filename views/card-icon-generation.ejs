@@ -1,0 +1,22 @@
+
+
+<div id=testingGrid>
+
+   <!--Sets image location, mostly for testing, change image:image in the 
+      commented loop include to work through an array-->
+   <%var image = "/wow.jpeg"%>
+      <!--Sets text, mostly for testing, change text:text for live-->
+   <%var text = "Wow!"%>
+
+   <!--A loop for generating icons, 
+      loop works with grid settings in cardIconStyle.css
+      needs integration testing with bootstrap-->
+   <!--//<% let i=0; %>
+	<!--//<% for(i=0; i < 185; i++) { %>
+   <!--//      <%- include('templates/card-image-icon', {image:image, text:text})%>
+   <!--//<% } %> -->
+
+   <%- include('templates/card-image-icon', {image:image, text:text})%>
+
+   
+   </div>
