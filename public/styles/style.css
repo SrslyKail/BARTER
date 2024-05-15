@@ -1,8 +1,5 @@
 /* Global variables and settings. Great for creating colorcodes. */
 :root {
-  /* --testBlue: #003c71;
-  --testYellow: #fff400;
-  --testPurple: #602aa9; */
   --barterBackground: #ffffff;
   --barterButtons: #000000;
   --barterText: #ffffff;
@@ -14,8 +11,8 @@
 
 /* #region Import Logo Font */
 @font-face {
-    font-family: "BarterLogoFont";
-    src: url("fonts/BASQUIAT.ttf");
+  font-family: "BarterLogoFont";
+  src: url("fonts/BASQUIAT.ttf");
 }
 
 /* #endregion Import Logo Font */
@@ -33,8 +30,31 @@
 
 /* #region global */
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /* #endregion global */
+
+/* #region generics */
+.d-none {
+  display: none;
+}
+
+/*  */
+.mask {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.vh-10 {
+  max-height: 10vh;
+}
+
+.mh-inherit {
+  max-height: inherit;
+}
+
+.mh-none {
+  max-height: none;
+}
+/* #endregion generics */
