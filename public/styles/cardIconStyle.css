@@ -1,4 +1,4 @@
-/* Grid for testing (expands infinitely)
+/* Grid for testing (expands infinitely) */
        #testingGrid {
          margin: 0;
          padding: 0;
@@ -7,7 +7,7 @@
          grid-template-columns: repeat(2, 125px);
          grid-auto-rows: 110px;
          grid-auto-flow: row;
-      } */
+      }
 
 /* Mandatory CSS unless noted as optional*/
 .cardImageIcon {
