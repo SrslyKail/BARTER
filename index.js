@@ -78,7 +78,10 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login", {});
+  var passChange = req.query.passChange;
+  res.render("login", {
+    passChange: passChange,
+  });
 });
 
 /**
@@ -116,7 +119,7 @@ app.post("/loggingin", async (req, res) => {
     req.session.user_type = result[0].user_type;
     req.session.cookie.maxAge = expireTime;
 
-    res.redirect("/main");
+    res.redirect("/");
     return;
   } else {
     res.redirect("/loginInvalid");
@@ -128,16 +131,63 @@ app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
 
-app.get("/password-reset", (req, res) => {
-  res.render("password-reset", {});
+/**
+ * Handles all the resetting code.
+ */
+app.get("/passwordReset", (req, res) => {
+  res.render("passwordReset", {});
+});
+//searches for the user in the database with the provided email.
+app.post("/passwordResetting", async (req, res) => {
+  var email = req.body.email;
+  const emailSchema = Joi.string().email().required();
+  const emailValidationResult = emailSchema.validate(email);
+  if (emailValidationResult.error != null) {
+    console.log(emailValidationResult.error);
+    res.redirect("/login");
+    return;
+  }
+
+  const result = await userCollection
+    .find({ email: email })
+    .project({ username: 1, password: 1, _id: 1 })
+    .toArray();
+  //if not found, return back to the reset page.
+  if (result.length != 1) {
+    res.redirect("/passwordReset");
+    return;
+  }
+
+  req.session.resetEmail = email;
+  req.session.cookie.maxAge = 5 * 1000; //expires in 5 minutes
+  res.redirect("/passwordChange");
 });
 
-app.get("/profile", (req, res) => {
-  res.render("profile", {});
+//user has been found, so lets change the email now.
+app.get("/passwordChange", (req, res) => {
+  res.render("passwordChange", {});
 });
 
-app.get("/signup", (req, res) => {
-  res.render("signup", {errors:[]});
+//changing password code
+app.post("/passwordChanging", async (req, res) => {
+  var password = req.body.password;
+  const passwordSchema = Joi.string().max(20).required();
+  const passwordValidationResult = passwordSchema.validate(password);
+  if (passwordValidationResult.error != null) {
+    console.log(passwordValidationResult.error);
+    res.redirect("/passwordChange");
+    return;
+  }
+
+  var newPassword = await bcrypt.hash(password, saltRounds);
+
+  await userCollection.findOneAndUpdate(
+    { email: req.session.resetEmail },
+    { $set: { password: newPassword } }
+  );
+  //destroys the session, as don't need session.resetEmail anymore
+  req.session.destroy();
+  res.redirect("/login?passChange=true");
 });
 
 /**
@@ -146,19 +196,20 @@ app.get("/signup", (req, res) => {
  * Then inserts a user, creates a session, and redirects to root.
  */
 
-app.post('/submitUser', async (req, res) => {
+app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
   var email = req.body.email;
   var errors = [];
 
   //this should be global
-  const userSchema = Joi.object(
-    {
-        username: Joi.string().alphanum().max(20).required(),
-        password: Joi.string().max(20).required(),
-        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ca'] } }).required()
-    });
+  const userSchema = Joi.object({
+    username: Joi.string().alphanum().max(20).required(),
+    password: Joi.string().max(20).required(),
+    email: Joi.string()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "ca"] } })
+      .required(),
+  });
 
   const validationResult = userSchema.validate({ username, password, email });
   //Error checking
@@ -168,12 +219,11 @@ app.post('/submitUser', async (req, res) => {
   if (await userCollection.findOne({ username: username })) {
     errors.push(`${username} is already in use!`);
   }
-  if (await userCollection.findOne({ email: email})) {
+  if (await userCollection.findOne({ email: email })) {
     errors.push(`${email} is already in use!`);
   }
   //No errors? Create a user
   if (errors.length === 0) {
-
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert into collection
@@ -185,14 +235,14 @@ app.post('/submitUser', async (req, res) => {
 
     createSession(req, username, false);
     res.redirect("/");
-    return;        
+    return;
   } else {
-   //catch-all redirect to signup, sends errors
-   res.render("signup", {
-     errors: errors,
+    //catch-all redirect to signup, sends errors
+    res.render("signup", {
+      errors: errors,
     });
     return;
-    }
+  }
 });
 
 /**
@@ -204,8 +254,7 @@ function createSession(req, username, isAdmin) {
   req.session.username = username;
   req.session.isAdmin = isAdmin;
   req.session.cookie.maxAge = expireTime;
-};
-
+}
 
 /**
  * Post method for logout buttons.
