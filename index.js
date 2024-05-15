@@ -132,6 +132,13 @@ app.get("/loginInvalid", async (req, res) => {
 });
 
 /**
+ * Added the profile back, sorry ben ;-;
+ */
+app.get("/profile", (req, res) => {
+  res.render("profile", {});
+});
+
+/**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
@@ -195,6 +202,12 @@ app.post("/passwordChanging", async (req, res) => {
  * Validates fields and checks for duplicate email/username
  * Then inserts a user, creates a session, and redirects to root.
  */
+//Added signup route back.
+app.get("/signup", (req, res) => {
+  res.render("signup", {
+    errors: [],
+  });
+});
 
 app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
