@@ -18,4 +18,12 @@
         </form>
     </div>
 
+    <div id = signupErrors style="color: red">
+
+    <% let i=0; %>
+	<% for(i=0; i < errors.length; i++) { %>
+        <%=errors[i]%> <br>
+    <% } %> 
+    </div>
+
 <%- include("templates/footer") %>

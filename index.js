@@ -137,7 +137,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  res.render("signup", {});
+  res.render("signup", {errors:[]});
 });
 
 /**
