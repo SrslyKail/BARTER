@@ -140,6 +140,10 @@ app.get("/signup", (req, res) => {
   res.render("signup", {});
 });
 
+app.get("/icons", (req, res) => {
+  res.render("icon-prototyping", {});
+})
+
 
 /**
  * Post method for logout buttons.

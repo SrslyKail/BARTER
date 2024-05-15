@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Icon Prototyping</title>
+</head>
+
+<body>
+   <style>
+      * {
+         margin: 0;
+         padding: 0;
+      }
+
+      #testingGrid {
+         display: grid;
+         gap:2em;
+         grid-template-columns: repeat(2, 1fr);
+         grid-auto-rows: 250px;
+         grid-auto-flow: row;
+         justify-items: center;
+      }
+
+      .cardImageIcon {
+         display: inline-flex;
+         align-items: center;
+      }
+      svg {
+         position: absolute;
+      }
+      .cardTextDiv {
+         display: flex;
+         position: relative;
+         width: 125px; /*hard-coded to match icon width, is there a better solution?*/
+         background-color: #17191595;
+         align-items: center;
+         height: 2.5em; /* sets text background height*/
+      }
+      span {
+         color: #FFFAEE;
+         width: 125px; /*hard-coded to match icon width, is there a better solution?*/
+         font-size: x-large;
+         text-align: center;
+      }
+   </style>
+
+   <div id=testingGrid>
+
+    <% let i=0; %>
+		<% for(i=0; i < 25; i++) { %>
+            <%- include('templates/card-image-icon')%>
+        <% } %> 
+
+   
+   </div>
+
+</body>
+
+</html>
