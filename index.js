@@ -141,6 +141,73 @@ app.get("/signup", (req, res) => {
 });
 
 /**
+ * Post method for submitting a user from signup
+ * Validates fields and checks for duplicate email/username
+ * Then inserts a user, creates a session, and redirects to root.
+ */
+
+app.post('/submitUser', async (req, res) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  var email = req.body.email;
+  var errors = [];
+
+  //this should be global
+  const userSchema = Joi.object(
+    {
+        username: Joi.string().alphanum().max(20).required(),
+        password: Joi.string().max(20).required(),
+        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ca'] } }).required()
+    });
+
+  const validationResult = userSchema.validate({ username, password, email });
+  //Error checking
+  if (validationResult.error != null) {
+    errors.push(validationResult.error.details[0].message);
+  }
+  if (await userCollection.findOne({ username: username })) {
+    errors.push(`${username} is already in use!`);
+  }
+  if (await userCollection.findOne({ email: email})) {
+    errors.push(`${email} is already in use!`);
+  }
+  //No errors? Create a user
+  if (errors.length === 0) {
+
+    var hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert into collection
+    await userCollection.insertOne({
+      username: username,
+      email: email,
+      password: hashedPassword,
+    });
+
+    createSession(req, username, false);
+    res.redirect("/");
+    return;        
+  } else {
+   //catch-all redirect to signup, sends errors
+   res.render("signup", {
+     errors: errors,
+    });
+    return;
+    }
+});
+
+/**
+ * Sets the authentication, username, and expiration date for the session
+ * @param {Request} req
+ */
+function createSession(req, username, isAdmin) {
+  req.session.authenticated = true;
+  req.session.username = username;
+  req.session.isAdmin = isAdmin;
+  req.session.cookie.maxAge = expireTime;
+};
+
+
+/**
  * Post method for logout buttons.
  */
 app.post("/logout", async (req, res) => {
