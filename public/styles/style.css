@@ -53,4 +53,8 @@
 .mh-inherit {
   max-height: inherit;
 }
+
+.mh-none {
+  max-height: none;
+}
 /* #endregion generics */

@@ -18,8 +18,8 @@
   <%- include("svgs") %>
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
-  <nav class="vh-10 navbar flex-nowrap gap-2 navbar-expand-md navbar-dark bg-dark">
-    <a class="mh-inherit m-0 d-inline-flex navbar-brand" href="/"><%- include("components/profileIcon") %></a>
+  <nav class="navbar flex-nowrap gap-2 navbar-expand-md navbar-dark bg-dark">
+    <a class="vh-10 m-0 d-inline-flex navbar-brand" href="/"><%- include("components/profileIcon") %></a>
     <!-- Search bar -->
     <%- include("components/searchbar") %>
     <!-- Toggler button -->
@@ -27,7 +27,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- The actual nav links -->
-    <div class="flex-row-reverse collapse navbar-collapse" id="headerCollapse">
+    <div class="collapse navbar-collapse " id="headerCollapse">
       <ul class="d-sm-flex sm-flex-wrap align-content-end navbar-nav my-auto">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/login">Login</a>
