@@ -1,6 +1,6 @@
 /** main entry point of the application. */
 
-/** #region requiredModules */
+/* #region requiredModules */
 require("./utils.js");
 require("dotenv").config();
 const express = require("express");
@@ -8,7 +8,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 
-/** #region requiredModules */
+/* #endregion requiredModules */
 
 const saltRounds = 12;
 
