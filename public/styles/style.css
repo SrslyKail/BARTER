@@ -1,8 +1,5 @@
 /* Global variables and settings. Great for creating colorcodes. */
 :root {
-  /* --testBlue: #003c71;
-  --testYellow: #fff400;
-  --testPurple: #602aa9; */
   --barterBackground: #ffffff;
   --barterButtons: #000000;
   --barterText: #ffffff;
@@ -12,21 +9,13 @@
   /* background-color: var(--testBlue); */
 }
 
-/* #region global */
-* {
-    margin: 0;
-    padding: 0;
+/* #region Import Logo Font */
+@font-face {
+  font-family: "BarterLogoFont";
+  src: url("fonts/BASQUIAT.ttf");
 }
-/* #endregion global */
 
-/* #region searchbar component */
-.searchbarComponent {
-    display: flex;
-    height: 2em;
-    width: 100%;
-    align-items: center;
-}
-/* #endregion searchbar component */
+/* #endregion Import Logo Font */
 
 /* #region header */
 /* #region headerButtons */
@@ -39,37 +28,29 @@
 /* #region exampleOther */
 /* #endregion exampleOther*/
 
-/* #region index.ejs */
-.searchHero {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: var(--barterAccent);
-    color: var(--barterAccentText);
-    padding: 4vh;
-    justify-content: center;
+/* #region global */
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.heroHeaderText {
-    font-size: 2em;
-    padding-bottom: 2vh;
-    text-align: center;
+/* #endregion global */
+
+/* #region generics */
+.d-none {
+  display: none;
 }
 
-.iconsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    padding-top: 4vh;
+/*  */
+.mask {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
-.profileIcon {
-    display: flex;
-    padding-bottom: 4vh;
-    justify-items: center;
+.vh-10 {
+  max-height: 10vh;
 }
 
-.profileIcon img {
-    width: 40vw;
-    height: auto;
+.mh-inherit {
+  max-height: inherit;
 }
-/* #endregion index.ejs*/
+/* #endregion generics */
