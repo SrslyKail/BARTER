@@ -10,12 +10,21 @@
 
     <div>
         <form action='/submitUser' method='post'>
-            <input name='username' type='text' placeholder='username'><br>
-            <input name='email' type='email' placeholder='email'><br>
-            <input name='password' type='password' id='signupPass' placeholder='password'>
+            <input name='username' type='text' placeholder='username' required><br>
+            <input name='email' type='email' placeholder='email' required><br>
+            <input name='password' type='password' id='signupPass' placeholder='password' required>
+            <!-- Implement javascript for this later-->
             <input type="checkbox" onclick="">Show Password <br>
             <button>Submit</button>
         </form>
+    </div>
+
+    <div id = signupErrors style="color: red">
+
+    <% let i=0; %>
+	<% for(i=0; i < errors.length; i++) { %>
+        <%=errors[i]%> <br>
+    <% } %> 
     </div>
 
 <%- include("templates/footer") %>
