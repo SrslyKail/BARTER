@@ -5,6 +5,18 @@
       </div>
       <%- include("templates/components/searchbar") %>
     </div>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <p class="lead text-body-secondary">Barter, helping you exchange goods and services in our post
+                    neo-capitalist world.</p>
+                <form class="d-grid gap-2 ms-4 me-4" onSubmit="/searchSubmit/" method="post">
+                    <%- include("components/searchbar") %>
+                        <button class="btn btn-dark" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </section>
     <div class="iconsContainer">
       <% let maxIcons = 12; %>
       <% for (let i = 0; i < maxIcons; i ++) { %>
