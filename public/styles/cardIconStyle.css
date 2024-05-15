@@ -1,0 +1,42 @@
+/* Grid for testing (expands infinitely) */
+       #testingGrid {
+         margin: 0;
+         padding: 0;
+         display: grid;
+         gap:2em;
+         grid-template-columns: repeat(2, 125px);
+         grid-auto-rows: 110px;
+         grid-auto-flow: row;
+      }
+
+/* Mandatory CSS unless noted as optional*/
+.cardImageIcon {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.cardIconSVG {
+    position: absolute;
+}
+
+.cardTextDiv {
+    display: flex;
+    position: relative;
+    background-color: #17191595;
+    /*Optional Hex: RRGGBBAA*/
+    align-items: center;
+    /*Optional: needed with higher text background height*/
+    height: min-content;
+    /*Optional: adjusts text background height*/
+    width: inherit;
+}
+
+.iconText {
+    color: #FFFAEE;
+    /*Optional*/
+    width: inherit;
+    font-size: x-large;
+    /*Optional*/
+    text-align: center;
+}
