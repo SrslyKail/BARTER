@@ -29,7 +29,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 var { database } = include("databaseConnection");
 
-const userCollection = database.db(mongodb_database).collection('users');
+const userCollection = database.db(mongodb_database).collection("users");
 
 /* creates a mondodb store for session data*/
 var mongoStore = MongoStore.create({
@@ -61,6 +61,8 @@ app.use(express.urlencoded({ extended: false }));
 /* #region expressPathing */
 app.use(express.static(__dirname + "/public"));
 app.use("/styles", express.static("./styles"));
+app.use("/scripts", express.static("./scripts"));
+
 /* #endregion expressPathing */
 
 /* #region serverRouting */
@@ -68,65 +70,63 @@ app.get("/", (req, res) => {
   res.render("index", {});
 });
 
-
 /**
  * Post method for Try Again btn in loginInvalid.ejs
  */
-app.post('/login', (req, res) => {
-  res.redirect('/login');
+app.post("/login", (req, res) => {
+  res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
   res.render("login", {});
 });
 
-
 /**
  * Post method for login form in login.ejs
- * 
+ *
  * Uses Joi to validate authentication.
- * Compares the entered password with the bcrypted password in database for authentication. 
- * 
+ * Compares the entered password with the bcrypted password in database for authentication.
+ *
  * Once successfully logged in, redirects to the main.ejs page.
  */
-app.post('/loggingin', async (req, res) => {
+app.post("/loggingin", async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
 
   const emailSchema = Joi.string().email().required();
   const emailValidationResult = emailSchema.validate(email);
   if (emailValidationResult.error != null) {
-      console.log(emailValidationResult.error);
-      res.redirect("/login");
-      return;
+    console.log(emailValidationResult.error);
+    res.redirect("/login");
+    return;
   }
 
-  const result = await userCollection.find({ email: email }).project({username: 1, password: 1, _id: 1 }).toArray();
+  const result = await userCollection
+    .find({ email: email })
+    .project({ username: 1, password: 1, _id: 1 })
+    .toArray();
 
   if (result.length != 1) {
-      res.redirect("/loginInvalid");
-      return;
+    res.redirect("/loginInvalid");
+    return;
   }
   if (await bcrypt.compare(password, result[0].password)) {
-      req.session.authenticated = true;
-      req.session.username = result[0].username;
-      req.session.user_type = result[0].user_type;
-      req.session.cookie.maxAge = expireTime;
+    req.session.authenticated = true;
+    req.session.username = result[0].username;
+    req.session.user_type = result[0].user_type;
+    req.session.cookie.maxAge = expireTime;
 
-      res.redirect('/main');
-      return;
-  }
-  else {
-      res.redirect("/loginInvalid");
-      return;
+    res.redirect("/main");
+    return;
+  } else {
+    res.redirect("/loginInvalid");
+    return;
   }
 });
 
-app.get('/loginInvalid', async (req, res) => {
+app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
-})
-
-
+});
 
 app.get("/password-reset", (req, res) => {
   res.render("password-reset", {});
@@ -140,13 +140,12 @@ app.get("/signup", (req, res) => {
   res.render("signup", {});
 });
 
-
 /**
  * Post method for logout buttons.
  */
-app.post('/logout', async (req, res) => {
-  res.redirect('/logout');
-})
+app.post("/logout", async (req, res) => {
+  res.redirect("/logout");
+});
 
 app.get("/logout", (req, res) => {
   req.session.destroy(); // Deletes the session
@@ -154,7 +153,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/searchSubmit", (req, res) => {
-    //TODO: Search Code.
+  //TODO: Search Code.
 });
 /**
  * handles all routes that are not matched by any other route.
