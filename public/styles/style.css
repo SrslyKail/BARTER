@@ -12,12 +12,13 @@
   /* background-color: var(--testBlue); */
 }
 
-/* #region global */
-* {
-    margin: 0;
-    padding: 0;
+/* #region Import Logo Font */
+@font-face {
+    font-family: "BarterLogoFont";
+    src: url("fonts/BASQUIAT.ttf");
 }
-/* #endregion global */
+
+/* #endregion Import Logo Font */
 
 /* #region header */
 /* #region headerButtons */
