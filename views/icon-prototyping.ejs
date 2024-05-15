@@ -17,15 +17,15 @@
       #testingGrid {
          display: grid;
          gap:2em;
-         grid-template-columns: repeat(2, 1fr);
-         grid-auto-rows: 250px;
+         grid-template-columns: repeat(2, 125px);
+         grid-auto-rows: 110px;
          grid-auto-flow: row;
-         justify-items: center;
       }
 
       .cardImageIcon {
          display: inline-flex;
          align-items: center;
+         width:100%;
       }
       svg {
          position: absolute;
@@ -33,14 +33,14 @@
       .cardTextDiv {
          display: flex;
          position: relative;
-         width: 125px; /*hard-coded to match icon width, is there a better solution?*/
          background-color: #17191595;
-         align-items: center;
-         height: 2.5em; /* sets text background height*/
+         align-items: center; /*needed with higher text background height*/
+         height:min-content;  /*adjusts text background height*/
+         width: inherit;
       }
       span {
          color: #FFFAEE;
-         width: 125px; /*hard-coded to match icon width, is there a better solution?*/
+         width: inherit;
          font-size: x-large;
          text-align: center;
       }
@@ -48,9 +48,16 @@
 
    <div id=testingGrid>
 
+      <!--Sets image location-->
+      <%var image = "/wow.jpeg"%>
+      <!--Sets text-->
+      <%var text = "Wow!"%>
+
+      <!--text set in for loop just sends the current number-->
     <% let i=0; %>
-		<% for(i=0; i < 25; i++) { %>
-            <%- include('templates/card-image-icon')%>
+		<% for(i=0; i < 185; i++) { %>
+         <%text = i;%> 
+            <%- include('templates/card-image-icon', {image:image, text:text})%>
         <% } %> 
 
    
