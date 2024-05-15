@@ -38,7 +38,7 @@
          height:min-content;  /*adjusts text background height*/
          width: inherit;
       }
-      span {
+      .iconText {
          color: #FFFAEE;
          width: inherit;
          font-size: x-large;
@@ -48,17 +48,17 @@
 
    <div id=testingGrid>
 
-      <!--Sets image location-->
-      <%var image = "/wow.jpeg"%>
-      <!--Sets text-->
-      <%var text = "Wow!"%>
+   <!--Sets image location, mostly for testing, change image:image in include to work through an array-->
+   <%var image = "/wow.jpeg"%>
+      <!--Sets text, mostly for testing, change text:text for live-->
+   <%var text = "Wow!"%>
 
-      <!--text set in for loop just sends the current number-->
-    <% let i=0; %>
-		<% for(i=0; i < 185; i++) { %>
-         <%text = i;%> 
-            <%- include('templates/card-image-icon', {image:image, text:text})%>
-        <% } %> 
+      <!--text set in for loop just sends the current number  !!set text:null for no text!!-->
+   <% let i=0; %>
+	<% for(i=0; i < 185; i++) { %>
+      <%text = i;%> 
+         <%- include('templates/card-image-icon', {image:image, text:text})%>
+   <% } %> 
 
    
    </div>
