@@ -16,7 +16,33 @@
 <body>
   <%- include("svgs") %>
   <!-- #region navbar  -->
-  <nav class="flex alignItem-c navBar">
+  <!-- Adjust colors and expand breakpoint here -->
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid align-items-center">
+      <a class="navbar-brand" href="/">BARTER</a>
+      <!-- Search bar -->
+      <form role="search">
+        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+      </form>
+      <!-- Toggler button -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- The actual nav links -->
+      <div class="flex-row-reverse collapse navbar-collapse" id="headerCollapse">
+        <ul class="d-sm-flex flex-wrap align-content-end navbar-nav my-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Signup</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- <nav class="flex alignItem-c navBar">
     <div>BARTER</div>
     <div class="iflex alignItem-c">
       <svg height="24" class="headerButton">
@@ -27,7 +53,7 @@
       </svg>
     </div>
 
-  </nav>
+  </nav> -->
   <!-- #endregion navbar -->
   <div class=" container">
     <!-- Main content container beginning -->
