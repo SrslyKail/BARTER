@@ -1,17 +1,11 @@
-<section class="py-5 text-center bg-secondary">
-    <div class="row py-lg-5">
-        <div>
-            <p class="lead text-white">Barter, helping you exchange goods and services in our post
-                neo-capitalist world.</p>
-            <form class="d-grid gap-2 ms-4 me-4" onSubmit="" method="post">
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control" placeholder="What are you looking for?">
-                </div>
-                    <button class="btn btn-dark" type="submit">Search</button>
-            </form>
-        </div>
-    </div>
+<section class="d-flex justify-content-center text-center bg-secondary">
+  <div class="py-5">
+    <p class="lead text-white">Barter, helping you exchange goods and services in our post
+      neo-capitalist world.</p>
+    <form class="d-grid gap-2 ms-4 me-4" onSubmit="" method="post">
+      <%- include("searchbar") %>
+      <!-- <button class="btn btn-dark" type="submit">Search</button> -->
+      <%- include("button", {buttonText: "Search", buttonType: "submit"}) %>
+    </form>
+  </div>
 </section>
