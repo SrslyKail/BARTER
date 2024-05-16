@@ -144,12 +144,6 @@ app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
 
-app.get("/testing", async (req, res) => {
-  skills = await profileCollection.find({username: "polina"}, {projection: {skills : 1, _id: 0}}).toArray();
-  console.log(skills[0].skills[0]);
-});
-
-
 /*
  * this works under the assumption that profiles are stored in a separate collection,
  * that usernames are unique, and that a document in the profile collection is created upon registration 
