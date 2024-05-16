@@ -158,7 +158,7 @@ app.get("/profile", async (req, res) => {
   console.log(profile);
   //if we cant find the requested profile, get the current users profile
   if (!profile) {
-    profile = await getUserProfile(res.session.username);
+    profile = await getUserProfile(req.session.username);
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
     if (!profile) {
       console.error(`Could not find profile page for ${username}!`);
