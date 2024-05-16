@@ -65,9 +65,20 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
+
+/**
+ * 
+ */
+app.use('/', (req,res,next) => {
+  app.locals.authenticated = req.session.authenticated;
+  next();
+});
+
 /* #region serverRouting */
-app.get("/", (req, res) => {
-  res.render("index", {});
+app.get("/", async (req, res) => {
+  var username = req.session.username;
+  var authenticated = req.session.authenticated;
+  res.render("index", {authenticated: authenticated, username: username});
 });
 
 /**
