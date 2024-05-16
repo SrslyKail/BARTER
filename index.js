@@ -47,7 +47,6 @@ app.use(
     store: mongoStore, //default is memory store
     saveUninitialized: false,
     resave: true,
-    
   })
 );
 
@@ -67,11 +66,10 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
-
 /**
- * 
+ *
  */
-app.use('/', (req,res,next) => {
+app.use("/", (req, res, next) => {
   app.locals.authenticated = req.session.authenticated;
   next();
 });
@@ -80,7 +78,7 @@ app.use('/', (req,res,next) => {
 app.get("/", async (req, res) => {
   var username = req.session.username;
   var authenticated = req.session.authenticated;
-  res.render("index", {authenticated: authenticated, username: username});
+  res.render("index", { authenticated: authenticated, username: username });
 });
 
 /**
@@ -144,32 +142,43 @@ app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
 
-/*
+/**
  * this works under the assumption that profiles are stored in a separate collection,
- * that usernames are unique, and that a document in the profile collection is created upon registration 
+ * that usernames are unique, and that a document in the profile collection is created upon registration
  * (this either needs to be changed or implemented)
  */
 app.get("/profile", async (req, res) => {
-
   if (!req.session.authenticated) {
     res.redirect("/login");
     return;
   }
-  //todo could probably be refactored into a function
-  if (await profileCollection.findOne({username: req.query.id})) {
-    //searches for document with given username
-    //and projects the location field value of found document 
-    location = await profileCollection.find({username: req.query.id}, {projection: {location : 1, _id: 0}}).toArray();
-    //same thing but for skills
-    skills = await profileCollection.find({username: req.query.id}, {projection: {skills : 1, _id: 0}}).toArray();
-    res.render("profile", { user : req.query.id, location : location[0].location, skills : skills[0].skills});
-  } else {
-    //same as above but for the current user. 
-    location = await profileCollection.find({username: req.session.username}, {projection: {location : 1, _id: 0}}).toArray();
-    skills = await profileCollection.find({username: req.session.username}, {projection: {skills : 1, _id: 0}}).toArray();
-    res.render("profile", { user : req.session.username, location : location[0].location, skills : skills[0].skills});
+  //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
+
+  profile = await getUserProfile(req.query.id);
+  console.log(profile);
+  //if we cant find the requested profile, get the current users profile
+  if (!profile) {
+    profile = await getUserProfile(res.session.username);
+    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
+    if (!profile) {
+      console.error(`Could not find profile page for ${username}!`);
+      res.redirect("/noUser");
+    }
   }
+
+  // ! We need to check the user has skills and a location set; otherwise we can crash.
+  res.render("profile", {
+    user: profile.username,
+    location: profile.location,
+    skills: profile.skills,
+  });
 });
+
+async function getUserProfile(username) {
+  //searches for document with given username
+  //and projects the location field value of found document
+  return await profileCollection.findOne({ username: username });
+}
 
 /**
  * Handles all the resetting code.

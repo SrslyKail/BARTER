@@ -1,33 +1,29 @@
-<div class="d-flex justify-content-center">
-    <table style="  border: 1px solid gray;
-                    background-color: lightgray;
-                    border-radius: 15px;
-                    border-collapse: separate;
-                    padding: 0 2% 0 2%;
-                    margin: 2% 0 2% 0;
-                    min-width: 90%;">
-        <tr>
-            <td>
-                <a id="profileIcon" href="/"><%- include("profileIcon") %></a>
-            </td>
-            <td class="px-2">
-                <div class="p-1"><b><%= user %></b></div>
-                 <div class="p-1">rating</div><!-- unsure where this is going to be stored and how -->
-                <div class="p-1">
-                    <!-- intentionally only two; only first two are featured in the card, the rest are in profile -->
-                    <%=skills[0]%>, <%=skills[1]%><%if (skills.length > 2) {%>, . . . <%}%>
-                </div>
-                <div class="p-1"><%=location%></div>
-            </td>
-        </tr>
-    </table>
+<div class="card m-3 userCard">
+  <div class="row g-0 align-items-center">
+    <div class="col-3 p-2">
+      <%- include("profileIcon") %>
+    </div>
+    <div class="col-9">
+      <div class="card-body">
+        <h5 class="card-title"><%= user %></h5>
+        <p class="card-text text-truncate">
+          <% for (let i=0; i < skills.length; i++) { %>
+          <span><%=skills[i]%>, </span>
+          <% } %>
+        </p>
+        <p class="card-text">rating</p><!-- unsure where this is going to be stored and how -->
+        <p class="card-text"><small class="text-body-secondary"><%=location%></small>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!--todo figure out how to add styles to children without clunky id-ing....-->
 <style>
-    #profileIcon * {
-        border: 1px solid black;
-        height: 15vh !important;
-        width: auto;
-    }
+  #profileIcon * {
+    border: 1px solid black;
+    height: 15vh !important;
+    width: auto;
+  }
 </style>
