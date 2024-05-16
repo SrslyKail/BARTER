@@ -41,11 +41,14 @@ app.use(
  * and sets up the middleware for parsing url-encoded data.
  */
 app.set("view engine", "ejs");
+
 app.use(express.urlencoded({ extended: false }));
+
 app.use("/", (req, res, next) => {
   app.locals.authenticated = req.session.authenticated;
   next();
 });
+
 /**
  * Middleware for validating a user is logged in.
  * Redirects to /login if they are not.
@@ -98,10 +101,21 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #region helperFunctions */
 
+/**
+ * Gets a local module from the ./scripts/module folder
+ * @param {String} name
+ * @returns {Object} the module you requested
+ */
 function getLocalModule(name) {
   return require(`./scripts/modules/${name}`);
 }
 
+/**
+ * Generates the navlinks we want a user to access based on permissions
+ * within the local session.
+ * @param {Request} req
+ * @returns {Array}
+ */
 function generateNavLinks(req) {
   let links = [{ name: "Home", link: "/" }];
   if (req.session.user.isAuthenticated) {
