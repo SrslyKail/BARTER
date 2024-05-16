@@ -85,12 +85,17 @@
                 </form>
               </div>
 
-    <div id = signupErrors style="color: red">
+              <div id="signupErrors" style="color: red">
+                <% let i=0; %> <% for(i=0; i < errors.length; i++) { %>
+                <%=errors[i]%> <br />
+                <% } %>
+              </div>
 
-    <% let i=0; %>
-	<% for(i=0; i < errors.length; i++) { %>
-        <%=errors[i]%> <br>
-    <% } %> 
+              <%- include("templates/footer") %>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-<%- include("templates/footer") %>
+  </div>
+</section>
