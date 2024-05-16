@@ -192,8 +192,6 @@ app.post("/passwordChanging", async (req, res) => {
     { email: req.session.resetEmail },
     { $set: { password: newPassword } }
   );
-  //destroys the session, as don't need session.resetEmail anymore
-  req.session.destroy();
   res.redirect("/login?passChange=true");
 });
 
@@ -278,7 +276,7 @@ app.post("/logout", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy(); // Deletes the session
-  res.redirect("/", {}); // Sends back to the homepage
+  res.redirect("/"); // Sends back to the homepage
 });
 
 app.post("/searchSubmit", (req, res) => {
