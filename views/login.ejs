@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 
-<div class="d-flex justify-content-center text-center">
+<br><div class="d-flex justify-content-center text-center">
     <h2>Login</h2>
 </div>
 <div class="d-flex justify-content-center text-center">
@@ -19,7 +19,9 @@
     </form>
 </div>
 <% if (passChange) { %>
-    <span class="text-danger fw-bold">password has been changed.</span>
-    <% } %>
+    <div class="d-flex justify-content-center text-center">
+        <span class="text-success fw-bold">Password has been changed.</span>
+    </div>
+<% } %>
 
 <%- include("templates/footer") %>

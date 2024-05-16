@@ -7,6 +7,8 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 /* #endregion requiredModules */
 
@@ -25,6 +27,8 @@ const mongodb_password = process.env.MONGODB_PASSWORD;
 const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
+const nodemailer_user = process.env.NODEMAILER_USER;
+const nodemailer_password = process.env.NODEMAILER_PASSWORD;
 /* #endregion secrets */
 
 var { database } = include("databaseConnection");
@@ -70,7 +74,7 @@ app.use("/scripts", express.static("./scripts"));
 /**
  * 
  */
-app.use('/', (req,res,next) => {
+app.use('/', (req, res, next) => {
   app.locals.authenticated = req.session.authenticated;
   next();
 });
@@ -79,7 +83,7 @@ app.use('/', (req,res,next) => {
 app.get("/", async (req, res) => {
   var username = req.session.username;
   var authenticated = req.session.authenticated;
-  res.render("index", {authenticated: authenticated, username: username});
+  res.render("index", { authenticated: authenticated, username: username });
 });
 
 /**
@@ -150,36 +154,116 @@ app.get("/profile", (req, res) => {
   res.render("profile", {});
 });
 
+
+
+/**
+ *  Create a nodemailer transporter
+ */
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: nodemailer_user,
+    pass: nodemailer_password,
+  },
+});
+
+
+/**
+ * Function to send password reset email
+ * @param {*} email User's email
+ * @param {*} token Received token
+ * @param {*} timestamp Time when the token was generated
+ */
+async function sendPasswordResetEmail(email, token, timestamp) {
+  const mailOptions = {
+    from: 'barter.bby14@gmail.com',
+    to: email,
+    subject: 'Password Reset',
+    text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+      `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+      `http://localhost:${port}/passwordReset/${token}\n\n` +
+      `The link will expire in 5 minutes\n\n` +
+      `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent');
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+  }
+}
+
 /**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
   res.render("passwordReset", {});
 });
+
+
+app.get("/passwordReset/:token", async (req, res) => {
+  const token = req.params.token;
+
+  // Check if token exists in the database
+  const user = await userCollection.findOne({ resetToken: token });
+
+  if (!user) {
+    // Token not found or expired
+    return res.status(400).send('Invalid or expired token');
+  }
+
+  // Check if token has expired (more than 5 minutes)
+  const timestamp = user.resetTokenTimestamp;
+  const currentTimestamp = new Date().getTime();
+  const timeDifference = currentTimestamp - timestamp;
+  const fiveMinutes = 5 * 60 * 1000;
+
+  if (timeDifference > fiveMinutes) {
+    // Token has expired, invalidate it
+    await userCollection.updateOne({ resetToken: token },
+      { $unset: { resetToken: "", resetTokenTimestamp: "" } });
+    return res.status(400).send('Token expired');
+  }
+
+  // Render the password reset page
+  res.render("passwordChange", { token });
+});
+
+
 //searches for the user in the database with the provided email.
 app.post("/passwordResetting", async (req, res) => {
   var email = req.body.email;
-  const emailSchema = Joi.string().email().required();
-  const emailValidationResult = emailSchema.validate(email);
-  if (emailValidationResult.error != null) {
-    console.log(emailValidationResult.error);
-    res.redirect("/login");
-    return;
-  }
 
-  const result = await userCollection
-    .find({ email: email })
-    .project({ username: 1, password: 1, _id: 1 })
-    .toArray();
-  //if not found, return back to the reset page.
-  if (result.length != 1) {
+  // Generate a unique token
+  const token = crypto.randomBytes(20).toString('hex');
+  const timestamp = new Date().getTime();
+
+  try {
+    // Associate token with user's email in the database
+    await userCollection.updateOne({ email: email }, {
+      $set: {
+        resetToken: token,
+        resetTokenTimestamp: timestamp
+      }
+    });
+
+    req.session.resetEmail = email;
+
+    // Send password reset email
+    await sendPasswordResetEmail(email, token, timestamp);
+
+    // Redirect to a page indicating that the email has been sent
+    res.render("passwordResetSent", { email });
+  } catch (error) {
+    console.error('Error initiating password reset:', error);
+    // Handle errors
     res.redirect("/passwordReset");
-    return;
   }
 
-  req.session.resetEmail = email;
-  req.session.cookie.maxAge = 5 * 1000; //expires in 5 minutes
-  res.redirect("/passwordChange");
 });
 
 //user has been found, so lets change the email now.
@@ -190,20 +274,46 @@ app.get("/passwordChange", (req, res) => {
 //changing password code
 app.post("/passwordChanging", async (req, res) => {
   var password = req.body.password;
+  var confirmPassword = req.body.confirmPassword;
+
   const passwordSchema = Joi.string().max(20).required();
   const passwordValidationResult = passwordSchema.validate(password);
+
   if (passwordValidationResult.error != null) {
     console.log(passwordValidationResult.error);
     res.redirect("/passwordChange");
     return;
   }
 
+  // Check if both password fields match
+  if (password !== confirmPassword) {
+    res.redirect("/passwordChange");
+    return;
+  }
+
+  // Check if reset token is valid
+  const resetToken = req.body.resetToken; // Assuming resetToken is submitted along with the password change request
+  const user = await userCollection.findOne({ resetToken: resetToken });
+
+  if (!user) {
+    // If reset token is not valid, redirect to password change page
+    return res.redirect("/passwordChange");
+  }
+
+  // If reset token is valid, hash the new password
   var newPassword = await bcrypt.hash(password, saltRounds);
 
   await userCollection.findOneAndUpdate(
     { email: req.session.resetEmail },
-    { $set: { password: newPassword } }
+    {
+      $set: { password: newPassword },
+      $unset: {
+        resetToken: "",
+        resetTokenTimestamp: ""
+      }
+    }
   );
+
   res.redirect("/login?passChange=true");
 });
 
@@ -239,6 +349,7 @@ app.post("/submitUser", async (req, res) => {
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
   }
+  // Check for duplicate username or email
   if (await userCollection.findOne({ username: username })) {
     errors.push(`${username} is already in use!`);
   }
@@ -247,6 +358,7 @@ app.post("/submitUser", async (req, res) => {
   }
   //No errors? Create a user
   if (errors.length === 0) {
+    // Hash password
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert into collection
