@@ -5,45 +5,32 @@ require("./utils.js");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
-
+const Joi = require("joi");
 /* #endregion requiredModules */
 
 const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
 const app = express();
-const Joi = require("joi");
+const { getMongoStore, getCollection } = getLocalModule(
+  "databaseConnection.js"
+);
+const userCollection = getCollection("users");
+const { User, isAuthenticated, isAdmin, getUsername } =
+  getLocalModule("localSession");
 
-const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
+const log = getLocalModule("logging").log;
 
 /* #region secrets */
-const mongodb_host = process.env.MONGODB_HOST;
-const mongodb_user = process.env.MONGODB_USER;
-const mongodb_password = process.env.MONGODB_PASSWORD;
-const mongodb_database = process.env.MONGODB_DATABASE;
-const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
-
-var { database } = include("databaseConnection");
-
-const userCollection = database.db(mongodb_database).collection("users");
-
-/* creates a mondodb store for session data*/
-var mongoStore = MongoStore.create({
-  mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-  crypto: {
-    secret: mongodb_session_secret,
-  },
-});
 
 /* #region middleware */
 app.use(
   session({
     secret: node_session_secret,
-    store: mongoStore, //default is memory store
+    store: getMongoStore(), //default is memory store
     saveUninitialized: false,
     resave: true,
   })
@@ -55,6 +42,50 @@ app.use(
  */
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
+app.use("/", (req, res, next) => {
+  app.locals.authenticated = req.session.authenticated;
+  next();
+});
+/**
+ * Middleware for validating a user is logged in.
+ * Redirects to /login if they are not.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {CallableFunction} next
+ */
+function validateSession(req, res, next) {
+  if (isAuthenticated(req)) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+/**
+ * Middleware for validating a user is an admin in.
+ * Redirects to index if they are a not a user
+ * Sets status to 403 if the user is logged in, but not an admin.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {CallableFunction} next
+ */
+function validateAdmin(req, res, next) {
+  if (!isAuthenticated(req)) {
+    res.redirect("/");
+    return;
+  } else if (!isAdmin(req)) {
+    res.status(403);
+    // CB: Add whatever admin specific page we want here
+    res.render("#", {
+      user: req.session.user, // TODO Update local session to store user.
+      error: "403",
+    });
+    return;
+  } else {
+    next();
+  }
+}
 
 /* #endregion middleware */
 
@@ -65,20 +96,39 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
+/* #region helperFunctions */
 
-/**
- * 
- */
-app.use('/', (req,res,next) => {
-  app.locals.authenticated = req.session.authenticated;
-  next();
-});
+function getLocalModule(name) {
+  return require(`./scripts/modules/${name}`);
+}
+
+function generateNavLinks(req) {
+  let links = [{ name: "Home", link: "/" }];
+  if (req.session.user.isAuthenticated) {
+    links.push(
+      { name: "Members", link: "/members" },
+      { name: "Log out", link: "/logout" }
+    );
+    // CB: We can uncomment this if we add an admin page
+    // if (req.session.user.isAdmin) {
+    //   links.push({ name: "Admin", link: "/admin" });
+    // }
+  } else {
+    links.push(
+      { name: "Log in", link: "/login" },
+      { name: "Sign up", link: "/signup" }
+    );
+  }
+  return links;
+}
+
+/* #endregion helperFunctions
 
 /* #region serverRouting */
 app.get("/", async (req, res) => {
   var username = req.session.username;
   var authenticated = req.session.authenticated;
-  res.render("index", {authenticated: authenticated, username: username});
+  res.render("index", { authenticated: authenticated, username: username });
 });
 
 /**
@@ -125,9 +175,11 @@ app.post("/loggingin", async (req, res) => {
     return;
   }
   if (await bcrypt.compare(password, result[0].password)) {
+    // CB: An example of how this compresses code
+    //createSession(req, result[0].username, result[0].isAdmin);
     req.session.authenticated = true;
     req.session.username = result[0].username;
-    req.session.user_type = result[0].user_type;
+    req.session.user_type = result[0].user_type; //TODO CB: Discuss if we should use a boolean value here to avoid string comparisons.
     req.session.cookie.maxAge = expireTime;
 
     res.redirect("/");
