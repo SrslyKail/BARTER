@@ -66,9 +66,20 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
+
+/**
+ * 
+ */
+app.use('/', (req,res,next) => {
+  app.locals.authenticated = req.session.authenticated;
+  next();
+});
+
 /* #region serverRouting */
-app.get("/", (req, res) => {
-  res.render("index", {});
+app.get("/", async (req, res) => {
+  var username = req.session.username;
+  var authenticated = req.session.authenticated;
+  res.render("index", {authenticated: authenticated, username: username});
 });
 
 /**
@@ -133,6 +144,13 @@ app.get("/loginInvalid", async (req, res) => {
 });
 
 /**
+ * Added the profile back, sorry ben ;-;
+ */
+app.get("/profile", (req, res) => {
+  res.render("profile", {});
+});
+
+/**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
@@ -186,8 +204,6 @@ app.post("/passwordChanging", async (req, res) => {
     { email: req.session.resetEmail },
     { $set: { password: newPassword } }
   );
-  //destroys the session, as don't need session.resetEmail anymore
-  req.session.destroy();
   res.redirect("/login?passChange=true");
 });
 
@@ -196,6 +212,12 @@ app.post("/passwordChanging", async (req, res) => {
  * Validates fields and checks for duplicate email/username
  * Then inserts a user, creates a session, and redirects to root.
  */
+//Added signup route back.
+app.get("/signup", (req, res) => {
+  res.render("signup", {
+    errors: [],
+  });
+});
 
 app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
@@ -266,7 +288,7 @@ app.post("/logout", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy(); // Deletes the session
-  res.redirect("/", {}); // Sends back to the homepage
+  res.redirect("/"); // Sends back to the homepage
 });
 
 app.post("/searchSubmit", (req, res) => {
