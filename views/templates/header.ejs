@@ -33,12 +33,18 @@
     <!-- The actual nav links -->
     <div class="collapse navbar-collapse " id="headerCollapse">
       <ul class="d-sm-flex sm-flex-wrap align-content-end navbar-nav my-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/signup">Signup</a>
-        </li>
+        <% if (locals.authenticated) { %>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Signup</a>
+          </li>
+        <% } %>
       </ul>
     </div>
   </nav>
