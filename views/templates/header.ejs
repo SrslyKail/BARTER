@@ -23,9 +23,10 @@
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
   <nav class="navbar flex-nowrap gap-2 navbar-expand-md navbar-dark bg-dark">
-    <a class="vh-10 m-0 d-inline-flex navbar-brand" href="/"><%- include("components/profileIcon") %></a>
+    <a class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
     <%- include("components/searchbar") %>
+    <a style="z-index: 10" class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/profileIcon") %></a>
     <!-- Toggler button -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerCollapse">
       <span class="navbar-toggler-icon"></span>

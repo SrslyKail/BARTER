@@ -50,6 +50,10 @@
   max-height: 10vh;
 }
 
+.vh-5{
+  max-height: 5vh;
+}
+
 .mh-inherit {
   max-height: inherit;
 }
