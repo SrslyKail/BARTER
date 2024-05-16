@@ -30,6 +30,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
+const profileCollection = database.db(mongodb_database).collection("profiles");
 
 /* creates a mondodb store for session data*/
 var mongoStore = MongoStore.create({
@@ -143,8 +144,37 @@ app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
 
-app.get("/profile", (req, res) => {
-  res.render("profile", { user: req.session.username });
+app.get("/testing", async (req, res) => {
+  skills = await profileCollection.find({username: "polina"}, {projection: {skills : 1, _id: 0}}).toArray();
+  console.log(skills[0].skills[0]);
+});
+
+
+/*
+ * this works under the assumption that profiles are stored in a separate collection,
+ * that usernames are unique, and that a document in the profile collection is created upon registration 
+ * (this either needs to be changed or implemented)
+ */
+app.get("/profile", async (req, res) => {
+
+  if (!req.session.authenticated) {
+    res.redirect("/login");
+    return;
+  }
+  //todo could probably be refactored into a function
+  if (await profileCollection.findOne({username: req.query.id})) {
+    //searches for document with given username
+    //and projects the location field value of found document 
+    location = await profileCollection.find({username: req.query.id}, {projection: {location : 1, _id: 0}}).toArray();
+    //same thing but for skills
+    skills = await profileCollection.find({username: req.query.id}, {projection: {skills : 1, _id: 0}}).toArray();
+    res.render("profile", { user : req.query.id, location : location[0].location, skills : skills[0].skills});
+  } else {
+    //same as above but for the current user. 
+    location = await profileCollection.find({username: req.session.username}, {projection: {location : 1, _id: 0}}).toArray();
+    skills = await profileCollection.find({username: req.session.username}, {projection: {skills : 1, _id: 0}}).toArray();
+    res.render("profile", { user : req.session.username, location : location[0].location, skills : skills[0].skills});
+  }
 });
 
 /**
@@ -175,7 +205,7 @@ app.post("/passwordResetting", async (req, res) => {
   }
 
   req.session.resetEmail = email;
-  req.session.cookie.maxAge = 5 * 1000; //expires in 5 minutes
+  req.session.cookie.maxAge = 15 * 1000; //expires in 15 minutes
   res.redirect("/passwordChange");
 });
 

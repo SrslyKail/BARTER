@@ -1,13 +1,13 @@
 <%- include("templates/header") %>
 <%- include("templates/components/searchHero") %>
 
+<!-- <a href="/profile?id=<%= locals.username %>">TEMPORARY <%= locals.username %> profile (own)</a> -->
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 row-gap-2">
   <% let maxIcons = 12; %>
   <% for (let i = 0; i < maxIcons; i ++) { %>
   <div class="col text-center">
     <%- include("templates/components/profileIcon") %>
-    <a class="nav-link" href="/profile">DELETE</a>
-    <!--todo make these icons smaller, there should be two columns of them on mobile; currently one-->
+    <!--todo make these icons smaller on this page, there should be two columns of them on mobile; currently one-->
   </div>
   <% } %>
 </div>
