@@ -11,8 +11,14 @@
 
 /* #region Import Logo Font */
 @font-face {
-  font-family: "BarterLogoFont";
-  src: url("fonts/BASQUIAT.ttf");
+  font-family: 'basquiatregular';
+  src: url('../basquiat.woff2') format('woff2'),
+       url('../basquiat.woff') format('woff'),
+       url('../basquiat.otf') format('otf'),
+       url('../basquiat.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+
 }
 
 /* #endregion Import Logo Font */
