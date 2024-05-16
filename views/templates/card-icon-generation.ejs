@@ -4,16 +4,24 @@
       commented loop include to work through an array-->
     <%var inImage=image %>
         <!--Sets text, mostly for testing, change text:text for live-->
-    <%var inText=text %>
+        <%var inText=text %>
+
+            <%let maxCount=count %>
 
 
-            <!--A loop for generating icons, 
+                <!--A loop for generating icons, 
       loop works with grid settings in cardIconStyle.css
       needs integration testing with bootstrap-->
-            <% let i=0; %>
-                <% for(i=0; i < 185; i++) { %>
-                    <%- include('components/card-image-icon', {image:inImage, text:text})%>
-                        <% } %>
+                <% let i=0; %>
+                    <%if(maxCount===null) {%>
+                        <% for(i=0; i < 185 ; i++) { %>
+                            <%- include('components/card-image-icon', {image:inImage, text:text})%>
+                                <% } %>
+                                    <%} else {%>
+                                        <% for(i=0; i < 185 && i< maxCount ; i++) { %>
+                                            <%- include('components/card-image-icon', {image:inImage, text:text})%>
+                                                <% } %>
+                                                    <% } %>
 
 
 </div>
