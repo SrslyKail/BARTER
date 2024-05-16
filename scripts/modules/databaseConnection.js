@@ -11,6 +11,9 @@ const MongoStore = require("connect-mongo");
 const { Collection } = require("mongodb");
 
 const database = getMongoClient();
+
+//TODO CB: This should be exported as mongoStore, not the getMongoStore function
+// Otherwise this isn't used in here, and we dont need to declare it.
 const mongoStore = getMongoStore();
 
 /**
