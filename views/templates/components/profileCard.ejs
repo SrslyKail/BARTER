@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-center">
+    <table style="  border: 1px solid black;
+                    border-radius: 15px;
+                    border-collapse: separate;
+                    padding: 0 2% 0 2%;
+                    margin: 2% 0 2% 0;">
+        <tr>
+            <td>
+                <a id="profileCard" href="/"><%- include("profileIcon") %></a>
+            </td>
+            <td class="px-2">
+                <div class="p-2"><%= user %></div>
+                
+                <div class="p-2">two of three rows</div>
+                <div class="p-2">three of three rows</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!--todo figure out how to do this without clunky id-ing-->
+<style>
+    #profileCard * {
+        height: 15vh !important;
+        width: auto;
+    }
+</style>

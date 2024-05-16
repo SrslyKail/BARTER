@@ -1,9 +1,24 @@
 <%- include("templates/header") %>
+<!-- po:
+/profile/username should be how any user's profile is accessed. 
+if this is the profile of said user, they should have the ability to edit whatever.
+this could be a privacy concern (or not? maybe handling it with a session variable 
+is secure enough i dunno) but this is the assumption i'm making for now. mvp and all
+upd: maybe if they call /profile it would display theirs and if they call /profile/username
+it would display that user's profile? unsure how to implement this though
+-->
 
-
-
-
-
+<!-- user card here-->
+<%- include("templates/components/profileCard", {user:user})%>
+<!--<section class="p-4 text-center mb-4"> , {user: user} 
+    <hr class="my-4">
+    <h2><b>Skills</b></h2>
+    <h3 class="my-4"><u>Skill name</u></h3>
+    <h3 class="my-4"><u>Skill name</u></h3>
+    <h3 class="my-4"><u>Skill name</u></h3>
+    <hr class="my-4">
+    <h2><b>Reviews</b></h2>
+</section>-->
 
 
 

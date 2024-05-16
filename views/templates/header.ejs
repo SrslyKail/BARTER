@@ -32,7 +32,7 @@
     </button>
     <!-- The actual nav links -->
     <div class="collapse navbar-collapse " id="headerCollapse">
-      <ul class="d-sm-flex sm-flex-wrap align-content-end navbar-nav my-auto">
+      <ul class="d-sm-flex sm-flex-wrap align-content-end navbar-nav my-auto"> <!--nts: overlay should be done here(?) with z-index(modal?)-->
         <% if (locals.authenticated) { %>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
