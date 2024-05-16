@@ -11,10 +11,17 @@
 
 /* #region Import Logo Font */
 @font-face {
-  font-family: "BarterLogoFont";
-  src: url("fonts/BASQUIAT.ttf");
+    font-family: 'BASQUIAT';
+    src: url('fonts/BASQUIATRegular.eot');
+    src: url('fonts/BASQUIATRegular.eot?#iefix') format('embedded-opentype'),
+        url('fonts/BASQUIATRegular.woff2') format('woff2'),
+        url('fonts/BASQUIATRegular.woff') format('woff'),
+        url('fonts/BASQUIATRegular.ttf') format('truetype'),
+        url('fonts/BASQUIATRegular.svg#BASQUIATRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
-
 /* #endregion Import Logo Font */
 
 /* #region header */
@@ -32,6 +39,7 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: BASQUIAT;
 }
 
 /* #endregion global */
