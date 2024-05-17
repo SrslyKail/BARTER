@@ -24,12 +24,13 @@
     aspect-ratio: 25/22;
 }
 
-.cardImageIcon img {
+.cardImageIcon :is(img, a){
     height: 100%;
     position: absolute;
 }
 
 .cardTextDiv {
+    pointer-events: none;
     text-align: center;
     position: relative;
     background-color: #17191595;
