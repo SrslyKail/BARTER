@@ -1,0 +1,34 @@
+{
+    "0": {
+        "name": "Music",
+        "image": "seuscegmqsgznhdt77tr"
+    },
+    "1": {
+        "name": "Crafts",
+        "image": "it17f3julmuf3fw4fppv"
+    },
+    "2": {
+        "name": "Art",
+        "image": "lyl7sh3emguxzlqnbeze"
+    },
+    "3": {
+        "name": "Tech",
+        "image": "csmmpwzyj3m2gxmxufci"
+    },
+    "4": {
+        "name": "Trades",
+        "image": "sb4vfhkpbol2cf3srgrr"
+    },
+    "5": {
+        "name": "Vocal Work",
+        "image": "mcs0esu7tt72whzgdfvz"
+    },
+    "6": {
+        "name": "Writing",
+        "image": "nde7cxhm8bkxdflmd9cq"
+    },
+    "7": {
+        "name": "Labour",
+        "image": "dob6rtlrytqrqwdx4pbb"
+    }
+}

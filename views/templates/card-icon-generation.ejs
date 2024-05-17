@@ -1,0 +1,36 @@
+  <!-- Instructions: 
+    Use this to create groups of icons
+
+    include('templates/card-icon-generation, {db:db, count:count}
+
+    use DB to send a database to be iterated through
+    use count to determine a maximum number of icons, set to null for full db 
+    
+    Instructions for card-image-icon:
+    Takes image and text parameters to generate card icons
+    Set text=null for no-image icons
+    Find mandatory CSS and options in cardIconStyle.css
+    -->
+
+    <%var catCount=Object.keys(db).length;%>
+    <%#console.log("Category count: " + catCount);%>
+  
+    <div class=iconGrid>
+  
+  
+      <!--A loop for generating icons, 
+        loop works with grid settings in cardIconStyle.css
+        needs integration testing with bootstrap-->
+      <% let i=0; %>
+      <%if(count===null) {%>
+      <% for(i=0; i < catCount ; i++) { %>
+      <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+      <% } %>
+      <%} else {%>
+      <% for(i=0; i < catCount && i< count ; i++) { %>
+      <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+      <% } %>
+      <% } %>
+  
+  
+    </div>

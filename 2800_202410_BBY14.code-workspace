@@ -33,7 +33,9 @@
       "visualstudioexptteam.vscodeintellicode",
       "visualstudioexptteam.intellicode-api-usage-examples",
       "aaron-bond.better-comments",
-      "eamodio.gitlens"
+      "eamodio.gitlens",
+      "ms-vsliveshare.vsliveshare",
+      "maptz.regionfolder"
     ]
   }
 }
