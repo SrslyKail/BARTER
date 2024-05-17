@@ -5,7 +5,7 @@
                 <a id="profileIcon" href="/"><%- include("profileIcon") %></a>
             </td>
             <td>
-                <div><b><%= user %></b></div>
+                <div style="font-weight: bold;"><%= user %></div>
                  <div>rating</div><!-- unsure where this is going to be stored and how -->
                 <div class="truncate">
                     <!-- 
@@ -23,7 +23,8 @@
 <!--todo figure out how to add styles to children without clunky id-ing....-->
 <style>
   #profileIcon * {
-    /*border: 1px solid black;*/
+    border: 1px;
+    border-radius: 20%;
     height: 16vh !important;
     width: auto;
   }
@@ -33,13 +34,13 @@
     background-color: lightgray;
     border-radius: 15px;
     border-collapse: separate;
-    padding: 0 2% 0 2%;
+    padding: 2%;
     margin: 2% 0 2% 0;
     min-width: 90%;
   }
 
   table * {
-    padding: 2pt 0 2pt 2pt;
+    padding: 1pt 0 1pt 4pt;
     font-size: 15pt;
   }
 
