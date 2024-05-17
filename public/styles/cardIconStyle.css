@@ -1,5 +1,5 @@
 /* Grid for testing (expands infinitely) */
-#testingGrid {
+.iconGrid {
     margin: 2em;
     padding: 2em;
     display: grid;
