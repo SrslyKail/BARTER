@@ -13,7 +13,7 @@
     -->
 
     <%var catCount=Object.keys(db).length;%>
-    <%console.log("Category count: " + catCount);%>
+    <%#console.log("Category count: " + catCount);%>
   
     <div class=iconGrid>
   
@@ -23,11 +23,11 @@
         needs integration testing with bootstrap-->
       <% let i=0; %>
       <%if(count===null) {%>
-      <% for(i=0; i < 8 ; i++) { %>
+      <% for(i=0; i < catCount ; i++) { %>
       <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
       <% } %>
       <%} else {%>
-      <% for(i=0; i < count && i< count ; i++) { %>
+      <% for(i=0; i < catCount && i< count ; i++) { %>
       <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
       <% } %>
       <% } %>

@@ -40,7 +40,18 @@
     height: 2.5em;
     /*Optional: adjusts text background height*/
     width: inherit;
+    
 }
+
+/* Enable below for text to only be visible on hover*/
+/* .cardTextDiv {
+    opacity:0;
+}
+.cardImageIcon :is(img, a):hover + .cardTextDiv{
+    opacity: 100;
+    transition: opacity 0.1s linear;
+    
+} */
 
 .iconText {
     color: #FFFAEE;
