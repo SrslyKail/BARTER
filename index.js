@@ -34,6 +34,7 @@ const nodemailer_password = process.env.NODEMAILER_PASSWORD;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
+const profileCollection = database.db(mongodb_database).collection("profiles");
 
 /* creates a mondodb store for session data*/
 var mongoStore = MongoStore.create({
@@ -50,7 +51,6 @@ app.use(
     store: mongoStore, //default is memory store
     saveUninitialized: false,
     resave: true,
-    
   })
 );
 
@@ -70,11 +70,10 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
-
 /**
- * 
+ *
  */
-app.use('/', (req, res, next) => {
+app.use("/", (req, res, next) => {
   app.locals.authenticated = req.session.authenticated;
   next();
 });
@@ -83,6 +82,7 @@ app.use('/', (req, res, next) => {
 app.get("/", async (req, res) => {
   var username = req.session.username;
   var authenticated = req.session.authenticated;
+  res.render("index", { authenticated: authenticated, username: username });
   res.render("index", { authenticated: authenticated, username: username });
 });
 
@@ -148,11 +148,42 @@ app.get("/loginInvalid", async (req, res) => {
 });
 
 /**
- * Added the profile back, sorry ben ;-;
+ * this works under the assumption that profiles are stored in a separate collection,
+ * that usernames are unique, and that a document in the profile collection is created upon registration
+ * (this either needs to be changed or implemented)
  */
-app.get("/profile", (req, res) => {
-  res.render("profile", {});
+app.get("/profile", async (req, res) => {
+  if (!req.session.authenticated) {
+    res.redirect("/login");
+    return;
+  }
+  //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
+
+  profile = await getUserProfile(req.query.id);
+  console.log(profile);
+  //if we cant find the requested profile, get the current users profile
+  if (!profile) {
+    profile = await getUserProfile(req.session.username);
+    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
+    if (!profile) {
+      console.error(`Could not find profile page for ${username}!`);
+      res.redirect("/noUser");
+    }
+  }
+
+  // ! We need to check the user has skills and a location set; otherwise we can crash.
+  res.render("profile", {
+    user: profile.username,
+    location: profile.location,
+    skills: profile.skills,
+  });
 });
+
+async function getUserProfile(username) {
+  //searches for document with given username
+  //and projects the location field value of found document
+  return await profileCollection.findOne({ username: username });
+}
 
 
 
