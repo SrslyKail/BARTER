@@ -57,6 +57,7 @@ app.use(
 
 /**
  * sets the view engine to ejs, configures the express app,
+ * sets the view engine to ejs, configures the express app,
  * and sets up the middleware for parsing url-encoded data.
  */
 app.set("view engine", "ejs");
