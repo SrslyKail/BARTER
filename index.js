@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const fs = require('fs');
+const fs = require('fs');
 
 /* #endregion requiredModules */
 
@@ -35,6 +36,7 @@ const nodemailer_password = process.env.NODEMAILER_PASSWORD;
 var { database } = include("databaseConnection");
 
 
+
 const userCollection = database.db(mongodb_database).collection("users");
 const profileCollection = database.db(mongodb_database).collection("profiles");
 
@@ -48,10 +50,20 @@ var mongoStore = MongoStore.create({
     crypto: {
         secret: mongodb_session_secret,
     },
+    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
+    crypto: {
+        secret: mongodb_session_secret,
+    },
 });
 
 /* #region middleware */
 app.use(
+    session({
+        secret: node_session_secret,
+        store: mongoStore, //default is memory store
+        saveUninitialized: false,
+        resave: true,
+    })
     session({
         secret: node_session_secret,
         store: mongoStore, //default is memory store
@@ -91,6 +103,9 @@ app.use("/", (req, res, next) => {
 app.use('/', (req, res, next) => {
     app.locals.authenticated = req.session.authenticated;
     next();
+app.use('/', (req, res, next) => {
+    app.locals.authenticated = req.session.authenticated;
+    next();
 });
 
 /* #region serverRouting */
@@ -98,6 +113,11 @@ app.get("/", async (req, res) => {
     var username = req.session.username;
     var authenticated = req.session.authenticated;
     res.render("index", { authenticated: authenticated, username: username });
+    var username = req.session.username;
+    var authenticated = req.session.authenticated;
+    
+    var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    res.render("index", { authenticated: authenticated, username: username, db: db });
     var username = req.session.username;
     var authenticated = req.session.authenticated;
     
@@ -111,9 +131,14 @@ app.get("/", async (req, res) => {
 app.post("/login", (req, res) => {
     res.redirect("/login");
     res.redirect("/login");
+    res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
+    var passChange = req.query.passChange;
+    res.render("login", {
+        passChange: passChange,
+    });
     var passChange = req.query.passChange;
     res.render("login", {
         passChange: passChange,
@@ -137,6 +162,8 @@ app.post("/loggingin", async (req, res) => {
     var password = req.body.password;
     var email = req.body.email;
     var password = req.body.password;
+    var email = req.body.email;
+    var password = req.body.password;
 
     const emailSchema = Joi.string().email().required();
     const emailValidationResult = emailSchema.validate(email);
@@ -152,7 +179,18 @@ app.post("/loggingin", async (req, res) => {
         res.redirect("/login");
         return;
     }
+    const emailSchema = Joi.string().email().required();
+    const emailValidationResult = emailSchema.validate(email);
+    if (emailValidationResult.error != null) {
+        console.log(emailValidationResult.error);
+        res.redirect("/login");
+        return;
+    }
 
+    const result = await userCollection
+        .find({ email: email })
+        .project({ username: 1, password: 1, _id: 1 })
+        .toArray();
     const result = await userCollection
         .find({ email: email })
         .project({ username: 1, password: 1, _id: 1 })
@@ -180,7 +218,22 @@ app.post("/loggingin", async (req, res) => {
         req.session.username = result[0].username;
         req.session.user_type = result[0].user_type;
         req.session.cookie.maxAge = expireTime;
+    if (result.length != 1) {
+        res.redirect("/loginInvalid");
+        return;
+    }
+    if (await bcrypt.compare(password, result[0].password)) {
+        req.session.authenticated = true;
+        req.session.username = result[0].username;
+        req.session.user_type = result[0].user_type;
+        req.session.cookie.maxAge = expireTime;
 
+        res.redirect("/");
+        return;
+    } else {
+        res.redirect("/loginInvalid");
+        return;
+    }
         res.redirect("/");
         return;
     } else {
@@ -196,6 +249,7 @@ app.post("/loggingin", async (req, res) => {
 });
 
 app.get("/loginInvalid", async (req, res) => {
+    res.render("loginInvalid");
     res.render("loginInvalid");
     res.render("loginInvalid");
 });
@@ -231,6 +285,7 @@ app.get("/profile", async (req, res) => {
         skills: profile.skills,
     });
 app.get("/profile", (req, res) => {
+    res.render("profile", {});
     res.render("profile", {});
 });
 
@@ -321,6 +376,8 @@ app.get("/passwordReset/:token", async (req, res) => {
 });
 
 
+    res.render("passwordReset", {});
+});
 //searches for the user in the database with the provided email.
 app.post("/passwordResetting", async (req, res) => {
     var email = req.body.email;
@@ -358,7 +415,24 @@ app.post("/passwordResetting", async (req, res) => {
         res.redirect("/login");
         return;
     }
+    var email = req.body.email;
+    const emailSchema = Joi.string().email().required();
+    const emailValidationResult = emailSchema.validate(email);
+    if (emailValidationResult.error != null) {
+        console.log(emailValidationResult.error);
+        res.redirect("/login");
+        return;
+    }
 
+    const result = await userCollection
+        .find({ email: email })
+        .project({ username: 1, password: 1, _id: 1 })
+        .toArray();
+    //if not found, return back to the reset page.
+    if (result.length != 1) {
+        res.redirect("/passwordReset");
+        return;
+    }
     const result = await userCollection
         .find({ email: email })
         .project({ username: 1, password: 1, _id: 1 })
@@ -372,10 +446,14 @@ app.post("/passwordResetting", async (req, res) => {
     req.session.resetEmail = email;
     req.session.cookie.maxAge = 5 * 1000; //expires in 5 minutes
     res.redirect("/passwordChange");
+    req.session.resetEmail = email;
+    req.session.cookie.maxAge = 5 * 1000; //expires in 5 minutes
+    res.redirect("/passwordChange");
 });
 
 //user has been found, so lets change the email now.
 app.get("/passwordChange", (req, res) => {
+    res.render("passwordChange", {});
     res.render("passwordChange", {});
     res.render("passwordChange", {});
 });
@@ -388,6 +466,14 @@ app.post("/passwordChanging", async (req, res) => {
     const passwordSchema = Joi.string().max(20).required();
     const passwordValidationResult = passwordSchema.validate(password);
 
+    if (passwordValidationResult.error != null) {
+        console.log(passwordValidationResult.error);
+        res.redirect("/passwordChange");
+        return;
+    }
+    var password = req.body.password;
+    const passwordSchema = Joi.string().max(20).required();
+    const passwordValidationResult = passwordSchema.validate(password);
     if (passwordValidationResult.error != null) {
         console.log(passwordValidationResult.error);
         res.redirect("/passwordChange");
@@ -420,6 +506,7 @@ app.post("/passwordChanging", async (req, res) => {
     // If reset token is valid, hash the new password
     var newPassword = await bcrypt.hash(password, saltRounds);
     var newPassword = await bcrypt.hash(password, saltRounds);
+    var newPassword = await bcrypt.hash(password, saltRounds);
 
     await userCollection.findOneAndUpdate(
         { email: req.session.resetEmail },
@@ -432,6 +519,11 @@ app.post("/passwordChanging", async (req, res) => {
         }
     );
 
+    res.redirect("/login?passChange=true");
+    await userCollection.findOneAndUpdate(
+        { email: req.session.resetEmail },
+        { $set: { password: newPassword } }
+    );
     res.redirect("/login?passChange=true");
     await userCollection.findOneAndUpdate(
         { email: req.session.resetEmail },
@@ -453,6 +545,9 @@ app.get("/signup", (req, res) => {
     res.render("signup", {
         errors: [],
     });
+    res.render("signup", {
+        errors: [],
+    });
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -464,7 +559,19 @@ app.post("/submitUser", async (req, res) => {
     var password = req.body.password;
     var email = req.body.email;
     var errors = [];
+    var username = req.body.username;
+    var password = req.body.password;
+    var email = req.body.email;
+    var errors = [];
 
+    //this should be global
+    const userSchema = Joi.object({
+        username: Joi.string().alphanum().max(20).required(),
+        password: Joi.string().max(20).required(),
+        email: Joi.string()
+            .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "ca"] } })
+            .required(),
+    });
     //this should be global
     const userSchema = Joi.object({
         username: Joi.string().alphanum().max(20).required(),
@@ -512,6 +619,20 @@ app.post("/submitUser", async (req, res) => {
     //No errors? Create a user
     if (errors.length === 0) {
         var hashedPassword = await bcrypt.hash(password, saltRounds);
+    const validationResult = userSchema.validate({ username, password, email });
+    //Error checking
+    if (validationResult.error != null) {
+        errors.push(validationResult.error.details[0].message);
+    }
+    if (await userCollection.findOne({ username: username })) {
+        errors.push(`${username} is already in use!`);
+    }
+    if (await userCollection.findOne({ email: email })) {
+        errors.push(`${email} is already in use!`);
+    }
+    //No errors? Create a user
+    if (errors.length === 0) {
+        var hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Insert into collection
         await userCollection.insertOne({
@@ -525,7 +646,23 @@ app.post("/submitUser", async (req, res) => {
             email: email,
             password: hashedPassword,
         });
+        // Insert into collection
+        await userCollection.insertOne({
+            username: username,
+            email: email,
+            password: hashedPassword,
+        });
 
+        createSession(req, username, false);
+        res.redirect("/");
+        return;
+    } else {
+        //catch-all redirect to signup, sends errors
+        res.render("signup", {
+            errors: errors,
+        });
+        return;
+    }
         createSession(req, username, false);
         res.redirect("/");
         return;
@@ -561,12 +698,17 @@ function createSession(req, username, isAdmin) {
     req.session.username = username;
     req.session.isAdmin = isAdmin;
     req.session.cookie.maxAge = expireTime;
+    req.session.authenticated = true;
+    req.session.username = username;
+    req.session.isAdmin = isAdmin;
+    req.session.cookie.maxAge = expireTime;
 }
 
 /**
  * Post method for logout buttons.
  */
 app.post("/logout", async (req, res) => {
+    res.redirect("/logout");
     res.redirect("/logout");
     res.redirect("/logout");
 });
@@ -576,9 +718,12 @@ app.get("/logout", (req, res) => {
     res.redirect("/"); // Sends back to the homepage
     req.session.destroy(); // Deletes the session
     res.redirect("/"); // Sends back to the homepage
+    req.session.destroy(); // Deletes the session
+    res.redirect("/"); // Sends back to the homepage
 });
 
 app.post("/searchSubmit", (req, res) => {
+    //TODO: Search Code.
     //TODO: Search Code.
     //TODO: Search Code.
 });
@@ -591,12 +736,15 @@ app.get("*", (req, res) => {
     res.render("404");
     res.status(404);
     res.render("404");
+    res.status(404);
+    res.render("404");
 });
 
 /* #endregion serverRouting */
 
 /** starts the server and listens on the specified port */
 app.listen(port, () => {
+    console.log("Node application listening on port " + port);
     console.log("Node application listening on port " + port);
     console.log("Node application listening on port " + port);
 });
