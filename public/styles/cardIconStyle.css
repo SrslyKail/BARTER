@@ -17,7 +17,10 @@
     justify-items: center;
     width: 100%;
     height: inherit;
+    /* The good version */
     clip-path: rect(0px 0px 100% 100% round 7%);
+    /* The version for chrome :c */
+    clip-path: fill-box;
     aspect-ratio: 25/22;
 }
 
