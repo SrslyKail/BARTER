@@ -86,6 +86,7 @@ app.get("/", async (req, res) => {
     var authenticated = req.session.authenticated;
 /* Mock database for presentation*/
     var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    // var db = JSON.parse(fs.readFileSync("catsDB.json"));
     res.render("index", { authenticated: authenticated, username: username, db: db });
 });
 
