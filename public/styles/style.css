@@ -11,8 +11,14 @@
 
 /* #region Import Logo Font */
 @font-face {
-  font-family: "BarterLogoFont";
-  src: url("fonts/BASQUIAT.ttf");
+  font-family: 'basquiatregular';
+  src: url('../basquiat.woff2') format('woff2'),
+       url('../basquiat.woff') format('woff'),
+       url('../basquiat.otf') format('otf'),
+       url('../basquiat.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+
 }
 
 /* #endregion Import Logo Font */
@@ -25,8 +31,17 @@
 /* #endregion nestedExample*/
 /* #endregion header*/
 
-/* #region exampleOther */
-/* #endregion exampleOther*/
+/* #region userCard
+.userCard {
+  border: 1px solid gray;
+  background-color: lightgray;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 0 2% 0 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+}
+/* #endregion userCard*/
 
 /* #region global */
 * {
@@ -48,6 +63,10 @@
 
 .vh-10 {
   max-height: 10vh;
+}
+
+.vh-5{
+  max-height: 5vh;
 }
 
 .mh-inherit {

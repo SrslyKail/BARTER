@@ -1,28 +1,41 @@
 <%- include("templates/header") %>
 <title>Join BARTER!</title>
 
-    <div>
-        <h2>Join</h2>
-        <h1>BARTER!</h1>
-    </div>
+<br>
+<div class="d-flex justify-content-center text-center">
+  <h2>Join</h2>
+</div>
+<div class="d-flex justify-content-center text-center">
+  <h1>BARTER!</h1>
+</div>
 
-    <div>
-        <form action='/submitUser' method='post'>
-            <input name='username' type='text' placeholder='username' required><br>
-            <input name='email' type='email' placeholder='email' required><br>
-            <input name='password' type='password' id='signupPass' placeholder='password' required>
-            <!-- Implement javascript for this later-->
-            <input type="checkbox" onclick="">Show Password <br>
-            <button>Submit</button>
-        </form>
+<div class="d-flex justify-content-center text-center">
+  <form action='/submitUser' method='post'> <br>
+    <div class="form-group">
+      <input name='username' type='text' class="form-control" placeholder='Username'>
+    </div><br>
+    <div class="form-group">
+      <input name='email' type='email' class="form-control" placeholder='Email'>
+    </div><br>
+    <div class="form-group">
+      <input name='password' type='password' class="form-control" placeholder='Password'>
+    </div><br>
+    <!-- Implement javascript for this later-->
+    <input type="checkbox" onclick="">Show Password <br><br>
+    <button type="submit" class="btn btn-primary">Sign up</button>
+    <div class="text-center"><br>
+      <br>
+      <p>Already a member? <a href="/login">Login</a></p>
     </div>
+  </form>
+</div>
 
-    <div id = signupErrors style="color: red">
+<div id=signupErrors style="color: red">
 
-    <% let i=0; %>
-	<% for(i=0; i < errors.length; i++) { %>
-        <%=errors[i]%> <br>
-    <% } %> 
-    </div>
+  <% let i=0; %>
+  <% for(i=0; i < errors.length; i++) { %>
+  <%=errors[i]%> <br>
+  <% } %>
+</div>
 
 <%- include("templates/footer") %>
