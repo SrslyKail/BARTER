@@ -1,0 +1,79 @@
+/* Global variables and settings. Great for creating colorcodes. */
+:root {
+  --barterBackground: #ffffff;
+  --barterButtons: #000000;
+  --barterText: #ffffff;
+  --barterAccent: #808080;
+  --barterAccentText: #ffffff;
+  /* These can be called with the var function */
+  /* background-color: var(--testBlue); */
+}
+
+/* #region Import Logo Font */
+@font-face {
+  font-family: 'basquiatregular';
+  src: url('../basquiat.woff2') format('woff2'),
+       url('../basquiat.woff') format('woff'),
+       url('../basquiat.otf') format('otf'),
+       url('../basquiat.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+/* #endregion Import Logo Font */
+
+/* #region header */
+/* #region headerButtons */
+/* #endregion headerButtons */
+/* #region nestedExample */
+
+/* #endregion nestedExample*/
+/* #endregion header*/
+
+/* #region userCard
+.userCard {
+  border: 1px solid gray;
+  background-color: lightgray;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 0 2% 0 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+}
+/* #endregion userCard*/
+
+/* #region global */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* #endregion global */
+
+/* #region generics */
+.d-none {
+  display: none;
+}
+
+/*  */
+.mask {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.vh-10 {
+  max-height: 10vh;
+}
+
+.vh-5{
+  max-height: 5vh;
+}
+
+.mh-inherit {
+  max-height: inherit;
+}
+
+.mh-none {
+  max-height: none;
+}
+/* #endregion generics */

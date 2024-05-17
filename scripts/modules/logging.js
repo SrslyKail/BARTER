@@ -1,13 +1,11 @@
 // Log events flag
-let logEvents = false;
+let logPointerEvents = false;
 
 //Log all flag
-let logAll = false;
+let logAllEvents = false;
 
-// Logging/debugging functions
-function enableLog(ev) {
-  logEvents = !logEvents;
-}
+//
+let logging = false;
 
 /**
  * Standard logger for pointer events.
@@ -17,30 +15,43 @@ function enableLog(ev) {
  * @returns
  */
 function logPointerEvents(prefix, ev) {
-  if (!logEvents) return;
-  const s =
-    `${prefix}:<br>` +
-    `  pointerID   = ${ev.pointerId}\n` +
-    `  pointerType = ${ev.pointerType}\n` +
-    `  isPrimary   = ${ev.isPrimary}`;
-  console.log(`${s}`);
+  if (logPointerEvents || logAllEvents) {
+    const s =
+      `${prefix}:<br>` +
+      `  pointerID   = ${ev.pointerId}\n` +
+      `  pointerType = ${ev.pointerType}\n` +
+      `  isPrimary   = ${ev.isPrimary}`;
+    console.log(`${s}`);
+  }
 }
 
 /**
- * Logs all events that happen.
- * Useful for discovering what events happen when doing certain actions.
+ * Some fun code to track **all** events happening in the window.
+ * Useful for seeing exactly what type of event you want to track!
  */
 function logAllEvents() {
-  if (!logAll) return;
-  //CB: Some fun code to track **all** events happening in the window.
-  //Useful for seeing exactly what type of event you want to track!
-  Object.keys(window).forEach((key) => {
-    if (/^on/.test(key)) {
-      window.addEventListener(key.slice(2), (e) => {
-        log(key.slice(2), e);
-      });
-    }
-  });
+  if (logAllEvents) {
+    //CB:
+    Object.keys(window).forEach((key) => {
+      if (/^on/.test(key)) {
+        window.addEventListener(key.slice(2), (e) => {
+          log(key.slice(2), e);
+        });
+      }
+    });
+  }
 }
 
-export { logPointerEvents, logAllEvents };
+/**
+ * A boolean-controlled version of console.log; if logging is enabled within
+ * the logging module, it will log the messages, otherwise it turns off.
+ * Useful mostly for messages you want while debugging, but not in regular use.
+ * @param {String} message
+ */
+function log(message) {
+  if (logging) {
+    console.log(message);
+  }
+}
+
+module.exports = { logPointerEvents, logAllEvents, log };
