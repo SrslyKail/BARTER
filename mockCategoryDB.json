@@ -1,0 +1,34 @@
+{
+    "0": {
+        "name": "Music",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/seuscegmqsgznhdt77tr"
+    },
+    "1": {
+        "name": "Crafts",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/it17f3julmuf3fw4fppv"
+    },
+    "2": {
+        "name": "Art",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/lyl7sh3emguxzlqnbeze"
+    },
+    "3": {
+        "name": "Tech",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/csmmpwzyj3m2gxmxufci"
+    },
+    "4": {
+        "name": "Trades",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/sb4vfhkpbol2cf3srgrr"
+    },
+    "5": {
+        "name": "Vocal Work",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/mcs0esu7tt72whzgdfvz"
+    },
+    "6": {
+        "name": "Writing",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/nde7cxhm8bkxdflmd9cq"
+    },
+    "7": {
+        "name": "Labour",
+        "image": "https://res.cloudinary.com/djdztuwwe/image/upload/f_auto,q_auto/dob6rtlrytqrqwdx4pbb"
+    }
+}
