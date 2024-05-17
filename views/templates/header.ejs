@@ -78,7 +78,11 @@
         class="btn vh-5 m-2 d-inline-flex navbar-brand" 
         data-bs-toggle="modal" 
         data-bs-target="#optionsOverlay">
-          <%- include("components/profileIcon") %>
+        <% if (!locals.authenticated) { %>
+          <%- include("components/profileIconLoggedOut") %>
+          <% } else { %>
+            <%- include("components/profileIcon") %>
+            <% } %>
     </a>
 
     <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
@@ -95,7 +99,7 @@
                     i couldnt get it to be aligned with the rest of the items 
                     maybe we should have icons for every item in the list?
                   -->
-                  <h3 class="col-9 p-2"><a href="/profile"><b>View Profile</b></a></h3>  
+                  <h3 class="col-9 px-2 py-3"><a href="/profile"><b>View Profile</b></a></h3>  
                   <h3 class="col-9 p-2"><a href="/history">History</a></h3>
                   <h3 class="col-9 p-2"><a href="/settings">Settings</a></h3>
                   <h3 class="col-9 p-2"><a href="/legal">Legal</a></h3>
