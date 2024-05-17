@@ -18,6 +18,8 @@
   "homepage": "https://github.com/SrslyKail/2800-202410-BBY14#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
+    "cloudinary-jquery": "^2.13.1",
     "connect-mongo": "^5.1.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
@@ -27,6 +29,7 @@
     "joi": "^17.13.1",
     "mongodb": "^6.6.1",
     "nodemailer": "^6.9.13",
-    "utils.js": "^1.0.1"
+    "utils.js": "^1.0.1",
+    "uuid": "^9.0.1"
   }
 }
