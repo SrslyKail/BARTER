@@ -1,17 +1,8 @@
 <%- include("templates/header") %>
-    <%- include("templates/components/searchHero") %>
+<%- include("templates/components/searchHero") %>
 
-        </div>
+</div>
 
+<%- include('templates/card-icon-generation', { db:db, count:null })%>
 
-
-        <%var image="/test.jpeg" %>
-            <%var text="insertTextHere" %>
-                <%var maxCount=20%>
-
-
-
-                    <%- include('templates/card-icon-generation', {image:image, text:text, count:maxCount})%>
-
-
-                        <%- include("templates/footer") %>
+<%- include("templates/footer") %>
