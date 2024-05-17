@@ -12,12 +12,13 @@
 /* #region Import Logo Font */
 @font-face {
   font-family: 'basquiatregular';
-  src:  url('../basquiat.woff2') format('woff2'),
-        url('../basquiat.woff') format('woff'),
-        url('../basquiat.ttf') format('ttf'),
-        url('../basquiat.otf') format('otf');
+  src: url('../basquiat.woff2') format('woff2'),
+       url('../basquiat.woff') format('woff'),
+       url('../basquiat.otf') format('otf'),
+       url('../basquiat.ttf') format('ttf');
   font-weight: normal;
   font-style: normal;
+
 }
 
 /* #endregion Import Logo Font */
@@ -53,6 +54,10 @@
 
 .vh-10 {
   max-height: 10vh;
+}
+
+.vh-5{
+  max-height: 5vh;
 }
 
 .mh-inherit {
