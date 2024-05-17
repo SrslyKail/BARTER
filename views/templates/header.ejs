@@ -70,8 +70,9 @@
     <!-- <a class="vh-10 m-2 navbar-brand" style="font-family: basquiatregular;" href="/">BARTER</a> -->
     <a class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
-    <%- include("components/searchbar") %>
-
+    <% if (!(typeof index !== 'undefined')) { %>
+      <%- include("components/searchBar") %>
+      <% } %>
     <a 
         id="profileButton" 
         type="button" 
