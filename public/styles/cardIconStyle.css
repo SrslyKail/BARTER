@@ -14,6 +14,7 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    justify-items: center;
     width: 100%;
     height: inherit;
     clip-path: rect(0px 0px 100% 100% round 7%);
@@ -21,6 +22,7 @@
 }
 
 .cardImageIcon img {
+    height: 100%;
     position: absolute;
 }
 

@@ -1,27 +1,33 @@
 <div id=testingGrid>
 
-    <!--Sets image location, mostly for testing, change image:image in the 
-      commented loop include to work through an array-->
-    <%var inImage=image %>
-        <!--Sets text, mostly for testing, change text:text for live-->
-        <%var inText=text %>
+  <!-- Instructions: 
+    Use this to create groups of icons
 
-            <%let maxCount=count %>
+    include('templates/card-icon-generation, {db:db, count:count}
+
+    use DB to send a database to be iterated through
+    use count to determine a maximum number of icons, set to null for full db  
+
+    
+    -->
+
+  <%var catCount=Object.keys(db).length;%>
+  <%console.log("Category count: " + catCount);%>
 
 
-                <!--A loop for generating icons, 
+  <!--A loop for generating icons, 
       loop works with grid settings in cardIconStyle.css
       needs integration testing with bootstrap-->
-                <% let i=0; %>
-                    <%if(maxCount===null) {%>
-                        <% for(i=0; i < 185 ; i++) { %>
-                            <%- include('components/card-image-icon', {image:inImage, text:text})%>
-                                <% } %>
-                                    <%} else {%>
-                                        <% for(i=0; i < 185 && i< maxCount ; i++) { %>
-                                            <%- include('components/card-image-icon', {image:inImage, text:text})%>
-                                                <% } %>
-                                                    <% } %>
+  <% let i=0; %>
+  <%if(count===null) {%>
+  <% for(i=0; i < 8 ; i++) { %>
+  <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+  <% } %>
+  <%} else {%>
+  <% for(i=0; i < count && i< count ; i++) { %>
+  <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+  <% } %>
+  <% } %>
 
 
 </div>
