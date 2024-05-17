@@ -1,0 +1,61 @@
+/* Grid for testing (expands infinitely) */
+.iconGrid {
+    margin: 2em;
+    padding: 2em;
+    display: grid;
+    gap: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+    grid-auto-rows: auto;
+    grid-auto-flow: row;
+}
+
+/* Mandatory CSS unless noted as optional*/
+.cardImageIcon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+    height: inherit;
+    /* The good version */
+    clip-path: rect(0px 0px 100% 100% round 7%);
+    /* The version for chrome :c */
+    clip-path: fill-box;
+    aspect-ratio: 25/22;
+}
+
+.cardImageIcon :is(img, a){
+    height: 100%;
+    position: absolute;
+}
+
+.cardTextDiv {
+    pointer-events: none;
+    text-align: center;
+    position: relative;
+    background-color: #17191595;
+    /*Optional Hex: RRGGBBAA*/
+    /* align-content: center; */
+    /*Optional: needed with higher text background height*/
+    height: 2.5em;
+    /*Optional: adjusts text background height*/
+    width: inherit;
+    
+}
+
+/* Enable below for text to only be visible on hover*/
+/* .cardTextDiv {
+    opacity:0;
+}
+.cardImageIcon :is(img, a):hover + .cardTextDiv{
+    opacity: 100;
+    transition: opacity 0.1s linear;
+    
+} */
+
+.iconText {
+    color: #FFFAEE;
+    /*Optional*/
+    font-size: x-large;
+    /*Optional*/
+}
