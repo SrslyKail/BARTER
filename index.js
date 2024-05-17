@@ -9,6 +9,7 @@ const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const fs = require('fs');
 
 /* #endregion requiredModules */
 
@@ -82,7 +83,9 @@ app.use("/", (req, res, next) => {
 app.get("/", async (req, res) => {
     var username = req.session.username;
     var authenticated = req.session.authenticated;
-    res.render("index", { authenticated: authenticated, username: username });
+/* Mock database for presentation*/
+    var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    res.render("index", { authenticated: authenticated, username: username, db: db });
 });
 
 /**
