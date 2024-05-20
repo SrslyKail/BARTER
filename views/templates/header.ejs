@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <% var isHomePage = false %>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BARTER</title>
@@ -16,30 +17,133 @@
   <link rel="icon" type="image/x-icon" href="/styles/favicon.ico">
   <!-- Import our default style sheet -->
   <link href="/styles/style.css" rel="stylesheet">
+  <link href="/styles/cardIconStyle.css" rel="stylesheet">
 </head>
+
+<!-- TODO these ↓ need to be moved to the master stylesheet after testing -->
+<style>
+  #profileButton {
+    /* pointer-events: none; 
+    right: 0;
+    height: 40pt;*/
+    width: 40pt;
+    margin: 0 2% 0 0!important;
+    padding: 0;
+  }
+  
+  #profileButton * {
+    border: 1px solid black;
+    border-radius: 100%;
+    /* height: 2%;
+    width: 20%; */
+  }
+
+  #menuIcon * {
+    width: 75%;
+  }
+
+  #submenuModal {
+   position:fixed;
+   top:auto;
+   right:-10pt;
+   left:-10pt;
+   bottom:-10pt;
+}  
+
+#submenuModal > div {
+  border-top-left-radius: 20pt 20pt !important;
+  border-top-right-radius: 20pt 20pt !important;
+   background-color: lightgray;
+}
+
+
+.menuItem {
+  color: black;
+  text-decoration: none;
+}
+</style>
 
 <body>
   <%- include("svgs") %>
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
   <nav class="navbar flex-nowrap gap-2 navbar-expand-md navbar-dark bg-dark">
-    <a class="vh-10 m-0 d-inline-flex navbar-brand" href="/"><%- include("components/profileIcon") %></a>
+    <!-- <a class="vh-10 m-2 navbar-brand" style="font-family: basquiatregular;" href="/">BARTER</a> -->
+    <a class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
-    <%- include("components/searchbar") %>
-    <!-- Toggler button -->
+    <% if (!(typeof index !== 'undefined')) { %>
+      <%- include("components/searchbar") %>
+      <% } %>
+    <a 
+        id="profileButton" 
+        type="button" 
+        class="btn vh-5 m-2 d-inline-flex navbar-brand" 
+        data-bs-toggle="modal" 
+        style="color: black;
+        text-decoration: none;"
+        data-bs-target="#optionsOverlay">
+        <% if (!locals.authenticated) { %>
+          <%- include("components/profileIconLoggedOut") %>
+          <% } else { %>
+            <%- include("components/profileIcon") %>
+            <% } %>
+    </a>
+
+    <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
+      <div id="submenuModal" class="modal-dialog modal-xl">
+        <div class="modal-content rounded-0">
+          <div class="modal-body">
+
+            <div class="container-fluid text-center">
+                <div class="row row-cols-1 text-start mx-5">
+                  <% if (locals.authenticated) { %>
+                  <!-- 
+                    this is supposed to have profile icon on the left 
+                    (https://www.figma.com/design/83sRKojo7ZdfXFmUrryreQ/Skill-Barter-App?node-id=136-1020&t=MJlbqkVu0xEksC72-4), 
+                    i couldnt get it to be aligned with the rest of the items 
+                    maybe we should have icons for every item in the list?
+                  -->
+                  <h3 class="col-9 px-1 py-3"><a class="menuItem" href="/profile"><b>View Profile</b></a></h3>  
+                  <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/history">History</a></h3>
+                  <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/settings">Settings</a></h3>
+                  <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/legal">Legal</a></h3>
+                  <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/logout">Log out</a></h3>
+                </div>
+
+                <% } else { %>
+                  <h3 class="col-9 p-2"><a class="menuItem" href="/signup">Sign up</a></h3>
+                  <h3 class="col-9 p-2"><a class="menuItem" href="/login"><b>Log in</b></a></h3>
+
+                <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 
+      ! saved old buttons here for backup; delete after testing
+      Toggler button
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerCollapse">
       <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- The actual nav links -->
-    <div class="collapse navbar-collapse " id="headerCollapse">
+    </button> 
+    
+    The actual nav links 
+    <div class="collapse navbar-collapse" id="headerCollapse">
       <ul class="d-sm-flex sm-flex-wrap align-content-end navbar-nav my-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/signup">Signup</a>
-        </li>
-      </ul>
+        <% if (locals.authenticated) { %>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Signup</a>
+          </li>
+        <% } %>
+      </ul>-->
     </div>
   </nav>
 
