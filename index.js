@@ -57,6 +57,7 @@ app.use(
 
 /**
  * sets the view engine to ejs, configures the express app,
+ * sets the view engine to ejs, configures the express app,
  * and sets up the middleware for parsing url-encoded data.
  */
 app.set("view engine", "ejs");
@@ -85,6 +86,7 @@ app.get("/", async (req, res) => {
     var authenticated = req.session.authenticated;
 /* Mock database for presentation*/
     var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    // var db = JSON.parse(fs.readFileSync("catsDB.json"));
     res.render("index", { authenticated: authenticated, username: username, db: db });
 });
 

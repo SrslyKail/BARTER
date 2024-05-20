@@ -76,4 +76,10 @@
 .mh-none {
   max-height: none;
 }
+
+/* <a> links for login, register, forgot password */
+.link {
+  color: rgb(0, 140, 255);
+  text-decoration: none;
+}
 /* #endregion generics */
