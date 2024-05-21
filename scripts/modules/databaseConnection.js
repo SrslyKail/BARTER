@@ -43,7 +43,7 @@ function getMongoStore() {
  * @param {Collection} collection
  */
 function getCollection(collection) {
-  database.db(mongodb_database).collection(collection);
+  return database.db(mongodb_database).collection(collection);
 }
 
 module.exports = { getMongoStore, getCollection };

@@ -16,9 +16,7 @@ const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
 const app = express();
-const { getMongoStore, getCollection } = getLocalModule(
-  "databaseConnection.js"
-);
+const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
 const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
 
