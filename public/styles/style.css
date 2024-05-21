@@ -31,8 +31,17 @@
 /* #endregion nestedExample*/
 /* #endregion header*/
 
-/* #region exampleOther */
-/* #endregion exampleOther*/
+/* #region userCard
+.userCard {
+  border: 1px solid gray;
+  background-color: lightgray;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 0 2% 0 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+}
+/* #endregion userCard*/
 
 /* #region global */
 * {
@@ -66,5 +75,11 @@
 
 .mh-none {
   max-height: none;
+}
+
+/* <a> links for login, register, forgot password */
+.link {
+  color: rgb(0, 140, 255);
+  text-decoration: none;
 }
 /* #endregion generics */
