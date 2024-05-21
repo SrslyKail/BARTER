@@ -6,9 +6,6 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const fs = require('fs');
 
 const crypto = require("crypto");
 const fs = require("fs");
@@ -168,14 +165,14 @@ app.get("/", async (req, res) => {
  * Post method for Try Again btn in loginInvalid.ejs
  */
 app.post("/login", (req, res) => {
-    res.redirect("/login");
+  res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
-    var passChange = req.query.passChange;
-    res.render("login", {
-        passChange: passChange,
-    });
+  var passChange = req.query.passChange;
+  res.render("login", {
+    passChange: passChange,
+  });
 });
 
 /**
@@ -187,21 +184,21 @@ app.get("/login", (req, res) => {
  * Once successfully logged in, redirects to the main.ejs page.
  */
 app.post("/loggingin", async (req, res) => {
-    var email = req.body.email;
-    var password = req.body.password;
+  var email = req.body.email;
+  var password = req.body.password;
 
-    const emailSchema = Joi.string().email().required();
-    const emailValidationResult = emailSchema.validate(email);
-    if (emailValidationResult.error != null) {
-        console.log(emailValidationResult.error);
-        res.redirect("/login");
-        return;
-    }
+  const emailSchema = Joi.string().email().required();
+  const emailValidationResult = emailSchema.validate(email);
+  if (emailValidationResult.error != null) {
+    console.log(emailValidationResult.error);
+    res.redirect("/login");
+    return;
+  }
 
-    const result = await userCollection
-        .find({ email: email })
-        .project({ username: 1, password: 1, _id: 1 })
-        .toArray();
+  const result = await userCollection
+    .find({ email: email })
+    .project({ username: 1, password: 1, _id: 1 })
+    .toArray();
 
   if (result.length != 1) {
     res.redirect("/loginInvalid");
@@ -218,7 +215,7 @@ app.post("/loggingin", async (req, res) => {
 });
 
 app.get("/loginInvalid", async (req, res) => {
-    res.render("loginInvalid");
+  res.render("loginInvalid");
 });
 
 /**
@@ -263,7 +260,7 @@ async function getUserProfile(username) {
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
-    res.render("passwordReset", {});
+  res.render("passwordReset", {});
 });
 
 app.get("/passwordReset/:token", async (req, res) => {
@@ -332,7 +329,7 @@ app.post("/passwordResetting", async (req, res) => {
 
 //user has been found, so lets change the email now.
 app.get("/passwordChange", (req, res) => {
-    res.render("passwordChange", {});
+  res.render("passwordChange", {});
 });
 
 //changing password code
@@ -388,25 +385,25 @@ app.post("/passwordChanging", async (req, res) => {
  */
 //Added signup route back.
 app.get("/signup", (req, res) => {
-    res.render("signup", {
-        errors: [],
-    });
+  res.render("signup", {
+    errors: [],
+  });
 });
 
 app.post("/submitUser", async (req, res) => {
-    var username = req.body.username;
-    var password = req.body.password;
-    var email = req.body.email;
-    var errors = [];
+  var username = req.body.username;
+  var password = req.body.password;
+  var email = req.body.email;
+  var errors = [];
 
-    //this should be global
-    const userSchema = Joi.object({
-        username: Joi.string().alphanum().max(20).required(),
-        password: Joi.string().max(20).required(),
-        email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "ca"] } })
-            .required(),
-    });
+  //this should be global
+  const userSchema = Joi.object({
+    username: Joi.string().alphanum().max(20).required(),
+    password: Joi.string().max(20).required(),
+    email: Joi.string()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "ca"] } })
+      .required(),
+  });
 
   const validationResult = userSchema.validate({ username, password, email });
   //Error checking
@@ -425,52 +422,52 @@ app.post("/submitUser", async (req, res) => {
     // Hash password
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert into collection
-        await userCollection.insertOne({
-            username: username,
-            email: email,
-            password: hashedPassword,
-        });
+    // Insert into collection
+    await userCollection.insertOne({
+      username: username,
+      email: email,
+      password: hashedPassword,
+    });
 
-        createSession(req, username, false);
-        res.redirect("/");
-        return;
-    } else {
-        //catch-all redirect to signup, sends errors
-        res.render("signup", {
-            errors: errors,
-        });
-        return;
-    }
+    createSession(req, username, false);
+    res.redirect("/");
+    return;
+  } else {
+    //catch-all redirect to signup, sends errors
+    res.render("signup", {
+      errors: errors,
+    });
+    return;
+  }
 });
 
 /**
  * Post method for logout buttons.
  */
 app.post("/logout", async (req, res) => {
-    res.redirect("/logout");
+  res.redirect("/logout");
 });
 
 app.get("/logout", (req, res) => {
-    req.session.destroy(); // Deletes the session
-    res.redirect("/"); // Sends back to the homepage
+  req.session.destroy(); // Deletes the session
+  res.redirect("/"); // Sends back to the homepage
 });
 
 app.post("/searchSubmit", (req, res) => {
-    //TODO: Search Code.
+  //TODO: Search Code.
 });
 /**
  * handles all routes that are not matched by any other route.
  * renders a 404 page and sets the response status to 404.
  */
 app.get("*", (req, res) => {
-    res.status(404);
-    res.render("404");
+  res.status(404);
+  res.render("404");
 });
 
 /* #endregion serverRouting */
 
 /** starts the server and listens on the specified port */
 app.listen(port, () => {
-    console.log("Node application listening on port " + port);
+  console.log("Node application listening on port " + port);
 });
