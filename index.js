@@ -274,17 +274,22 @@ app.post("/passwordResetting", async (req, res) => {
     var email = req.body.email;
 
     // Generate a unique token
-    const token = crypto.randomBytes(20).toString('hex');
+    const token = crypto.randomBytes(20).toString("hex");
     const timestamp = new Date().getTime();
+
+  let result;
 
     try {
         // Associate token with user's email in the database
-        await userCollection.updateOne({ email: email }, {
+        await userCollection.updateOne(
+      { email: email },
+      {
             $set: {
                 resetToken: token,
-                resetTokenTimestamp: timestamp
+                resetTokenTimestamp: timestamp,
+        },
             }
-        });
+        );
 
         req.session.resetEmail = email;
 
@@ -292,13 +297,11 @@ app.post("/passwordResetting", async (req, res) => {
         await sendPasswordResetEmail(email, token, timestamp);
 
         // Redirect to a page indicating that the email has been sent
-        res.render("passwordResetSent", { email });
+        result = `A password reset link has been sent to your email.<br><br> Please follow the instructions in the email to change your password.`;
     } catch (error) {
-        console.error('Error initiating password reset:', error);
-        // Handle errors
-        res.redirect("/passwordReset");
-    }
-
+        result = ("Error initiating password reset:", error);
+            }
+res.render("passwordReset", { result: result });
 });
 
 //user has been found, so lets change the email now.
