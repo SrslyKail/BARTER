@@ -20,7 +20,7 @@ const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
 const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
 
-const { User, isAuthenticated, isAdmin, getUsername } =
+const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
   getLocalModule("localSession");
 
 //TODO CB: Delete this when we swap over to using User for cookie storage
@@ -54,7 +54,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", (req, res, next) => {
-  app.locals.authenticated = req.session.authenticated;
+  app.locals.authenticated = isAuthenticated(req);
   next();
 });
 
@@ -90,7 +90,7 @@ function validateAdmin(req, res, next) {
     res.status(403);
     // CB: Add whatever admin specific page we want here
     res.render("#", {
-      user: req.session.user, // TODO Update local session to store user.
+      user: getUser(req), // TODO Update local session to store user.
       error: "403",
     });
     return;
@@ -127,13 +127,13 @@ function getLocalModule(name) {
  */
 function generateNavLinks(req) {
   let links = [{ name: "Home", link: "/" }];
-  if (req.session.user.isAuthenticated) {
+  if (isAuthenticated(req)) {
     links.push(
       { name: "Members", link: "/members" },
       { name: "Log out", link: "/logout" }
     );
     // CB: We can uncomment this if we add an admin page
-    // if (req.session.user.isAdmin) {
+    // if (isAdmin(req)) {
     //   links.push({ name: "Admin", link: "/admin" });
     // }
   } else {
@@ -149,8 +149,8 @@ function generateNavLinks(req) {
 
 /* #region serverRouting */
 app.get("/", async (req, res) => {
-  var username = req.session.username;
-  var authenticated = req.session.authenticated;
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // var db = JSON.parse(fs.readFileSync("catsDB.json"));
@@ -205,13 +205,7 @@ app.post("/loggingin", async (req, res) => {
     return;
   }
   if (await bcrypt.compare(password, result[0].password)) {
-    // CB: An example of how this compresses code
-    //createSession(req, result[0].username, result[0].isAdmin);
-    req.session.authenticated = true;
-    req.session.username = result[0].username;
-    req.session.user_type = result[0].user_type; //TODO CB: Discuss if we should use a boolean value here to avoid string comparisons.
-    req.session.cookie.maxAge = expireTime;
-
+    createSession(req, result[0].username, result[0].isAdmin ? true : false);
     res.redirect("/");
     return;
   } else {
@@ -230,7 +224,7 @@ app.get("/loginInvalid", async (req, res) => {
  * (this either needs to be changed or implemented)
  */
 app.get("/profile", async (req, res) => {
-  if (!req.session.authenticated) {
+  if (!isAuthenticated(req)) {
     res.redirect("/login");
     return;
   }
@@ -240,7 +234,7 @@ app.get("/profile", async (req, res) => {
   console.log(profile);
   //if we cant find the requested profile, get the current users profile
   if (!profile) {
-    profile = await getUserProfile(req.session.username);
+    profile = await getUserProfile(getUsername(req));
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
     if (!profile) {
       console.error(`Could not find profile page for ${username}!`);
@@ -446,17 +440,6 @@ app.post("/submitUser", async (req, res) => {
     return;
   }
 });
-
-/**
- * Sets the authentication, username, and expiration date for the session
- * @param {Request} req
- */
-function createSession(req, username, isAdmin) {
-  req.session.authenticated = true;
-  req.session.username = username;
-  req.session.isAdmin = isAdmin;
-  req.session.cookie.maxAge = expireTime;
-}
 
 /**
  * Post method for logout buttons.
