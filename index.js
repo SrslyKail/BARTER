@@ -161,6 +161,7 @@ app.get("/profile", async (req, res) => {
         res.redirect("/login");
         return;
     }
+    // /profi
     //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
 
     profile = await getUserProfile(req.query.id);
@@ -188,8 +189,6 @@ async function getUserProfile(username) {
     //and projects the location field value of found document
     return await profileCollection.findOne({ username: username });
 }
-
-
 
 /**
  *  Create a nodemailer transporter
