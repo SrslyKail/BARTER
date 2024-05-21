@@ -1,8 +1,8 @@
 // Log events flag
-let logPointerEvents = false;
+let logPointerEventsEnabled = false;
 
 //Log all flag
-let logAllEvents = false;
+let logAllEventsEnabled = false;
 
 //
 let logging = false;
@@ -14,8 +14,8 @@ let logging = false;
  * @param {PointerEvent} ev the event that caused this to be triggered.
  * @returns
  */
-function logPointerEvents(prefix, ev) {
-  if (logPointerEvents || logAllEvents) {
+function logPointer(prefix, ev) {
+  if (logPointerEventsEnabled || logAllEventsEnabled) {
     const s =
       `${prefix}:<br>` +
       `  pointerID   = ${ev.pointerId}\n` +
@@ -29,8 +29,8 @@ function logPointerEvents(prefix, ev) {
  * Some fun code to track **all** events happening in the window.
  * Useful for seeing exactly what type of event you want to track!
  */
-function logAllEvents() {
-  if (logAllEvents) {
+function logAll() {
+  if (logAllEventsEnabled) {
     //CB:
     Object.keys(window).forEach((key) => {
       if (/^on/.test(key)) {
