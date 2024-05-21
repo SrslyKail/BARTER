@@ -21,44 +21,61 @@ class User {
 
 /**
  * Sets the privileges, username, and expiration date for the session
- * @param {Boolean} authenticated The authentication status for this user.
+ * @param {Request} The request to attach the session to
  * @param {String} username The username of this user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  */
-function createSession(authenticated, username, admin = false) {
+function createSession(req, username, admin = false) {
   req.session.cookie.maxAge = expireTime;
-  req.session.user = new User(authenticated, admin, username);
+  let user = new User(true, admin, username);
+  console.log("Creating user in cookie");
+  req.session.cookie.user = user;
+  console.log(req.session.cookie.user);
+  //   req.session.user = user;
 }
 
 /**
  *
  * @param {Request} req
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function isAuthenticated(req) {
+  let user = getUser(req);
   //ternary ensures we always get a boolean output
   //otherwise we might return null
-  return req.session.user.isAuthenticated ? true : false;
+  return user ? user.isAuthenticated : false;
 }
 
 /**
  *
  * @param {Request} req
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function isAdmin(req) {
+  let user = getUser(req);
   //ternary ensures we always get a boolean output
   //otherwise we might return null
-  return req.session.user.isAdmin ? true : false;
+  return user ? user.isAdmin : false;
 }
 
 /**
  *
  * @param {Request} req
- * @returns {string}
+ * @returns {String | null}
  */
 function getUsername(req) {
-  return req.session.user.username;
+  let user = getUser(req);
+  return user ? user.username : user;
+}
+
+/**
+ *
+ * @param {Request} req
+ * @returns {User | null}
+ */
+function getUser(req) {
+  let user = req.session.cookie.user;
+  return user ? user : null;
 }
 
 module.exports = {
@@ -67,4 +84,5 @@ module.exports = {
   isAuthenticated,
   isAdmin,
   getUsername,
+  getUser,
 };
