@@ -23,6 +23,9 @@ const profileCollection = getCollection("profiles");
 const { User, isAuthenticated, isAdmin, getUsername } =
   getLocalModule("localSession");
 
+//TODO CB: Delete this when we swap over to using User for cookie storage
+const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
+
 const log = getLocalModule("logging").log;
 const sendPasswordResetEmail = getLocalModule("mailer").sendPasswordResetEmail;
 
