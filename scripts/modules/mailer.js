@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 
 const nodemailer_user = process.env.NODEMAILER_USER;
 const nodemailer_password = process.env.NODEMAILER_PASSWORD;
+const port = process.env.PORT || 4000;
 
 /**
  *  Create a nodemailer transporter
