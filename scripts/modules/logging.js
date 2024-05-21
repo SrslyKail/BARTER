@@ -14,7 +14,7 @@ let logging = false;
  * @param {PointerEvent} ev the event that caused this to be triggered.
  * @returns
  */
-function logPointer(prefix, ev) {
+function logPointerEvents(prefix, ev) {
   if (logPointerEventsEnabled || logAllEventsEnabled) {
     const s =
       `${prefix}:<br>` +
@@ -29,7 +29,7 @@ function logPointer(prefix, ev) {
  * Some fun code to track **all** events happening in the window.
  * Useful for seeing exactly what type of event you want to track!
  */
-function logAll() {
+function logAllEvents() {
   if (logAllEventsEnabled) {
     //CB:
     Object.keys(window).forEach((key) => {
