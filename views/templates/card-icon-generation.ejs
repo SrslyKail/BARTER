@@ -12,7 +12,8 @@
     Find mandatory CSS and options in cardIconStyle.css
     -->
 
-    <%var catCount=Object.keys(db).length;%>
+    <%#var catCount=Object.keys(db).length;%> 
+    <!-- This breaks with current settings -->
     <%#console.log("Category count: " + catCount);%>
   
     <div class=iconGrid>
@@ -23,12 +24,13 @@
         needs integration testing with bootstrap-->
       <% let i=0; %>
       <%if(count===null) {%>
-      <% for(i=0; i < catCount ; i++) { %>
-      <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+        <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
+      <% for(i=0; i < 1 ; i++) { %>
+      <%- include('components/card-image-icon', {image:db.image, text:db.name})%>
       <% } %>
       <%} else {%>
       <% for(i=0; i < catCount && i< count ; i++) { %>
-      <%- include('components/card-image-icon', {image:db[i].image, text:db[i].name})%>
+      <%- include('components/card-image-icon', {image:db.image, text:db.name})%>
       <% } %>
       <% } %>
   

@@ -19,6 +19,7 @@ const app = express();
 const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
 const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
+const skillCatCollection = getCollection("skillCats");
 
 const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
   getLocalModule("localSession");
@@ -152,8 +153,10 @@ app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
-  var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
-  // var db = JSON.parse(fs.readFileSync("catsDB.json"));
+//   var db = skillCatCollection;
+//   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  var db = await skillCatCollection.findOne({name: "Crafts"});
+  console.log(db.name)
   res.render("index", {
     authenticated: authenticated,
     username: username,
