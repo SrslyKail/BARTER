@@ -28,19 +28,13 @@
     <a class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
     <% if (!(typeof index !== 'undefined')) { %>
-    <%- include("components/searchbar") %>
+    <%- include("components/searchbar", {}) %>
     <% } else { %>
     <div style="flex-grow: 1;"></div>
     <% } %>
     <a id="profileButton" type="button" class="btn vh-5 m-2 d-inline-flex navbar-brand" data-bs-toggle="modal" style="color: black;
         text-decoration: none;" data-bs-target="#optionsOverlay">
-      <% if (!locals.authenticated) { %>
-      <%- include("components/profileIconLoggedOut") %>
-      <% } else { %>
-      <%- include("components/profileIcon") %>
-      <% } %>
-    </a>
-
+      <%- include("components/profileIcon.ejs") %> </a>
     <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
       <div id="submenuModal" class="modal-dialog modal-xl">
         <div class="modal-content rounded-0">

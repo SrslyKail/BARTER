@@ -110,6 +110,7 @@ function validateAdmin(req, res, next) {
 
 /* #region expressPathing */
 app.use(express.static(__dirname + "/public"));
+app.use("/img", express.static("./public/img"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
 
@@ -179,21 +180,22 @@ app.get("/", async (req, res) => {
     username: username,
     db: skillCats,
   });
+  console.log("Finished loading /");
 });
 
-
-app.get("/:skillCat", async (req, res) => {
+app.get("/category/:skillCat", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
-  let skillCat = req.params.skillCat
-  // console.log(skillCat)
+  console.log(req);
+  let skillCat = req.params.skillCat;
+  console.log(skillCat);
 
-  const category = await skillCatCollection.findOne({name: skillCat});
-  console.log(category)
-  const skillObjectArray = category.catSkills
-  const catName = category.name
-  const catImage = category.image
-  console.log(catImage)
+  const category = await skillCatCollection.findOne({ name: skillCat });
+  console.log(category);
+  const skillObjectArray = category.catSkills;
+  const catName = category.name;
+  const catImage = category.image;
+  console.log(catImage);
   /* 
   CB: the await here is the secret sauce!
   https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
@@ -203,7 +205,7 @@ app.get("/:skillCat", async (req, res) => {
   for await (const skillID of skillObjectArray) {
     let curSkill = await skillCollection.findOne({ _id: skillID });
     // console.log(curSkill)
-    skills.push(curSkill)
+    skills.push(curSkill);
   }
   // console.log(skills)
   res.render("category", {
@@ -211,10 +213,10 @@ app.get("/:skillCat", async (req, res) => {
     username: username,
     db: skills,
     catName: catName,
-    catImage:catImage,
+    catImage: catImage,
   });
+  return;
 });
-
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs
