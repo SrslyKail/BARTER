@@ -247,10 +247,14 @@ app.get("/profile", async (req, res) => {
     }
 
     // ! We need to check the user has skills and a location set; otherwise we can crash.
+    // vinc: the profile database doesn't store emails yet, so making a placeholder for now.
+    let email = profile.email ? profile.email : "test@email.com";
+
     res.render("profile", {
         user: profile.username,
         location: profile.location,
         skills: profile.skills,
+        email: email,
     });
 });
 
