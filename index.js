@@ -10,24 +10,37 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const fs = require("fs");
 const Joi = require("joi");
+
 /* #endregion requiredModules */
 
 const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
 const app = express();
-const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
+
+const {
+  getMongoStore,
+  getCollection,
+} = require("./scripts/modules/databaseConnection");
 const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
 
-const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
-    getLocalModule("localSession");
+const {
+  User,
+  isAuthenticated,
+  isAdmin,
+  createSession,
+  getUser,
+  getUsername,
+  getEmail,
+} = require("./scripts/modules/localSession");
 
 //TODO CB: Delete this when we swap over to using User for cookie storage
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 
-const log = getLocalModule("logging").log;
-const sendPasswordResetEmail = getLocalModule("mailer").sendPasswordResetEmail;
+const log = require("./scripts/modules/logging").log;
+const sendPasswordResetEmail =
+  require("./scripts/modules/mailer").sendPasswordResetEmail;
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -109,15 +122,6 @@ app.use("/scripts", express.static("./scripts"));
 /* #endregion expressPathing */
 
 /* #region helperFunctions */
-
-/**
- * Gets a local module from the ./scripts/module folder
- * @param {String} name
- * @returns {Object} the module you requested
- */
-function getLocalModule(name) {
-    return require(`./scripts/modules/${name}`);
-}
 
 /**
  * Generates the navlinks we want a user to access based on permissions
@@ -429,23 +433,24 @@ app.post("/submitUser", async (req, res) => {
         // Hash password
         var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert into collection
-        await userCollection.insertOne({
-            username: username,
-            email: email,
-            password: hashedPassword,
-        });
+    // Insert into collection
+    await userCollection.insertOne({
+      username: username,
+      email: email,
+      password: hashedPassword,
+      isAdmin: false,
+    });
 
-        createSession(req, username, false);
-        res.redirect("/");
-        return;
-    } else {
-        //catch-all redirect to signup, sends errors
-        res.render("signup", {
-            errors: errors,
-        });
-        return;
-    }
+    createSession(req, username, false, email);
+    res.redirect("/");
+    return;
+  } else {
+    //catch-all redirect to signup, sends errors
+    res.render("signup", {
+      errors: errors,
+    });
+    return;
+  }
 });
 
 /**
