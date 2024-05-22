@@ -160,21 +160,21 @@ app.get("/", async (req, res) => {
   //   var db = skillCatCollection;
   //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
-  const all = skillCatCollection.find().project({ _id: 0, name: 1 });
+  const all = skillCatCollection.find().project({ image: 1, name: 1 });
   /* 
   CB: the await here is the secret sauce!
   https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
   */
+  let skills = [];
   for await (const skill of all) {
-    console.log("All:", skill);
+    // console.log("All:", skill);
+    skills.push(skill);
   }
-
-  var db = await skillCatCollection.findOne({ name: "Crafts" });
-  console.log(db.name);
+  console.log(skills);
   res.render("index", {
     authenticated: authenticated,
     username: username,
-    db: db,
+    db: skills,
   });
 });
 

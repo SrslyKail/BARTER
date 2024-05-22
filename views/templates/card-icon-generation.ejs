@@ -12,27 +12,22 @@
     Find mandatory CSS and options in cardIconStyle.css
     -->
 
-    <%#var catCount=Object.keys(db).length;%> 
-    <!-- This breaks with current settings -->
-    <%#console.log("Category count: " + catCount);%>
-  
-    <div class=iconGrid>
-  
-  
-      <!--A loop for generating icons, 
+  <%#var catCount=Object.keys(db).length;%>
+  <!-- This breaks with current settings -->
+  <%#console.log("Category count: " + catCount);%>
+
+  <div class="iconGrid">
+    <!--A loop for generating icons, 
         loop works with grid settings in cardIconStyle.css
         needs integration testing with bootstrap-->
-      <% let i=0; %>
-      <%if(count===null) {%>
-        <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
-      <% for(i=0; i < 1 ; i++) { %>
-      <%- include('components/card-image-icon', {image:db.image, text:db.name})%>
-      <% } %>
-      <%} else {%>
-      <% for(i=0; i < catCount && i< count ; i++) { %>
-      <%- include('components/card-image-icon', {image:db.image, text:db.name})%>
-      <% } %>
-      <% } %>
-  
-  
-    </div>
+    <% let i=0; %>
+    <%if(count===null) {%>
+    <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
+    <% db.forEach(element => { /*console.log("Rendering", element);*/ %>
+    <%- include('components/card-image-icon', {image:element.image, text:element.name}) %>
+    <% }); %>
+    <%} else {%>
+    <% for(i=0; i < catCount && i< count ; i++) { %>
+    <%- include('components/card-image-icon', {image:db.image, text:db.name})%>
+    <% }} %>
+  </div>
