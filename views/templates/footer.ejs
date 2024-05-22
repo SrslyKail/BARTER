@@ -2,7 +2,10 @@
 
 <!-- CB: Footer is currently set up to be 50% of the screen width, 
     and sticks to the bottom of the screen -->
-<footer class="w-50 position-fixed bottom-0 end-0 px-5 py-3 translate-middle-x ">
+<footer class="w-100 position-fixed bottom-0 d-inline-flex justify-content-center px-0 py-3">
+  <% if (typeof footerButton !== 'undefined') { %>
+  <%- footerButton %>
+  <% } %>
 </footer>
 
 <!-- Import Bootstrap JS -->
