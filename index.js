@@ -178,9 +178,10 @@ app.get("/", async (req, res) => {
   res.render("index", {
     authenticated: authenticated,
     username: username,
+    parentPage: "/category",
     db: skillCats,
   });
-  console.log("Finished loading /");
+  // console.log("Finished loading /");
 });
 
 app.get("/category/:skillCat", async (req, res) => {
@@ -188,14 +189,14 @@ app.get("/category/:skillCat", async (req, res) => {
   var authenticated = isAuthenticated(req);
   //   console.log(req);
   let skillCat = req.params.skillCat;
-  console.log(skillCat);
+  // console.log(skillCat);
 
   const category = await skillCatCollection.findOne({ name: skillCat });
-  console.log(category);
+  // console.log(category);
   const skillObjectArray = category.catSkills;
   const catName = category.name;
   const catImage = category.image;
-  console.log(catImage);
+  // console.log(catImage);
   /* 
   CB: the await here is the secret sauce!
   https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
@@ -212,6 +213,7 @@ app.get("/category/:skillCat", async (req, res) => {
     authenticated: authenticated,
     username: username,
     db: skills,
+    parentPage: "/skill",
     catName: catName,
     catImage: catImage,
   });
