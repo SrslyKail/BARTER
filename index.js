@@ -110,7 +110,7 @@ function validateAdmin(req, res, next) {
 
 /* #region expressPathing */
 app.use(express.static(__dirname + "/public"));
-app.use("/img", express.static("./public/img"));
+app.use("/img", express.static("./img"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
 
@@ -186,7 +186,7 @@ app.get("/", async (req, res) => {
 app.get("/category/:skillCat", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
-  console.log(req);
+  //   console.log(req);
   let skillCat = req.params.skillCat;
   console.log(skillCat);
 
