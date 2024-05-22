@@ -6,6 +6,7 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+const Collection = require("mongodb").Collection;
 
 const crypto = require("crypto");
 const fs = require("fs");
@@ -17,8 +18,11 @@ const saltRounds = 12;
 const port = process.env.PORT || 4000;
 const app = express();
 const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
+/** @type {Collection} */
 const userCollection = getCollection("users");
+/** @type {Collection} */
 const profileCollection = getCollection("profiles");
+/** @type {Collection} */
 const skillCatCollection = getCollection("skillCats");
 
 const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
@@ -153,10 +157,20 @@ app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
-//   var db = skillCatCollection;
-//   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
-  var db = await skillCatCollection.findOne({name: "Crafts"});
-  console.log(db.name)
+  //   var db = skillCatCollection;
+  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  // CB: This will make it so we only show the names; if you want the id, make _id: 1
+  const all = skillCatCollection.find().project({ _id: 0, name: 1 });
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  for await (const skill of all) {
+    console.log("All:", skill);
+  }
+
+  var db = await skillCatCollection.findOne({ name: "Crafts" });
+  console.log(db.name);
   res.render("index", {
     authenticated: authenticated,
     username: username,
