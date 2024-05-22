@@ -176,11 +176,13 @@ app.get("/profile", async (req, res) => {
         }
     }
 
+    console.log(profile.email);
     // ! We need to check the user has skills and a location set; otherwise we can crash.
     res.render("profile", {
         user: profile.username,
         location: profile.location,
         skills: profile.skills,
+        email: profile.email
     });
 });
 
