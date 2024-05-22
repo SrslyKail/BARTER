@@ -189,13 +189,17 @@ app.get("/:skillCat", async (req, res) => {
   // console.log(skillCat)
 
   const category = await skillCatCollection.findOne({name: skillCat});
+  console.log(category)
   const skillObjectArray = category.catSkills
+  const catName = category.name
+  const catImage = category.image
+  console.log(catImage)
   /* 
   CB: the await here is the secret sauce!
   https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
   */
   let skills = [];
-  
+
   for await (const skillID of skillObjectArray) {
     let curSkill = await skillCollection.findOne({ _id: skillID });
     // console.log(curSkill)
@@ -206,6 +210,8 @@ app.get("/:skillCat", async (req, res) => {
     authenticated: authenticated,
     username: username,
     db: skills,
+    catName: catName,
+    catImage:catImage,
   });
 });
 
