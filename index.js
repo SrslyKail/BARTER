@@ -24,6 +24,8 @@ const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
 /** @type {Collection} */
 const skillCatCollection = getCollection("skillCats");
+/** @type {Collection} */
+const skillCollection = getCollection("skills");
 
 const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
   getLocalModule("localSession");
@@ -161,22 +163,52 @@ app.get("/", async (req, res) => {
   //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
+  // console.log(all)
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  let skillCats = [];
+  for await (const skillCat of all) {
+    // console.log("All:", skill);
+    skillCats.push(skillCat);
+  }
+  // console.log(skillCats);
+  res.render("index", {
+    authenticated: authenticated,
+    username: username,
+    db: skillCats,
+  });
+});
+
+
+app.get("/:skillCat", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  let skillCat = req.params.skillCat
+  // console.log(skillCat)
+
+  const category = await skillCatCollection.findOne({name: skillCat});
+  const skillObjectArray = category.catSkills
   /* 
   CB: the await here is the secret sauce!
   https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
   */
   let skills = [];
-  for await (const skill of all) {
-    // console.log("All:", skill);
-    skills.push(skill);
+  
+  for await (const skillID of skillObjectArray) {
+    let curSkill = await skillCollection.findOne({ _id: skillID });
+    // console.log(curSkill)
+    skills.push(curSkill)
   }
-  console.log(skills);
-  res.render("index", {
+  // console.log(skills)
+  res.render("category", {
     authenticated: authenticated,
     username: username,
     db: skills,
   });
 });
+
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs
