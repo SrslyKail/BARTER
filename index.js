@@ -20,8 +20,15 @@ const { getMongoStore, getCollection } = getLocalModule("databaseConnection");
 const userCollection = getCollection("users");
 const profileCollection = getCollection("profiles");
 
-const { User, isAuthenticated, isAdmin, createSession, getUser, getUsername } =
-  getLocalModule("localSession");
+const {
+    User,
+    isAuthenticated,
+    isAdmin,
+    createSession,
+    getUser,
+    getUsername,
+    getEmail,
+} = getLocalModule("localSession");
 
 //TODO CB: Delete this when we swap over to using User for cookie storage
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
@@ -422,23 +429,24 @@ app.post("/submitUser", async (req, res) => {
     // Hash password
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Insert into collection
-    await userCollection.insertOne({
-      username: username,
-      email: email,
-      password: hashedPassword,
-    });
+        // Insert into collection
+        await userCollection.insertOne({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            isAdmin: false,
+        });
 
-    createSession(req, username, false);
-    res.redirect("/");
-    return;
-  } else {
-    //catch-all redirect to signup, sends errors
-    res.render("signup", {
-      errors: errors,
-    });
-    return;
-  }
+        createSession(req, username, false, email);
+        res.redirect("/");
+        return;
+    } else {
+        //catch-all redirect to signup, sends errors
+        res.render("signup", {
+            errors: errors,
+        });
+        return;
+    }
 });
 
 /**
