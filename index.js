@@ -220,6 +220,41 @@ app.get("/category/:skillCat", async (req, res) => {
   return;
 });
 
+app.get("/skill/:skill", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  //   console.log(req);
+  let skill = req.params.skill;
+  // console.log(skillCat);
+
+  const category = await skillCollection.findOne({ name: skill });
+  // console.log(category);
+  const skillName = category.name;
+  const skillImage = category.image;
+  // console.log(catImage);
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  // let skills = [];
+
+  // for await (const skillID of skillObjectArray) {
+  //   let curSkill = await skillCollection.findOne({ _id: skillID });
+    // console.log(curSkill)
+  //   skills.push(curSkill);
+  // }
+  // console.log(skills)
+  res.render("skill", {
+    authenticated: authenticated,
+    username: username,
+    // db: skills,
+    // parentPage: "/profile",
+    catName: skillName,
+    catImage: skillImage,
+  });
+  return;
+});
+
 /**
  * Post method for Try Again btn in loginInvalid.ejs
  */
