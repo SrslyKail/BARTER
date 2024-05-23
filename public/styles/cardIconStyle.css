@@ -37,7 +37,8 @@
     /*Optional Hex: RRGGBBAA*/
     align-content: center;
     /*Optional: needed with higher text background height*/
-    height: 2.5em;
+    height: auto;
+    min-height: 2.5em;
     /*Optional: adjusts text background height*/
     width: inherit;
     
@@ -56,6 +57,6 @@
 .iconText {
     color: #FFFAEE;
     /*Optional*/
-    font-size: x-large;
+    font-size: large;
     /*Optional*/
 }

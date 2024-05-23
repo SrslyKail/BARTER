@@ -28,7 +28,7 @@
     <a class="vh-5 d-inline-flex" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
     <% if (!(typeof index !== 'undefined')) { %>
-    <%- include("components/searchbar") %>
+    <%- include("components/searchbar", {}) %>
     <% } else { %>
     <div style="flex-grow: 1;"></div>
     <% } %>
@@ -66,6 +66,5 @@
   </div>
   <!-- #endregion modal -->
 
-  <!-- #endregion navbar -->
   <div class="d-flex flex-column justify-content-around overflow-x-hidden mx-0">
     <!-- Main content container beginning -->

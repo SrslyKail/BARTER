@@ -11,59 +11,32 @@
 
 /* #region Import Logo Font */
 @font-face {
-  font-family: 'basquiatregular';
-  src: url('../basquiat.woff2') format('woff2'),
-       url('../basquiat.woff') format('woff'),
-       url('../basquiat.otf') format('otf'),
-       url('../basquiat.ttf') format('ttf');
+  font-family: "basquiatregular";
+  src: url("../basquiat.woff2") format("woff2"),
+    url("../basquiat.woff") format("woff"), url("../basquiat.otf") format("otf"),
+    url("../basquiat.ttf") format("ttf");
   font-weight: normal;
   font-style: normal;
-
 }
 
 /* #endregion Import Logo Font */
 
+/* #region header
+#profileButton {
+  width: 40pt;
+  margin: 0 2% 0 0 !important;
+  padding: 0;
+} */
 
-/* #region header */
-  #profileButton {
-    /* pointer-events: none; 
-    right: 0;
-    height: 40pt;*/
-    width: 40pt;
-    margin: 0 2% 0 0 !important;
-    padding: 0;
-  }
+#profileButton * {
+  border: 1px solid black;
+  border-radius: 100%;
+}
 
-  #profileButton * {
-    border: 1px solid black;
-    border-radius: 100%;
-    /* height: 2%;
-    width: 20%; */
-  }
+#menuIcon * {
+  width: 75%;
+}
 
-  #menuIcon * {
-    width: 75%;
-  }
-
-  #submenuModal {
-    position: fixed;
-    top: auto;
-    right: -10pt;
-    left: -10pt;
-    bottom: -10pt;
-  }
-
-  #submenuModal>div {
-    border-top-left-radius: 20pt 20pt !important;
-    border-top-right-radius: 20pt 20pt !important;
-    background-color: lightgray;
-  }
-
-
-  .menuItem {
-    color: black;
-    text-decoration: none;
-  }
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
@@ -105,7 +78,7 @@
   max-height: 10vh;
 }
 
-.vh-5{
+.vh-5 {
   max-height: 5vh;
 }
 
