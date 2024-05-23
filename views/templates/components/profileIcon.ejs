@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 <img class="mh-inherit" src=<% if (locals.authenticated) { %> "/img/profileImgPlaceholder.png" <% } else { %> "/img/profileIconLoggedOut.png" <% } %>>
+=======
+<% if (typeof userIcon !== 'undefined') { %>
+    <img class="mh-inherit" src="https://res.cloudinary.com/dxttfq7qd/image/upload/<%- userIcon %>">
+<% } else { %>
+    <img class="mh-inherit" src="img/profileIconLoggedOut.png">
+<% } %>
+>>>>>>> cloudinary

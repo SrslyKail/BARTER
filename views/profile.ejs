@@ -4,7 +4,11 @@
 /profile/username(UPD: IMPLEMENTED AS /profile?id=username SHOULD BE SUFFICIENT FOR MVP) should be how any user's profile is accessed. I THINK
 todo if this is the profile of said user, they should have the ability to edit whatever.
 -->
-<div class="mx-1"><%- include("templates/components/profileCard")%></div>
+<a href="/editProfile?name=<%- user %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a>
+<% if (uploaded) {%>
+    <h1 class="text-success text-center">Upload Success</h1>
+<% } %>
+<div class="mx-1"><%- include("templates/components/profileCard", {userIcon})%></div>
 <section class="p-4 text-center mb-4">
   <h2><b>Skills</b></h2>
   <% for (let i = 0; i < skills.length; i ++) {  %>

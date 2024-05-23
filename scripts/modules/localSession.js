@@ -8,17 +8,25 @@ class User {
      * @param {Boolean} authenticated
      * @param {Boolean} admin
      * @param {String} username
+<<<<<<< HEAD
      * @param {email} email
      */
     constructor(authenticated, admin, username, email) {
+=======
+     */
+    constructor(authenticated, admin, username) {
+>>>>>>> cloudinary
         /** @type {boolean} */
         this.isAuthenticated = authenticated;
         /** @type {boolean} */
         this.isAdmin = admin;
         /** @type {string} */
         this.username = username;
+<<<<<<< HEAD
         /** @type {string} */
         this.email = email;
+=======
+>>>>>>> cloudinary
     }
 }
 
@@ -28,9 +36,15 @@ class User {
  * @param {String} username The username of this user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  */
+<<<<<<< HEAD
 function createSession(req, username, admin = false, email) {
     req.session.cookie.maxAge = expireTime;
     let user = new User(true, admin, username, email);
+=======
+function createSession(req, username, admin = false) {
+    req.session.cookie.maxAge = expireTime;
+    let user = new User(true, admin, username);
+>>>>>>> cloudinary
     req.session.user = user;
 }
 
@@ -78,9 +92,30 @@ function getUser(req) {
     return user ? user : null;
 }
 
+<<<<<<< HEAD
 function getEmail(req) {
     let user = req.session.user;
     return user ? user.email : null;
+=======
+/**
+ *
+ * @param {Request} req
+ * @returns {User | null}
+ */
+function getProfilePicture(req) {
+    let userIcon = req.userIcon;
+    return userIcon ? userIcon : null;
+}
+
+/**
+ *
+ * @param {Request} req
+ * @returns {User | null}
+ */
+function getUserEmail(req) {
+    let email = req.session.email;
+    return email ? email : "user@email.com";
+>>>>>>> cloudinary
 }
 
 module.exports = {
@@ -90,5 +125,10 @@ module.exports = {
     isAdmin,
     getUsername,
     getUser,
+<<<<<<< HEAD
     getEmail
+=======
+    getProfilePicture,
+    getUserEmail,
+>>>>>>> cloudinary
 };

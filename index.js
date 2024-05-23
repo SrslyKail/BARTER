@@ -48,9 +48,13 @@ const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
     require("./scripts/modules/mailer").sendPasswordResetEmail;
 
+/* #region cloudinary imports */
+const uploadRoute = require("./scripts/modules/routeUpload");
+app.use("/editProfile", uploadRoute);
+/* #endregion cloudinary imports */
+
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
-
 /* #endregion secrets */
 
 /* #region middleware */
@@ -368,14 +372,17 @@ app.get("/profile", async (req, res) => {
     }
     //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
 
-    profile = await getUserProfile(req.query.id);
+    // vinc: placeholder so it prints password's id by default instead of null.
+    let queryID = req.query.id ? req.query.id : "user";
+
+    profile = await getUserProfile(queryID);
     console.log(profile);
     //if we cant find the requested profile, get the current users profile
     if (!profile) {
         profile = await getUserProfile(getUsername(req));
         // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
         if (!profile) {
-            console.error(`Could not find profile page for ${username}!`);
+            console.error(`Could not find profile page for ${queryID}!`);
             res.redirect("/noUser");
         }
     }
@@ -389,6 +396,8 @@ app.get("/profile", async (req, res) => {
         location: profile.location,
         skills: profile.skills,
         email: email,
+        uploaded: req.query.success,
+        userIcon: profile.userIcon,
     });
 });
 
@@ -397,6 +406,15 @@ async function getUserProfile(username) {
     //and projects the location field value of found document
     return await profileCollection.findOne({ username: username });
 }
+
+/**
+ * Edit Profile Page.
+ */
+app.get("/editProfile", (req, res) => {
+    res.render("editProfile", {
+        name: req.query.name,
+    });
+});
 
 /**
  * Handles all the resetting code.
