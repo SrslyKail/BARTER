@@ -6,6 +6,7 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+const Collection = require("mongodb").Collection;
 
 const crypto = require("crypto");
 const fs = require("fs");
@@ -23,7 +24,12 @@ const {
   getCollection,
 } = require("./scripts/modules/databaseConnection");
 const userCollection = getCollection("users");
+/** @type {Collection} */
 const profileCollection = getCollection("profiles");
+/** @type {Collection} */
+const skillCatCollection = getCollection("skillCats");
+/** @type {Collection} */
+const skillCollection = getCollection("skills");
 
 const {
   User,
@@ -116,6 +122,7 @@ function validateAdmin(req, res, next) {
 
 /* #region expressPathing */
 app.use(express.static(__dirname + "/public"));
+app.use("/img", express.static("./img"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
 
@@ -153,16 +160,102 @@ function generateNavLinks(req) {
 
 /* #region serverRouting */
 app.get("/", async (req, res) => {
-    var username = getUsername(req);
-    var authenticated = isAuthenticated(req);
-    /* Mock database for presentation*/
-    var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
-    // var db = JSON.parse(fs.readFileSync("catsDB.json"));
-    res.render("index", {
-        authenticated: authenticated,
-        username: username,
-        db: db,
-    });
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  /* Mock database for presentation*/
+  //   var db = skillCatCollection;
+  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  // CB: This will make it so we only show the names; if you want the id, make _id: 1
+  const all = skillCatCollection.find().project({ image: 1, name: 1 });
+  // console.log(all)
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  let skillCats = [];
+  for await (const skillCat of all) {
+    // console.log("All:", skill);
+    skillCats.push(skillCat);
+  }
+  // console.log(skillCats);
+  res.render("index", {
+    authenticated: authenticated,
+    username: username,
+    parentPage: "/category",
+    db: skillCats,
+  });
+  // console.log("Finished loading /");
+});
+
+app.get("/category/:skillCat", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  //   console.log(req);
+  let skillCat = req.params.skillCat;
+  // console.log(skillCat);
+
+  const category = await skillCatCollection.findOne({ name: skillCat });
+  // console.log(category);
+  const skillObjectArray = category.catSkills;
+  const catName = category.name;
+  const catImage = category.image;
+  // console.log(catImage);
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  let skills = [];
+
+  for await (const skillID of skillObjectArray) {
+    let curSkill = await skillCollection.findOne({ _id: skillID });
+    // console.log(curSkill)
+    skills.push(curSkill);
+  }
+  // console.log(skills)
+  res.render("category", {
+    authenticated: authenticated,
+    username: username,
+    db: skills,
+    parentPage: "/skill",
+    catName: catName,
+    catImage: catImage,
+  });
+  return;
+});
+
+app.get("/skill/:skill", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  //   console.log(req);
+  let skill = req.params.skill;
+  // console.log(skillCat);
+
+  const category = await skillCollection.findOne({ name: skill });
+  // console.log(category);
+  const skillName = category.name;
+  const skillImage = category.image;
+  // console.log(catImage);
+  /* 
+  CB: the await here is the secret sauce!
+  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  // let skills = [];
+
+  // for await (const skillID of skillObjectArray) {
+  //   let curSkill = await skillCollection.findOne({ _id: skillID });
+    // console.log(curSkill)
+  //   skills.push(curSkill);
+  // }
+  // console.log(skills)
+  res.render("skill", {
+    authenticated: authenticated,
+    username: username,
+    // db: skills,
+    // parentPage: "/profile",
+    catName: skillName,
+    catImage: skillImage,
+  });
+  return;
 });
 
 /**
