@@ -24,56 +24,47 @@
   <%- include("svgs") %>
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
-  <nav class="navbar flex-nowrap gap-2 navbar-expand-md navbar-dark bg-dark">
-    <a class="vh-5 m-2 d-inline-flex navbar-brand" href="/"><%- include("components/logo") %></a>
+  <nav class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark">
+    <a class="vh-5 d-inline-flex" href="/"><%- include("components/logo") %></a>
     <!-- Search bar -->
     <% if (!(typeof index !== 'undefined')) { %>
-    <%- include("components/searchbar") %>
+    <%- include("components/searchbar", {}) %>
     <% } else { %>
     <div style="flex-grow: 1;"></div>
     <% } %>
-    <a id="profileButton" type="button" class="btn vh-5 m-2 d-inline-flex navbar-brand" data-bs-toggle="modal" style="color: black;
-        text-decoration: none;" data-bs-target="#optionsOverlay">
-      <% if (!locals.authenticated) { %>
-      <%- include("components/profileIconLoggedOut") %>
-      <% } else { %>
-      <%- include("components/profileIcon") %>
-      <% } %>
-    </a>
+    <button id="profileButton" type="button" class="shadow-none bg-transparent  border-0 vh-5 d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#optionsOverlay">
+      <%- include("components/profileIcon.ejs", {classes: "rounded-circle"}) %> </button>
+  </nav>
+  <!-- #endregion navbar -->
+  <!-- #region modal -->
+  <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl my-0 fixed-bottom">
+      <div class="modal-content rounded-top-5">
+        <div class="modal-body container-fluid">
+          <!-- ! CB: TODO Make this a loop and have the links/text passed in as an object from the server. That'll keep styling more consistent. -->
+          <% if (locals.authenticated) { %>
+          <div class="d-flex flex-column gap-1 text-start">
+            <a class="fs-3 text-decoration-none text-black" href="/signup"><b>Sign up</b></a>
+            <a class="fs-3 text-decoration-none text-black" href=" /login"><b>Log in</b></a>
 
-    <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
-      <div id="submenuModal" class="modal-dialog modal-xl">
-        <div class="modal-content rounded-0">
-          <div class="modal-body">
-
-            <div class="container-fluid text-center">
-              <div class="row row-cols-1 text-start mx-5">
-                <% if (locals.authenticated) { %>
-                <!-- 
-                    this is supposed to have profile icon on the left 
-                    (https://www.figma.com/design/83sRKojo7ZdfXFmUrryreQ/Skill-Barter-App?node-id=136-1020&t=MJlbqkVu0xEksC72-4), 
-                    i couldnt get it to be aligned with the rest of the items 
-                    maybe we should have icons for every item in the list?
-                  -->
-                <h3 class="col-9 px-1 py-3"><a class="menuItem" href="/profile"><b>View Profile</b></a></h3>
-                <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/history">History</a></h3>
-                <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/settings">Settings</a></h3>
-                <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/legal">Legal</a></h3>
-                <h3 class="col-9 px-1 py-2"><a class="menuItem" href="/logout">Log out</a></h3>
-              </div>
-
-              <% } else { %>
-              <h3 class="col-9 p-2"><a class="menuItem" href="/signup">Sign up</a></h3>
-              <h3 class="col-9 p-2"><a class="menuItem" href="/login"><b>Log in</b></a></h3>
-
-              <% } %>
-            </div>
+            <a class="fs-3 text-decoration-none text-black" href="/profile"><b>View Profile</b></a>
+            <a class="fs-3 text-decoration-none text-black" href="/history"><b>History</b></a>
+            <a class="fs-3 text-decoration-none text-black" href="/settings"><b>Settings</b></a>
+            <a class="fs-3 text-decoration-none text-black" href="/legal"><b>Legal</b></a>
+            <a class="fs-3 text-decoration-none text-black" href="/logout"><b>Log out</b></a>
           </div>
         </div>
+        <% } else { %>
+        <div class="d-flex flex-column mx-2 text-center">
+          <a class="fs-3 text-decoration-none text-black" href="/signup"><b>Sign up</b></a>
+          <a class="fs-3 text-decoration-none text-black" href=" /login"><b>Log in</b></a>
+        </div>
+        <% } %>
       </div>
     </div>
-  </nav>
+  </div>
+  </div>
+  <!-- #endregion modal -->
 
-  <!-- #endregion navbar -->
   <div class="d-flex flex-column justify-content-around overflow-x-hidden mx-0">
     <!-- Main content container beginning -->
