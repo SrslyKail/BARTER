@@ -109,6 +109,10 @@
   max-height: 5vh;
 }
 
+.vh-7 {
+  height: 7vh;
+}
+
 .mh-inherit {
   max-height: inherit;
 }
