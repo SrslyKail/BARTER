@@ -29,9 +29,13 @@ const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const log = getLocalModule("logging").log;
 const sendPasswordResetEmail = getLocalModule("mailer").sendPasswordResetEmail;
 
+/* #region cloudinary imports */
+const uploadRoute = require("./scripts/modules/routeUpload");
+app.use("/editProfile", uploadRoute);
+/* #endregion cloudinary imports */
+
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
-
 /* #endregion secrets */
 
 /* #region middleware */
@@ -234,7 +238,10 @@ app.get("/profile", async (req, res) => {
     }
     //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
 
-    profile = await getUserProfile(req.query.id);
+    // vinc: placeholder so it prints password's id by default instead of null.
+    let queryID = req.query.id ? req.query.id : "password";
+
+    profile = await getUserProfile(queryID);
     console.log(profile);
     //if we cant find the requested profile, get the current users profile
     if (!profile) {
@@ -255,6 +262,7 @@ app.get("/profile", async (req, res) => {
         location: profile.location,
         skills: profile.skills,
         email: email,
+        uploaded: req.query.success,
     });
 });
 
@@ -263,6 +271,15 @@ async function getUserProfile(username) {
     //and projects the location field value of found document
     return await profileCollection.findOne({ username: username });
 }
+
+/**
+ * Edit Profile Page.
+ */
+app.get("/editProfile", (req, res) => {
+    res.render("editProfile", {
+        name: req.query.name,
+    });
+});
 
 /**
  * Handles all the resetting code.
