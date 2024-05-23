@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const cloudinary = require("./cloudinary");
 const upload = require("./multer");
+const { getCollection } = require("./databaseConnection");
+const userCollection = getCollection("users");
 
 router.post("/upload", upload.single("image"), function (req, res) {
     cloudinary.uploader.upload(req.file.path, function (err, result) {
@@ -19,8 +21,26 @@ router.post("/upload", upload.single("image"), function (req, res) {
             data: result,
         });
 
+        changePFPOnMongo(result, req.query.name);
+
         res.redirect("/profile");
     });
 });
+
+const changePFPOnMongo = async (data, name) => {
+    let scheme = "/upload/";
+    let img = data.url.split(scheme)[1];
+
+    console.log("Image: " + img);
+    console.log("Name: " + name);
+    await userCollection.updateOne(
+        { username: name },
+        {
+            $set: {
+                userIcon: img,
+            },
+        }
+    );
+};
 
 module.exports = router;

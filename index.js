@@ -239,7 +239,7 @@ app.get("/profile", async (req, res) => {
     //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
 
     // vinc: placeholder so it prints password's id by default instead of null.
-    let queryID = req.query.id ? req.query.id : "password";
+    let queryID = req.query.id ? req.query.id : "user";
 
     profile = await getUserProfile(queryID);
     console.log(profile);
@@ -248,7 +248,7 @@ app.get("/profile", async (req, res) => {
         profile = await getUserProfile(getUsername(req));
         // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
         if (!profile) {
-            console.error(`Could not find profile page for ${username}!`);
+            console.error(`Could not find profile page for ${queryID}!`);
             res.redirect("/noUser");
         }
     }

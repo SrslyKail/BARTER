@@ -1,1 +1,5 @@
-  <img class="mh-inherit" src="profileImgPlaceholder.png">
+<% if (typeof userIcon !== 'undefined') { %>
+    <img class="mh-inherit" src="<%- userIcon %>">
+<% } else { %>
+    <img class="mh-inherit" src="profileImgPlaceholder.png">
+<% } %>
