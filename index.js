@@ -263,6 +263,7 @@ app.get("/profile", async (req, res) => {
         skills: profile.skills,
         email: email,
         uploaded: req.query.success,
+        userIcon: profile.userIcon,
     });
 });
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const cloudinary = require("./cloudinary");
 const upload = require("./multer");
 const { getCollection } = require("./databaseConnection");
-const userCollection = getCollection("users");
+const profileCollection = getCollection("profiles");
 
 router.post("/upload", upload.single("image"), function (req, res) {
     cloudinary.uploader.upload(req.file.path, function (err, result) {
@@ -33,7 +33,7 @@ const changePFPOnMongo = async (data, name) => {
 
     console.log("Image: " + img);
     console.log("Name: " + name);
-    await userCollection.updateOne(
+    await profileCollection.updateOne(
         { username: name },
         {
             $set: {

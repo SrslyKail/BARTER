@@ -8,7 +8,7 @@ todo if this is the profile of said user, they should have the ability to edit w
 <% if (uploaded) {%>
     <h1 class="text-success text-center">Upload Success</h1>
 <% } %>
-<div class="mx-1"><%- include("templates/components/profileCard")%></div>
+<div class="mx-1"><%- include("templates/components/profileCard", {userIcon})%></div>
 <section class="p-4 text-center mb-4">
   <h2><b>Skills</b></h2>
   <% for (let i = 0; i < skills.length; i ++) {  %>
