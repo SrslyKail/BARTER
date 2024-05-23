@@ -1,40 +1,62 @@
 {
-  "folders": [
-    {
-      "path": "."
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.autoSave": "afterDelay",
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 80,
+        "editor.rulers": [80],
+        "editor.autoClosingBrackets": "always",
+        "editor.autoClosingComments": "always",
+        "editor.autoClosingOvertype": "auto",
+        "editor.autoClosingQuotes": "always",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+        "liveServer.settings.port": 5500,
+
+        "prettier.bracketSameLine": true,
+        "prettier.bracketSpacing": true,
+        "prettier.semi": true,
+        "prettier.singleQuote": false,
+        "prettier.tabWidth": 4,
+        "prettier.trailingComma": "es5",
+        "prettier.useTabs": false,
+
+        "emmet.includeLanguages": {
+            "ejs": "html"
+        },
+        "[html]": {
+            "editor.defaultFormatter": "j69.ejs-beautify"
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "cschlosser.doxdocgen",
+            "figma.figma-vscode-extension",
+            "toba.vsfire",
+            "bradgashler.htmltagwrap",
+            "xabikos.javascriptsnippets",
+            "ms-vscode.js-debug-nightly",
+            "ritwickdey.liveserver",
+            "pdconsec.vscode-print",
+            "visualstudioexptteam.vscodeintellicode",
+            "visualstudioexptteam.intellicode-api-usage-examples",
+            "aaron-bond.better-comments",
+            "eamodio.gitlens",
+            "ms-vsliveshare.vsliveshare",
+            "maptz.regionfolder",
+            "esbenp.prettier-vscode"
+        ]
     }
-  ],
-  "settings": {
-    "files.autoSave": "afterDelay",
-    "editor.detectIndentation": false,
-    "editor.insertSpaces": true,
-    "editor.tabSize": 4,
-    "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 80,
-    "editor.rulers": [80],
-    "editor.autoClosingBrackets": "always",
-    "editor.autoClosingComments": "always",
-    "editor.autoClosingOvertype": "auto",
-    "editor.autoClosingQuotes": "always",
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-    "liveServer.settings.port": 5500
-  },
-  "extensions": {
-    "recommendations": [
-      "cschlosser.doxdocgen",
-      "figma.figma-vscode-extension",
-      "toba.vsfire",
-      "bradgashler.htmltagwrap",
-      "xabikos.javascriptsnippets",
-      "ms-vscode.js-debug-nightly",
-      "ritwickdey.liveserver",
-      "pdconsec.vscode-print",
-      "visualstudioexptteam.vscodeintellicode",
-      "visualstudioexptteam.intellicode-api-usage-examples",
-      "aaron-bond.better-comments",
-      "eamodio.gitlens",
-      "ms-vsliveshare.vsliveshare"
-    ]
-  }
 }

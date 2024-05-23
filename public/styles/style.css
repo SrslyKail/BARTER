@@ -1,8 +1,5 @@
 /* Global variables and settings. Great for creating colorcodes. */
 :root {
-  /* --testBlue: #003c71;
-  --testYellow: #fff400;
-  --testPurple: #602aa9; */
   --barterBackground: #ffffff;
   --barterButtons: #000000;
   --barterText: #ffffff;
@@ -12,23 +9,34 @@
   /* background-color: var(--testBlue); */
 }
 
-/* #region global */
-* {
-    margin: 0;
-    padding: 0;
+/* #region Import Logo Font */
+@font-face {
+  font-family: "basquiatregular";
+  src: url("../basquiat.woff2") format("woff2"),
+    url("../basquiat.woff") format("woff"), url("../basquiat.otf") format("otf"),
+    url("../basquiat.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
 }
-/* #endregion global */
 
-/* #region searchbar component */
-.searchbarComponent {
-    display: flex;
-    height: 2em;
-    width: 100%;
-    align-items: center;
+/* #endregion Import Logo Font */
+
+/* #region header
+#profileButton {
+  width: 40pt;
+  margin: 0 2% 0 0 !important;
+  padding: 0;
+} */
+
+#profileButton * {
+  border: 1px solid black;
+  border-radius: 100%;
 }
-/* #endregion searchbar component */
 
-/* #region header */
+#menuIcon * {
+  width: 75%;
+}
+
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
@@ -36,40 +44,59 @@
 /* #endregion nestedExample*/
 /* #endregion header*/
 
-/* #region exampleOther */
-/* #endregion exampleOther*/
+/* #region userCard
+.userCard {
+  border: 1px solid gray;
+  background-color: lightgray;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 0 2% 0 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+}
+/* #endregion userCard*/
 
-/* #region index.ejs */
-.searchHero {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: var(--barterAccent);
-    color: var(--barterAccentText);
-    padding: 4vh;
-    justify-content: center;
+/* #region global */
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.heroHeaderText {
-    font-size: 2em;
-    padding-bottom: 2vh;
-    text-align: center;
+/* #endregion global */
+
+/* #region generics */
+.d-none {
+  display: none;
 }
 
-.iconsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    padding-top: 4vh;
+/*  */
+.mask {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
-.profileIcon {
-    display: flex;
-    padding-bottom: 4vh;
-    justify-items: center;
+.vh-10 {
+  max-height: 10vh;
 }
 
-.profileIcon img {
-    width: 40vw;
-    height: auto;
+.vh-5 {
+  max-height: 5vh;
 }
-/* #endregion index.ejs*/
+
+.vh-7 {
+  height: 7vh;
+}
+
+.mh-inherit {
+  max-height: inherit;
+}
+
+.mh-none {
+  max-height: none;
+}
+
+/* <a> links for login, register, forgot password */
+.link {
+  color: rgb(0, 140, 255);
+  text-decoration: none;
+}
+/* #endregion generics */

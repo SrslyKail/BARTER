@@ -1,0 +1,39 @@
+  <!-- Instructions: 
+    Use this to create groups of icons
+
+    include('templates/card-icon-generation, {db:db, count:count}
+
+    use DB to send a database to be iterated through
+    use count to determine a maximum number of icons, set to null for full db 
+    takes a parent page parameter to format the generated link on an icon, 
+      exclude if you don't want a link
+      folder format (/foldername)
+    
+    Instructions for card-image-icon:
+    Takes image and text parameters to generate card icons
+    Set text=null for no-image icons
+    Find mandatory CSS and options in cardIconStyle.css
+    Template for no text + no image: 
+    <%#- include('templates/components/card-image-icon', { image:"/wow.jpeg", folder:null, text:null}) %>
+    -->
+
+  <%#var catCount=Object.keys(db).length;%>
+  <!-- This breaks with current settings -->
+  <%#console.log("Category count: " + catCount);%>
+
+  <div class="iconGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-8">
+    <!--A loop for generating icons, 
+        loop works with grid settings in cardIconStyle.css
+        needs integration testing with bootstrap-->
+    <% let i=0; %>
+    <%if(count===null) {%>
+    <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
+    <% db.forEach(element => { /*console.log("Rendering", element);*/ %>
+    <div class="col-5 col-md-3"><%- include('components/card-image-icon', {image:element.image, text:element.name, folder:parentPage}) %> </div>
+    <% }); %>
+    <!-- This logic is for stating a max count, it won't work with the forEach above -->
+    <%} else {%>
+    <% for(i=0; i < catCount && i< count ; i++) { %>
+    <%- include('components/card-image-icon', {image:db.image, text:db.name, folder:parentPage})%>
+    <% }} %>
+  </div>
