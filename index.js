@@ -5,11 +5,11 @@ require("./utils.js");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const fs = require('fs');
+
+const crypto = require("crypto");
+const fs = require("fs");
+const Joi = require("joi");
 
 /* #endregion requiredModules */
 
@@ -17,39 +17,41 @@ const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
 const app = express();
-const Joi = require("joi");
 
+const {
+  getMongoStore,
+  getCollection,
+} = require("./scripts/modules/databaseConnection");
+const userCollection = getCollection("users");
+const profileCollection = getCollection("profiles");
+
+const {
+  User,
+  isAuthenticated,
+  isAdmin,
+  createSession,
+  getUser,
+  getUsername,
+  getEmail,
+} = require("./scripts/modules/localSession");
+
+//TODO CB: Delete this when we swap over to using User for cookie storage
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 
+const log = require("./scripts/modules/logging").log;
+const sendPasswordResetEmail =
+  require("./scripts/modules/mailer").sendPasswordResetEmail;
+
 /* #region secrets */
-const mongodb_host = process.env.MONGODB_HOST;
-const mongodb_user = process.env.MONGODB_USER;
-const mongodb_password = process.env.MONGODB_PASSWORD;
-const mongodb_database = process.env.MONGODB_DATABASE;
-const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
-const nodemailer_user = process.env.NODEMAILER_USER;
-const nodemailer_password = process.env.NODEMAILER_PASSWORD;
+
 /* #endregion secrets */
-
-var { database } = include("databaseConnection");
-
-const userCollection = database.db(mongodb_database).collection("users");
-const profileCollection = database.db(mongodb_database).collection("profiles");
-
-/* creates a mondodb store for session data*/
-var mongoStore = MongoStore.create({
-    mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
-    crypto: {
-        secret: mongodb_session_secret,
-    },
-});
 
 /* #region middleware */
 app.use(
     session({
         secret: node_session_secret,
-        store: mongoStore, //default is memory store
+        store: getMongoStore(), //default is memory store
         saveUninitialized: false,
         resave: true,
     })
@@ -61,7 +63,54 @@ app.use(
  * and sets up the middleware for parsing url-encoded data.
  */
 app.set("view engine", "ejs");
+
 app.use(express.urlencoded({ extended: false }));
+
+app.use("/", (req, res, next) => {
+    app.locals.authenticated = isAuthenticated(req);
+    next();
+});
+
+/**
+ * Middleware for validating a user is logged in.
+ * Redirects to /login if they are not.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {CallableFunction} next
+ */
+function validateSession(req, res, next) {
+    if (isAuthenticated(req)) {
+        next();
+    } else {
+        res.redirect("/login");
+    }
+}
+
+/**
+ * Middleware for validating a user is an admin in.
+ * Redirects to index if they are a not a user
+ * Sets status to 403 if the user is logged in, but not an admin.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {CallableFunction} next
+ */
+function validateAdmin(req, res, next) {
+    if (!isAuthenticated(req)) {
+        res.redirect("/");
+        return;
+    } else if (!isAdmin(req)) {
+        res.status(403);
+        // CB: Add whatever admin specific page we want here
+        res.render("#", {
+            user: getUser(req), // TODO Update local session to store user.
+            error: "403",
+        });
+        return;
+    } else {
+        next();
+    }
+}
 
 /* #endregion middleware */
 
@@ -72,22 +121,48 @@ app.use("/scripts", express.static("./scripts"));
 
 /* #endregion expressPathing */
 
+/* #region helperFunctions */
+
 /**
- *
+ * Generates the navlinks we want a user to access based on permissions
+ * within the local session.
+ * @param {Request} req
+ * @returns {Array}
  */
-app.use("/", (req, res, next) => {
-    app.locals.authenticated = req.session.authenticated;
-    next();
-});
+function generateNavLinks(req) {
+    let links = [{ name: "Home", link: "/" }];
+    if (isAuthenticated(req)) {
+        links.push(
+            { name: "Members", link: "/members" },
+            { name: "Log out", link: "/logout" }
+        );
+        // CB: We can uncomment this if we add an admin page
+        // if (isAdmin(req)) {
+        //   links.push({ name: "Admin", link: "/admin" });
+        // }
+    } else {
+        links.push(
+            { name: "Log in", link: "/login" },
+            { name: "Sign up", link: "/signup" }
+        );
+    }
+    return links;
+}
+
+/* #endregion helperFunctions
 
 /* #region serverRouting */
 app.get("/", async (req, res) => {
-    var username = req.session.username;
-    var authenticated = req.session.authenticated;
-/* Mock database for presentation*/
+    var username = getUsername(req);
+    var authenticated = isAuthenticated(req);
+    /* Mock database for presentation*/
     var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
     // var db = JSON.parse(fs.readFileSync("catsDB.json"));
-    res.render("index", { authenticated: authenticated, username: username, db: db });
+    res.render("index", {
+        authenticated: authenticated,
+        username: username,
+        db: db,
+    });
 });
 
 /**
@@ -134,11 +209,11 @@ app.post("/loggingin", async (req, res) => {
         return;
     }
     if (await bcrypt.compare(password, result[0].password)) {
-        req.session.authenticated = true;
-        req.session.username = result[0].username;
-        req.session.user_type = result[0].user_type;
-        req.session.cookie.maxAge = expireTime;
-
+        createSession(
+            req,
+            result[0].username,
+            result[0].isAdmin ? true : false
+        );
         res.redirect("/");
         return;
     } else {
@@ -157,7 +232,7 @@ app.get("/loginInvalid", async (req, res) => {
  * (this either needs to be changed or implemented)
  */
 app.get("/profile", async (req, res) => {
-    if (!req.session.authenticated) {
+    if (!isAuthenticated(req)) {
         res.redirect("/login");
         return;
     }
@@ -167,7 +242,7 @@ app.get("/profile", async (req, res) => {
     console.log(profile);
     //if we cant find the requested profile, get the current users profile
     if (!profile) {
-        profile = await getUserProfile(req.session.username);
+        profile = await getUserProfile(getUsername(req));
         // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
         if (!profile) {
             console.error(`Could not find profile page for ${username}!`);
@@ -176,10 +251,14 @@ app.get("/profile", async (req, res) => {
     }
 
     // ! We need to check the user has skills and a location set; otherwise we can crash.
+    // vinc: the profile database doesn't store emails yet, so making a placeholder for now.
+    let email = profile.email ? profile.email : "test@email.com";
+
     res.render("profile", {
         user: profile.username,
         location: profile.location,
         skills: profile.skills,
+        email: email,
     });
 });
 
@@ -189,56 +268,12 @@ async function getUserProfile(username) {
     return await profileCollection.findOne({ username: username });
 }
 
-
-
-/**
- *  Create a nodemailer transporter
- */
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: nodemailer_user,
-        pass: nodemailer_password,
-    },
-});
-
-
-/**
- * Function to send password reset email
- * @param {*} email User's email
- * @param {*} token Received token
- * @param {*} timestamp Time when the token was generated
- */
-async function sendPasswordResetEmail(email, token, timestamp) {
-    const mailOptions = {
-        from: 'barter.bby14@gmail.com',
-        to: email,
-        subject: 'Password Reset',
-        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
-            `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
-            `http://localhost:${port}/passwordReset/${token}\n\n` +
-            `The link will expire in 5 minutes\n\n` +
-            `If you did not request this, please ignore this email and your password will remain unchanged.\n`
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log('Password reset email sent');
-    } catch (error) {
-        console.error('Error sending password reset email:', error);
-    }
-}
-
 /**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
     res.render("passwordReset", {});
 });
-
 
 app.get("/passwordReset/:token", async (req, res) => {
     const token = req.params.token;
@@ -248,7 +283,7 @@ app.get("/passwordReset/:token", async (req, res) => {
 
     if (!user) {
         // Token not found or expired
-        return res.status(400).send('Invalid or expired token');
+        return res.status(400).send("Invalid or expired token");
     }
 
     // Check if token has expired (more than 5 minutes)
@@ -259,15 +294,16 @@ app.get("/passwordReset/:token", async (req, res) => {
 
     if (timeDifference > fiveMinutes) {
         // Token has expired, invalidate it
-        await userCollection.updateOne({ resetToken: token },
-            { $unset: { resetToken: "", resetTokenTimestamp: "" } });
-        return res.status(400).send('Token expired');
+        await userCollection.updateOne(
+            { resetToken: token },
+            { $unset: { resetToken: "", resetTokenTimestamp: "" } }
+        );
+        return res.status(400).send("Token expired");
     }
 
     // Render the password reset page
     res.render("passwordChange", { token });
 });
-
 
 //searches for the user in the database with the provided email.
 app.post("/passwordResetting", async (req, res) => {
@@ -282,12 +318,12 @@ app.post("/passwordResetting", async (req, res) => {
     try {
         // Associate token with user's email in the database
         await userCollection.updateOne(
-      { email: email },
-      {
-            $set: {
-                resetToken: token,
-                resetTokenTimestamp: timestamp,
-        },
+            { email: email },
+            {
+                $set: {
+                    resetToken: token,
+                    resetTokenTimestamp: timestamp,
+                },
             }
         );
 
@@ -347,8 +383,8 @@ app.post("/passwordChanging", async (req, res) => {
             $set: { password: newPassword },
             $unset: {
                 resetToken: "",
-                resetTokenTimestamp: ""
-            }
+                resetTokenTimestamp: "",
+            },
         }
     );
 
@@ -378,7 +414,10 @@ app.post("/submitUser", async (req, res) => {
         username: Joi.string().alphanum().max(20).required(),
         password: Joi.string().max(20).required(),
         email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "ca"] } })
+            .email({
+                minDomainSegments: 2,
+                tlds: { allow: ["com", "net", "ca"] },
+            })
             .required(),
     });
 
@@ -399,35 +438,25 @@ app.post("/submitUser", async (req, res) => {
         // Hash password
         var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert into collection
-        await userCollection.insertOne({
-            username: username,
-            email: email,
-            password: hashedPassword,
-        });
+    // Insert into collection
+    await userCollection.insertOne({
+      username: username,
+      email: email,
+      password: hashedPassword,
+      isAdmin: false,
+    });
 
-        createSession(req, username, false);
-        res.redirect("/");
-        return;
-    } else {
-        //catch-all redirect to signup, sends errors
-        res.render("signup", {
-            errors: errors,
-        });
-        return;
-    }
+    createSession(req, username, false, email);
+    res.redirect("/");
+    return;
+  } else {
+    //catch-all redirect to signup, sends errors
+    res.render("signup", {
+      errors: errors,
+    });
+    return;
+  }
 });
-
-/**
- * Sets the authentication, username, and expiration date for the session
- * @param {Request} req
- */
-function createSession(req, username, isAdmin) {
-    req.session.authenticated = true;
-    req.session.username = username;
-    req.session.isAdmin = isAdmin;
-    req.session.cookie.maxAge = expireTime;
-}
 
 /**
  * Post method for logout buttons.

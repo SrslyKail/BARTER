@@ -35,7 +35,7 @@
     position: relative;
     background-color: #17191595;
     /*Optional Hex: RRGGBBAA*/
-    /* align-content: center; */
+    align-content: center;
     /*Optional: needed with higher text background height*/
     height: 2.5em;
     /*Optional: adjusts text background height*/
