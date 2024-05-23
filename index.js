@@ -20,8 +20,8 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 const {
-  getMongoStore,
-  getCollection,
+    getMongoStore,
+    getCollection,
 } = require("./scripts/modules/databaseConnection");
 const userCollection = getCollection("users");
 /** @type {Collection} */
@@ -32,13 +32,13 @@ const skillCatCollection = getCollection("skillCats");
 const skillCollection = getCollection("skills");
 
 const {
-  User,
-  isAuthenticated,
-  isAdmin,
-  createSession,
-  getUser,
-  getUsername,
-  getEmail,
+    User,
+    isAuthenticated,
+    isAdmin,
+    createSession,
+    getUser,
+    getUsername,
+    getEmail,
 } = require("./scripts/modules/localSession");
 
 //TODO CB: Delete this when we swap over to using User for cookie storage
@@ -46,7 +46,7 @@ const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 
 const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
-  require("./scripts/modules/mailer").sendPasswordResetEmail;
+    require("./scripts/modules/mailer").sendPasswordResetEmail;
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -73,6 +73,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/", (req, res, next) => {
+    app.locals.modalLinks = generateNavLinks(req);
     app.locals.authenticated = isAuthenticated(req);
     next();
 });
@@ -118,6 +119,42 @@ function validateAdmin(req, res, next) {
     }
 }
 
+/**Middleware for generating nav and modal menu arrays
+ * "name" is text, "link" is the address
+ */
+function generateNavLinks(req) {
+    const links = [{ name: "Home", link: "/" }];
+    const modalArray = [];
+
+    if (isAuthenticated(req)) {
+        links.push(
+            { name: "Members", link: "/members" },
+            { name: "Log out", link: "/logout" },
+        );
+        modalArray.push(
+            { name: "View Profile", link: "/profile" },
+            { name: "History", link: "/history" },
+            { name: "Settings", link: "/settings" },
+            { name: "Legal", link: "/legal" },
+            { name: "Log out", link: "/logout" }
+        );
+        // CB: We can uncomment this if we add an admin page
+        // if (isAdmin(req)) {
+        //   links.push({ name: "Admin", link: "/admin" });
+        // }
+    } else {
+        links.push(
+            { name: "Log in", link: "/login" },
+            { name: "Sign up", link: "/signup" }
+        );
+        modalArray.push(
+            { name: "Log in", link: "/login" },
+            { name: "Sign up", link: "/signup" }
+        );
+    }
+    return modalArray
+}
+
 /* #endregion middleware */
 
 /* #region expressPathing */
@@ -136,126 +173,126 @@ app.use("/scripts", express.static("./scripts"));
  * @param {Request} req
  * @returns {Array}
  */
-function generateNavLinks(req) {
-    let links = [{ name: "Home", link: "/" }];
-    if (isAuthenticated(req)) {
-        links.push(
-            { name: "Members", link: "/members" },
-            { name: "Log out", link: "/logout" }
-        );
-        // CB: We can uncomment this if we add an admin page
-        // if (isAdmin(req)) {
-        //   links.push({ name: "Admin", link: "/admin" });
-        // }
-    } else {
-        links.push(
-            { name: "Log in", link: "/login" },
-            { name: "Sign up", link: "/signup" }
-        );
-    }
-    return links;
-}
+// function generateNavLinks(req) {
+//     let links = [{ name: "Home", link: "/" }];
+//     if (isAuthenticated(req)) {
+//         links.push(
+//             { name: "Members", link: "/members" },
+//             { name: "Log out", link: "/logout" }
+//         );
+//         // CB: We can uncomment this if we add an admin page
+//         // if (isAdmin(req)) {
+//         //   links.push({ name: "Admin", link: "/admin" });
+//         // }
+//     } else {
+//         links.push(
+//             { name: "Log in", link: "/login" },
+//             { name: "Sign up", link: "/signup" }
+//         );
+//     }
+//     return links;
+// }
 
 /* #endregion helperFunctions
 
 /* #region serverRouting */
 app.get("/", async (req, res) => {
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  /* Mock database for presentation*/
-  //   var db = skillCatCollection;
-  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
-  // CB: This will make it so we only show the names; if you want the id, make _id: 1
-  const all = skillCatCollection.find().project({ image: 1, name: 1 });
-  // console.log(all)
-  /* 
-  CB: the await here is the secret sauce!
-  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-  */
-  let skillCats = [];
-  for await (const skillCat of all) {
-    // console.log("All:", skill);
-    skillCats.push(skillCat);
-  }
-  // console.log(skillCats);
-  res.render("index", {
-    authenticated: authenticated,
-    username: username,
-    parentPage: "/category",
-    db: skillCats,
-  });
-  // console.log("Finished loading /");
+    var username = getUsername(req);
+    var authenticated = isAuthenticated(req);
+    /* Mock database for presentation*/
+    //   var db = skillCatCollection;
+    //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    // CB: This will make it so we only show the names; if you want the id, make _id: 1
+    const all = skillCatCollection.find().project({ image: 1, name: 1 });
+    // console.log(all)
+    /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+    */
+    let skillCats = [];
+    for await (const skillCat of all) {
+        // console.log("All:", skill);
+        skillCats.push(skillCat);
+    }
+    // console.log(skillCats);
+    res.render("index", {
+        authenticated: authenticated,
+        username: username,
+        parentPage: "/category",
+        db: skillCats,
+    });
+    // console.log("Finished loading /");
 });
 
 app.get("/category/:skillCat", async (req, res) => {
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  //   console.log(req);
-  let skillCat = req.params.skillCat;
-  // console.log(skillCat);
+    var username = getUsername(req);
+    var authenticated = isAuthenticated(req);
+    //   console.log(req);
+    let skillCat = req.params.skillCat;
+    // console.log(skillCat);
 
-  const category = await skillCatCollection.findOne({ name: skillCat });
-  // console.log(category);
-  const skillObjectArray = category.catSkills;
-  const catName = category.name;
-  const catImage = category.image;
-  // console.log(catImage);
-  /* 
-  CB: the await here is the secret sauce!
-  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-  */
-  let skills = [];
+    const category = await skillCatCollection.findOne({ name: skillCat });
+    // console.log(category);
+    const skillObjectArray = category.catSkills;
+    const catName = category.name;
+    const catImage = category.image;
+    // console.log(catImage);
+    /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+    */
+    let skills = [];
 
-  for await (const skillID of skillObjectArray) {
-    let curSkill = await skillCollection.findOne({ _id: skillID });
-    // console.log(curSkill)
-    skills.push(curSkill);
-  }
-  // console.log(skills)
-  res.render("category", {
-    authenticated: authenticated,
-    username: username,
-    db: skills,
-    parentPage: "/skill",
-    catName: catName,
-    catImage: catImage,
-  });
-  return;
+    for await (const skillID of skillObjectArray) {
+        let curSkill = await skillCollection.findOne({ _id: skillID });
+        // console.log(curSkill)
+        skills.push(curSkill);
+    }
+    // console.log(skills)
+    res.render("category", {
+        authenticated: authenticated,
+        username: username,
+        db: skills,
+        parentPage: "/skill",
+        catName: catName,
+        catImage: catImage,
+    });
+    return;
 });
 
 app.get("/skill/:skill", async (req, res) => {
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  //   console.log(req);
-  let skill = req.params.skill;
-  // console.log(skillCat);
+    var username = getUsername(req);
+    var authenticated = isAuthenticated(req);
+    //   console.log(req);
+    let skill = req.params.skill;
+    // console.log(skillCat);
 
-  const category = await skillCollection.findOne({ name: skill });
-  // console.log(category);
-  const skillName = category.name;
-  const skillImage = category.image;
-  // console.log(catImage);
-  /* 
-  CB: the await here is the secret sauce!
-  https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-  */
-  // let skills = [];
+    const category = await skillCollection.findOne({ name: skill });
+    // console.log(category);
+    const skillName = category.name;
+    const skillImage = category.image;
+    // console.log(catImage);
+    /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+    */
+    // let skills = [];
 
-  // for await (const skillID of skillObjectArray) {
-  //   let curSkill = await skillCollection.findOne({ _id: skillID });
+    // for await (const skillID of skillObjectArray) {
+    //   let curSkill = await skillCollection.findOne({ _id: skillID });
     // console.log(curSkill)
-  //   skills.push(curSkill);
-  // }
-  // console.log(skills)
-  res.render("skill", {
-    authenticated: authenticated,
-    username: username,
-    // db: skills,
-    // parentPage: "/profile",
-    catName: skillName,
-    catImage: skillImage,
-  });
-  return;
+    //   skills.push(curSkill);
+    // }
+    // console.log(skills)
+    res.render("skill", {
+        authenticated: authenticated,
+        username: username,
+        // db: skills,
+        // parentPage: "/profile",
+        catName: skillName,
+        catImage: skillImage,
+    });
+    return;
 });
 
 /**
@@ -406,7 +443,7 @@ app.post("/passwordResetting", async (req, res) => {
     const token = crypto.randomBytes(20).toString("hex");
     const timestamp = new Date().getTime();
 
-  let result;
+    let result;
 
     try {
         // Associate token with user's email in the database
@@ -429,8 +466,8 @@ app.post("/passwordResetting", async (req, res) => {
         result = `A password reset link has been sent to your email.<br><br> Please follow the instructions in the email to change your password.`;
     } catch (error) {
         result = ("Error initiating password reset:", error);
-            }
-res.render("passwordReset", { result: result });
+    }
+    res.render("passwordReset", { result: result });
 });
 
 //user has been found, so lets change the email now.
@@ -531,24 +568,24 @@ app.post("/submitUser", async (req, res) => {
         // Hash password
         var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Insert into collection
-    await userCollection.insertOne({
-      username: username,
-      email: email,
-      password: hashedPassword,
-      isAdmin: false,
-    });
+        // Insert into collection
+        await userCollection.insertOne({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            isAdmin: false,
+        });
 
-    createSession(req, username, false, email);
-    res.redirect("/");
-    return;
-  } else {
-    //catch-all redirect to signup, sends errors
-    res.render("signup", {
-      errors: errors,
-    });
-    return;
-  }
+        createSession(req, username, false, email);
+        res.redirect("/");
+        return;
+    } else {
+        //catch-all redirect to signup, sends errors
+        res.render("signup", {
+            errors: errors,
+        });
+        return;
+    }
 });
 
 /**
