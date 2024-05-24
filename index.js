@@ -57,8 +57,12 @@ app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: false }));
 
+I/**
+ * Generate stuff we need for every page
+ */
 app.use("/", (req, res, next) => {
     app.locals.authenticated = isAuthenticated(req);
+    app.locals.userIcon = getUserIcon(req);
     next();
 });
 
@@ -71,6 +75,7 @@ app.use("/", (req, res, next) => {
  */
 function validateSession(req, res, next) {
     if (isAuthenticated(req)) {
+        req.session.userIcon = getUserIcon();
         next();
     } else {
         res.redirect("/login");
@@ -136,6 +141,13 @@ function generateNavLinks(req) {
             { name: "Members", link: "/members" },
             { name: "Log out", link: "/logout" }
         );
+        modalArray.push(
+            { name: "View Profile", link: "/profile" },
+            { name: "History", link: "/history" },
+            { name: "Settings", link: "/settings" },
+            { name: "Legal", link: "/legal" },
+            { name: "Log out", link: "/logout" }
+        );
         // CB: We can uncomment this if we add an admin page
         // if (isAdmin(req)) {
         //   links.push({ name: "Admin", link: "/admin" });
@@ -146,8 +158,32 @@ function generateNavLinks(req) {
             { name: "Sign up", link: "/signup" }
         );
     }
-    return links;
+    return modalArray;
 }
+
+function getUserIcon(username) {
+    if (!req.userIcon) {
+        let userIcon = profile.userIcon
+        ? "https://res.cloudinary.com/dxttfq7qd/image/upload/" +
+          profile.userIcon
+        : "img/profileIconLoggedOut.png";
+    } else {
+        
+    }
+
+}
+
+/* #endregion middleware */
+
+/* #region expressPathing */
+app.use(express.static(__dirname + "/public"));
+app.use("/img", express.static("./img"));
+app.use("/styles", express.static("./styles"));
+app.use("/scripts", express.static("./scripts"));
+
+/* #endregion expressPathing */
+
+/* #region helperFunctions */
 
 /* #endregion helperFunctions
 
@@ -214,6 +250,7 @@ app.post("/loggingin", async (req, res) => {
             result[0].username,
             result[0].isAdmin ? true : false
         );
+        req.session.userIcon = getUserIcon(getUserProfile(req.session.username));
         res.redirect("/");
         return;
     } else {
@@ -257,13 +294,18 @@ app.get("/profile", async (req, res) => {
     // vinc: the profile database doesn't store emails yet, so making a placeholder for now.
     let email = profile.email ? profile.email : "test@email.com";
 
+    let userIcon = profile.userIcon
+        ? "https://res.cloudinary.com/dxttfq7qd/image/upload/" +
+          profile.userIcon
+        : "img/profileIconLoggedOut.png";
+
     res.render("profile", {
         user: profile.username,
         location: profile.location,
         skills: profile.skills,
         email: email,
         uploaded: req.query.success,
-        userIcon: profile.userIcon,
+        userIcon: userIcon,
     });
 });
 

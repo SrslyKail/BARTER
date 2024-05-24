@@ -8,14 +8,17 @@ class User {
      * @param {Boolean} authenticated
      * @param {Boolean} admin
      * @param {String} username
+     * @param {email} email
      */
-    constructor(authenticated, admin, username) {
+    constructor(authenticated, admin, username, email) {
         /** @type {boolean} */
         this.isAuthenticated = authenticated;
         /** @type {boolean} */
         this.isAdmin = admin;
         /** @type {string} */
         this.username = username;
+        /** @type {string} */
+        this.email = email;
     }
 }
 
@@ -25,9 +28,9 @@ class User {
  * @param {String} username The username of this user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  */
-function createSession(req, username, admin = false) {
+function createSession(req, username, admin = false, email) {
     req.session.cookie.maxAge = expireTime;
-    let user = new User(true, admin, username);
+    let user = new User(true, admin, username, email);
     req.session.user = user;
 }
 
@@ -75,24 +78,9 @@ function getUser(req) {
     return user ? user : null;
 }
 
-/**
- *
- * @param {Request} req
- * @returns {User | null}
- */
-function getProfilePicture(req) {
-    let userIcon = req.userIcon;
-    return userIcon ? userIcon : null;
-}
-
-/**
- *
- * @param {Request} req
- * @returns {User | null}
- */
-function getUserEmail(req) {
-    let email = req.session.email;
-    return email ? email : "user@email.com";
+function getEmail(req) {
+    let user = req.session.user;
+    return user ? user.email : null;
 }
 
 module.exports = {
@@ -102,6 +90,5 @@ module.exports = {
     isAdmin,
     getUsername,
     getUser,
-    getProfilePicture,
-    getUserEmail,
+    getEmail,
 };
