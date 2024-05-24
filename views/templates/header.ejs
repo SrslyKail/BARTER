@@ -41,28 +41,15 @@
     <div class="modal-dialog modal-xl my-0 fixed-bottom">
       <div class="modal-content rounded-top-5">
         <div class="modal-body container-fluid">
-          <!-- ! CB: TODO Make this a loop and have the links/text passed in as an object from the server. That'll keep styling more consistent. -->
-          <% if (locals.authenticated) { %>
           <div class="d-flex flex-column gap-1 text-start">
-            <a class="fs-3 text-decoration-none text-black" href="/signup"><b>Sign up</b></a>
-            <a class="fs-3 text-decoration-none text-black" href=" /login"><b>Log in</b></a>
-
-            <a class="fs-3 text-decoration-none text-black" href="/profile"><b>View Profile</b></a>
-            <a class="fs-3 text-decoration-none text-black" href="/history"><b>History</b></a>
-            <a class="fs-3 text-decoration-none text-black" href="/settings"><b>Settings</b></a>
-            <a class="fs-3 text-decoration-none text-black" href="/legal"><b>Legal</b></a>
-            <a class="fs-3 text-decoration-none text-black" href="/logout"><b>Log out</b></a>
+            <% modalArray = modalLinks%>
+            <% modalArray.forEach((element) =>{%>
+            <a class="fs-3 text-decoration-none text-black" href=<%= element.link %>><b><%= element.name %></b></a>
+            <% }) %>
           </div>
         </div>
-        <% } else { %>
-        <div class="d-flex flex-column mx-2 text-center">
-          <a class="fs-3 text-decoration-none text-black" href="/signup"><b>Sign up</b></a>
-          <a class="fs-3 text-decoration-none text-black" href=" /login"><b>Log in</b></a>
-        </div>
-        <% } %>
       </div>
     </div>
-  </div>
   </div>
   <!-- #endregion modal -->
 
