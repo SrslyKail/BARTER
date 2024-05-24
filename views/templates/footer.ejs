@@ -2,14 +2,26 @@
 
 <!-- CB: Footer is currently set up to be 50% of the screen width, 
     and sticks to the bottom of the screen -->
-<footer class="w-50 position-fixed bottom-0 end-0 px-5 py-3 translate-middle-x ">
+<footer class="w-100 position-fixed bottom-0 d-inline-flex justify-content-center px-0 py-3">
+  <% if (typeof footerButton !== 'undefined') { %>
+  <%- footerButton %>
+  <% } %>
 </footer>
-
 <!-- Import Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 <!-- Scripts go here -->
-<script></script>
+<script>
+  // I don't know why, but this is what works
+  console.log(<%=zamn%>)
+  if (<%=zamn%>) {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.addEventListener("click", () => {
+        new Audio("https://res.cloudinary.com/djdztuwwe/video/upload/v1716578719/qvw5b8ghcmlcirpo4ezq.mp3").play();
+      })
+    })
+  }
+</script>
 </body>
 
 </html>

@@ -8,7 +8,7 @@
     "files.autoSave": "afterDelay",
     "editor.detectIndentation": false,
     "editor.insertSpaces": true,
-    "editor.tabSize": 4,
+    "editor.tabSize": 2,
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 80,
     "editor.rulers": [80],
@@ -18,7 +18,27 @@
     "editor.autoClosingQuotes": "always",
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "liveServer.settings.port": 5500
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    "liveServer.settings.port": 5500,
+
+    "prettier.bracketSameLine": true,
+    "prettier.bracketSpacing": true,
+    "prettier.semi": true,
+    "prettier.singleQuote": false,
+    "prettier.tabWidth": 2,
+    "prettier.trailingComma": "es5",
+    "prettier.useTabs": false,
+
+    "emmet.includeLanguages": {
+      "ejs": "html"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "j69.ejs-beautify"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
   },
   "extensions": {
     "recommendations": [
@@ -35,7 +55,8 @@
       "aaron-bond.better-comments",
       "eamodio.gitlens",
       "ms-vsliveshare.vsliveshare",
-      "maptz.regionfolder"
+      "maptz.regionfolder",
+      "esbenp.prettier-vscode"
     ]
   }
 }
