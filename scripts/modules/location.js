@@ -1,3 +1,7 @@
+/**
+ * Module for tracking user location, and querying about locations to Google Maps
+ */
+
 require("dotenv").config();
 const {
     Client,
@@ -30,7 +34,7 @@ async function testFetch() {
     console.log(res.data);
 }
 /**@type {GeolocationPosition} */
-let userPosition;
+let userPosition = null;
 
 /** @type {PositionOptions} */
 const positionOptions = {

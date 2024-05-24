@@ -1,3 +1,7 @@
+/**
+ * Module for rendering a google maps window in the website.
+ */
+
 let google = require("@googlemaps/js-api-loader");
 let location = require("./location");
 const userPosition = location.userPosition;
@@ -5,10 +9,13 @@ let map, infoWindow;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -34.397, lng: 150.644 },
+        center:
+            userPosition != null
+                ? userPosition
+                : { lat: -34.397, lng: 150.644 },
         zoom: 6,
     });
-    
+
     infoWindow = new google.maps.InfoWindow();
 
     const locationButton = document.createElement("button");
