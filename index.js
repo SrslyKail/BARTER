@@ -565,7 +565,7 @@ app.post("/searchSubmit", (req, res) => {
 
 app.get("/zamn", (req, res) => {
   zamn = !zamn;
-  app.locals = zamn;
+  app.locals.zamn = zamn;
   console.warn("ZAMN?", zamn);
   res.redirect("back");
 });
