@@ -12,7 +12,14 @@ class User {
    * @param {String} email
    * @param {URL | String} userIcon
    */
-  constructor(authenticated, admin, username, email, userIcon = defaultIcon, history) {
+  constructor(
+    authenticated,
+    admin,
+    username,
+    email,
+    userIcon = defaultIcon,
+    history
+  ) {
     /** @type {boolean} */
     this.isAuthenticated = authenticated;
     /** @type {boolean} */
@@ -100,7 +107,7 @@ function getUserIcon(req) {
  */
 function getHistory(req) {
   let user = getUser(req);
-  return history ? user.history : null;
+  return user ? user.history : null;
 }
 
 /**
