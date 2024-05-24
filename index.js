@@ -49,6 +49,8 @@ const sendPasswordResetEmail =
 
 const uploadRoute = require("./scripts/imgUpload.js");
 
+let zamn = false;
+
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
@@ -58,7 +60,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/imgs", express.static("./imgs"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
-
+app.use("/audio", express.static("./audio"));
 /* #endregion expressPathing */
 
 /* #region middleware */
@@ -91,6 +93,7 @@ app.use((req, res, next) => {
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
+  app.locals.zamn = zamn;
   next();
 });
 
@@ -558,6 +561,13 @@ app.get("/logout", (req, res) => {
 
 app.post("/searchSubmit", (req, res) => {
   //TODO: Search Code.
+});
+
+app.get("/zamn", (req, res) => {
+  zamn = !zamn;
+  app.locals = zamn;
+  console.warn("ZAMN?", zamn);
+  res.redirect("back");
 });
 /**
  * handles all routes that are not matched by any other route.
