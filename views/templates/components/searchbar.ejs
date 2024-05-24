@@ -3,4 +3,27 @@
     <i class="bi bi-search"></i>
   </span>
   <input type="text" class="form-control" placeholder="Search">
+  <span id="search_result"></span>
 </div>
+<script>
+  function loadData(query = "") {
+    fetch(`/get_data?searchQuery=${query}`).then((res) => {
+      return res.json();
+    }).then((resData) => {
+      let resList = document.createElement("ul");
+      resList.classList.add("list-group");
+      if (resData.length > 0) {
+        resData.forEach((data) => {
+          var regEx = new RegExp('(' + query + ')', 'gi');
+          let listItem = document.createElement("a");
+          listItem.href = "#";
+          listItem.classList.add("list-group");
+          console.log(data);
+          // listItem.append(data);
+          resList.append(listItem);
+        });
+      }
+
+    })
+  }
+</script>

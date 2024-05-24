@@ -556,6 +556,20 @@ app.get("/logout", (req, res) => {
   res.redirect("/"); // Sends back to the homepage
 });
 
+/**
+ * SEARCHBAR AUTOCOMPLETE TESTING
+ */
+app.get("/get_data", async (req, res) => {
+  let searchQuery = req.query.searchQuery;
+  let query = await userSkillsCollection.find({
+    // option i allows for case insensitive
+    // for more mongo regex options, read up
+    // https://www.mongodb.com/docs/manual/reference/operator/query/regex/
+    name: { $regex: `.${searchQuery}`, $options: "i" },
+  });
+  console.log(query);
+});
+
 app.post("/searchSubmit", (req, res) => {
   //TODO: Search Code.
 });
