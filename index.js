@@ -208,6 +208,11 @@ app.get("/skill/:skill", async (req, res) => {
   //   console.log(req);
   let skill = req.params.skill;
   // console.log(skillCat);
+  if (skill == "Chronoscope Repair"){
+    app.locals.modalLinks.push(
+      { name: "Zamn!", link: "/zamn" }
+    )
+  }
 
   const category = await userSkillsCollection.findOne({ name: skill });
   // console.log(category);
