@@ -1,0 +1,20 @@
+<%- include("templates/header") %>
+<title>HISTORY PAGE</title>
+
+<div class="d-flex justify-content-center text-center">
+    <h1>HISTORY PAGE</h1>
+</div><br>
+<div class="d-flex justify-content-center text-center">
+    <p>CHECK YOUR VIEW HISTORY</p>
+</div>
+
+<div class="d-flex container justify-content-center">
+  <form method="post" action="/visited">
+    <button type="submit" class="btn btn-secondary btn-lg">VISITED</button>
+  </form>
+  <form method="post" action="/contacted">
+    <button type="submit" class="btn btn-dark btn-lg">CONTACTED</button>
+  </form>
+</div>
+
+<%- include("templates/footer") %>

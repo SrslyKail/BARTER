@@ -12,7 +12,7 @@ class User {
    * @param {String} email
    * @param {URL | String} userIcon
    */
-  constructor(authenticated, admin, username, email, userIcon = defaultIcon) {
+  constructor(authenticated, admin, username, email, userIcon = defaultIcon, history) {
     /** @type {boolean} */
     this.isAuthenticated = authenticated;
     /** @type {boolean} */
@@ -21,7 +21,10 @@ class User {
     this.username = username;
     /** @type {string} */
     this.email = email;
+    /** @type {URL | String} */
     this.userIcon = formatProfileIconPath(userIcon);
+    /** @type {array} */
+    this.history = history;
   }
 }
 
@@ -38,10 +41,11 @@ function createSession(
   username,
   email,
   admin = false,
-  userIcon = defaultIcon
+  userIcon = defaultIcon,
+  history
 ) {
   req.session.cookie.maxAge = expireTime;
-  let user = new User(true, admin, username, email, userIcon);
+  let user = new User(true, admin, username, email, userIcon, history);
   req.session.user = user;
 }
 
@@ -94,6 +98,16 @@ function getUserIcon(req) {
  * @param {Request} req
  * @returns {URL | String}
  */
+function getHistory(req) {
+  let user = getUser(req);
+  return history ? user.history : null;
+}
+
+/**
+ *
+ * @param {Request} req
+ * @returns {URL | String}
+ */
 function getUser(req) {
   let user = req.session.user;
   return user ? user : null;
@@ -110,7 +124,7 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
-  if (path.includes(cloudinaryString) || path == defaultIcon){
+  if (path.includes(cloudinaryString) || path == defaultIcon) {
     return path;
   }
   return cloudinaryString + path;
@@ -124,7 +138,8 @@ module.exports = {
   getUsername,
   getUser,
   getEmail,
+  getHistory,
   getUserIcon,
   defaultIcon,
-  formatProfileIconPath
+  formatProfileIconPath,
 };

@@ -27,6 +27,7 @@ const {
   getUsername,
   getUserIcon,
   getEmail,
+  getHistory,
   defaultIcon,
   formatProfileIconPath,
 } = require("./scripts/modules/localSession");
@@ -275,7 +276,14 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
-    createSession(req, user.username, user.email, user.isAdmin, user.userIcon);
+    createSession(
+      req,
+      user.username,
+      user.email,
+      user.isAdmin,
+      user.userIcon,
+      user.history
+    );
     res.redirect("/");
     return;
   } else {
@@ -349,6 +357,32 @@ app.get("/editProfile", (req, res) => {
   res.render("editProfile", {
     name: req.query.name,
   });
+});
+
+/**
+ * History Page.
+ */
+app.get("/history", (req, res) => {
+  console.log("History: " + getHistory(req));
+  res.render("history", {});
+});
+
+app.post("/visited", (req, res) => {
+  console.log([
+    new ObjectId("507f1f77bcf86cd799439011"),
+    new ObjectId("507f1f77bcf86cd799439012"),
+    new ObjectId("507f1f77bcf86cd799439013"),
+  ]);
+  res.redirect("/history");
+});
+
+app.post("/contacted", (req, res) => {
+  console.log([
+    new ObjectId("507f1f77bcf86cd799439014"),
+    new ObjectId("507f1f77bcf86cd799439015"),
+    new ObjectId("507f1f77bcf86cd799439016"),
+  ]);
+  res.redirect("/history");
 });
 
 /**
