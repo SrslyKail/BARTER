@@ -8,7 +8,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const MongoClient = require("mongodb").MongoClient;
 const MongoStore = require("connect-mongo");
-const { Collection } = require("mongodb");
+const { Collection, ObjectId } = require("mongodb");
 
 const database = getMongoClient();
 
@@ -46,4 +46,4 @@ function getCollection(collection) {
   return database.db(mongodb_database).collection(collection);
 }
 
-module.exports = { getMongoStore, getCollection };
+module.exports = { getMongoStore, getCollection, ObjectId };
