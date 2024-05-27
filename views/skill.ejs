@@ -1,0 +1,10 @@
+<%- include("templates/header", {index: false}) %>
+<%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
+<div>
+  <% db.forEach((user) => { %>
+  <%- include('templates/components/profileCard', {userCard: user}); %>
+  <% }) %>
+  <%#- db.forEach((user) =>  %>
+
+</div>
+<%- include("templates/footer") %>
