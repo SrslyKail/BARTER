@@ -35,9 +35,9 @@ const {
   getCollection,
   ObjectId,
 } = require("./scripts/modules/databaseConnection");
-const userCollection = getCollection("users");
+
 /** @type {Collection} */
-const profileCollection = getCollection("profiles");
+const userCollection = getCollection("users");
 /** @type {Collection} */
 const skillCatCollection = getCollection("skillCats");
 /** @type {Collection} */
