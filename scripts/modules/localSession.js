@@ -111,12 +111,13 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
-  if (path.includes(cloudinaryString)) {
-    return path;
-  } else if (path == defaultIcon || path == null || path == undefined) {
+  if (path == defaultIcon || path == null || path == undefined) {
     return "/" + path;
+  } else if (path.includes(cloudinaryString)) {
+    return path;
+  } else {
+    return cloudinaryString + path;
   }
-  return cloudinaryString + path;
 }
 
 module.exports = {
