@@ -368,46 +368,41 @@ app.get("/editProfile", (req, res) => {
 /**
  * History Page.
  */
-app.get("/history", async (req, res) => {
+app.get("/history/:filter", async (req, res) => {
+  const filter = req.params.filter;
+
+  let users = [];
+
+  //Check current user.
   let currentUser = getUser(req);
+
   if (!currentUser) {
-    res.redirect("/");
+    return res.redirect("/");
   }
+
   currentUser = await userCollection.findOne({
     username: getUsername(req),
   });
-  console.log(currentUser.history.visited);
-  // console.warn(currentUser);
-  let visited = userCollection.find({
-    _id: { $in: currentUser.history.visited },
+
+  // console.log(currentUser.history.visited);
+
+  const data = userCollection.find({
+    _id: { $in: currentUser.history[filter] },
   });
-  // console.log("Looking for visited users");
-  for await (const user of visited) {
-    console.log(user);
+
+  for await (const user of data) {
+    users.push(user);
   }
 
-  // for (person in currentUser.history.visited) {
-  //   userCollection.findOne({_id: });
-  // }
+  res.render("history", {
+    data: users,
+    filter: filter,
+    formatProfileIconPath: formatProfileIconPath,
+  });
+});
 
-  // let history = getHistory(req);
-  // console.warn(`TEST CONVERT HIST: history.toArray()`);
-  // console.info(
-  //   `History: ${history}\nKeys: ${Object.keys(history)}\nVisited: ${Object.keys(
-  //     history.visited
-  //   )}\nContacted: ${Object.keys(history.contacted)}`
-  // );
-  // console.log(req.params.filter);
-
-  // for (const profile of history.visited) {
-  //   try {
-  //     const data = await userCollection.find({_id: profile});
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error message", error);
-  //   }
-  // };
-  // res.render("history", {});
+app.get("/history", (req, res) => {
+  res.render("history", {});
 });
 
 /**

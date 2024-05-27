@@ -1,8 +1,8 @@
 <%- include("templates/header") %>
-<title>HISTORY PAGE</title>
+<title><%- filter %></title>
 
 <div class="d-flex justify-content-center text-center">
-    <h1>HISTORY PAGE</h1>
+    <h1><%- filter %></h1>
 </div><br>
 <div class="d-flex justify-content-center text-center">
     <p>CHECK YOUR VIEW HISTORY</p>
@@ -12,5 +12,11 @@
   <a class="btn btn-secondary btn-lg" href="/history/visited">VISITED</a>
   <a class="btn btn-dark btn-lg" href="/history/contacted">CONTACTED</a>
 </div>
+
+<% if (data) { %>
+  <% data.forEach(profile => { %>
+    <%- include("templates/components/profileCard", {userCard: profile}) %>
+  <% }); %>
+<% } %>
 
 <%- include("templates/footer") %>
