@@ -271,25 +271,32 @@ app.get("/skill/:skill", async (req, res) => {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
   }
 
-  const category = await userSkillsCollection.findOne({ name: skill });
+  const skilldb = await userSkillsCollection.findOne({ name: skill });
   // console.log(category);
-  const skillName = category.name;
-  const skillImage = category.image;
+  const skillName = skilldb.name;
+  const skillImage = skilldb.image;
   const skilledUsers = userCollection.find({
-    userSkills: { $in: [category._id] },
+    userSkills: { $in: [skilldb._id] },
   });
-  let skilledUsersCache = {};
+  let skilledUsersCache = [];
   for await (const user of skilledUsers) {
-    skilledUsersCache[user.username] = user;
+    skilledUsersCache.push({
+      username: user.username,
+      location: user.location,
+      skills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      email: user.email,
+      userIcon: formatProfileIconPath(user.userIcon),
+    });
   }
-  // console.log("Skilled users:\n", skilledUsersCache);
+
+  console.log(skilledUsersCache);
+
   res.render("skill", {
     authenticated: authenticated,
     username: username,
-    // db: skills,
-    // parentPage: "/profile",
-    catName: skillName,
-    catImage: skillImage,
+    db: skilledUsersCache,
+    skillName: skillName,
+    skillImage: skillImage,
   });
   return;
 });
@@ -389,6 +396,7 @@ app.get("/profile", async (req, res) => {
       skills.push(skill.name);
     }
   }
+  console.log("profileSkills:\n", skills);
 
   res.render("profile", {
     userCard: {
