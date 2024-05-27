@@ -369,9 +369,26 @@ app.get("/editProfile", (req, res) => {
  * History Page.
  */
 app.get("/history", async (req, res) => {
-  let currentUser = await userCollection.findOne({
-    username: req.User.username,
+  let currentUser = getUser(req);
+  if (!currentUser) {
+    res.redirect("/");
+  }
+  currentUser = await userCollection.findOne({
+    username: getUsername(req),
   });
+  console.log(currentUser.history.visited);
+  // console.warn(currentUser);
+  let visited = userCollection.find({
+    _id: { $in: currentUser.history.visited },
+  });
+  // console.log("Looking for visited users");
+  for await (const user of visited) {
+    console.log(user);
+  }
+
+  // for (person in currentUser.history.visited) {
+  //   userCollection.findOne({_id: });
+  // }
 
   // let history = getHistory(req);
   // console.warn(`TEST CONVERT HIST: history.toArray()`);
