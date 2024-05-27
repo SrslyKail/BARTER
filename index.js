@@ -118,7 +118,6 @@ async function cacheCollection(coll, cache) {
     CB: the await here is the secret sauce!
     https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
   */
-  console.log(coll.toArray());
   for await (const item of coll) {
     cache[item.name] = item;
     // console.log(item.name);
@@ -138,18 +137,12 @@ async function watchForChanges(coll) {
 async function cacheUserSkills() {
   changeStream = userSkillsCollection.watch();
   watchForChanges(changeStream);
-  // for await (const change of changeStream) {
-  //   console.log("User skills change:\n", change);
-  // }
   let allSkills = userSkillsCollection.find({});
   allSkills, skillsCache;
 }
 
 async function cacheSkillCats() {
   changeStream = skillCatCollection.watch();
-  // for await (const change of changeStream) {
-  //   console.log("Skill Cat change:\n", change);
-  // }
   let allCategories = skillCatCollection.find({});
   cacheCollection(allCategories, skillCatCache);
 }
@@ -289,7 +282,7 @@ app.get("/skill/:skill", async (req, res) => {
     });
   }
 
-  console.log(skilledUsersCache);
+  // console.log(skilledUsersCache);
 
   res.render("skill", {
     authenticated: authenticated,
@@ -396,7 +389,6 @@ app.get("/profile", async (req, res) => {
       skills.push(skill.name);
     }
   }
-  console.log("profileSkills:\n", skills);
 
   res.render("profile", {
     userCard: {
