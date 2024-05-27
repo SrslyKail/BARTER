@@ -35,9 +35,9 @@ const {
   getCollection,
   ObjectId,
 } = require("./scripts/modules/databaseConnection");
-const userCollection = getCollection("users");
+
 /** @type {Collection} */
-const profileCollection = getCollection("profiles");
+const userCollection = getCollection("users");
 /** @type {Collection} */
 const skillCatCollection = getCollection("skillCats");
 /** @type {Collection} */
@@ -48,6 +48,10 @@ const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
 const uploadRoute = require("./scripts/imgUpload.js");
+const { FindCursor, ChangeStream } = require("mongodb");
+
+const skillsCache = {};
+const skillCatCache = {};
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -58,7 +62,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/imgs", express.static("./imgs"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
-
+app.use("/audio", express.static("./audio"));
 /* #endregion expressPathing */
 
 /* #region middleware */
@@ -91,6 +95,9 @@ app.use((req, res, next) => {
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
+  // Classic ternary operator to deal with undefined and null :)
+  req.session.zamn = req.session.zamn ? true : false;
+  app.locals.zamn = req.session.zamn;
   next();
 });
 
@@ -253,31 +260,36 @@ app.get("/skill/:skill", async (req, res) => {
   //   console.log(req);
   let skill = req.params.skill;
   // console.log(skillCat);
+  if (skill == "Chronoscope Repair") {
+    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
+  }
 
-  const category = await userSkillsCollection.findOne({ name: skill });
+  const skilldb = await userSkillsCollection.findOne({ name: skill });
   // console.log(category);
-  const skillName = category.name;
-  const skillImage = category.image;
-  // console.log(catImage);
-  /* 
-    CB: the await here is the secret sauce!
-    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-    */
-  // let skills = [];
+  const skillName = skilldb.name;
+  const skillImage = skilldb.image;
+  const skilledUsers = userCollection.find({
+    userSkills: { $in: [skilldb._id] },
+  });
+  let skilledUsersCache = [];
+  for await (const user of skilledUsers) {
+    skilledUsersCache.push({
+      username: user.username,
+      location: user.location,
+      skills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      email: user.email,
+      userIcon: formatProfileIconPath(user.userIcon),
+    });
+  }
 
-  // for await (const skillID of skillObjectArray) {
-  //   let curSkill = await skillCollection.findOne({ _id: skillID });
-  // console.log(curSkill)
-  //   skills.push(curSkill);
-  // }
-  // console.log(skills)
+  // console.log(skilledUsersCache);
+
   res.render("skill", {
     authenticated: authenticated,
     username: username,
-    // db: skills,
-    // parentPage: "/profile",
-    catName: skillName,
-    catImage: skillImage,
+    db: skilledUsersCache,
+    skillName: skillName,
+    skillImage: skillImage,
   });
   return;
 });
@@ -348,7 +360,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
-  user = await userCollection.findOne({ username: queryID });
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
@@ -606,6 +618,13 @@ app.get("/logout", (req, res) => {
 
 app.post("/searchSubmit", (req, res) => {
   //TODO: Search Code.
+});
+
+app.get("/zamn", (req, res) => {
+  req.session.zamn = !req.session.zamn;
+  app.locals.zamn = req.session.zamn;
+  console.warn("ZAMN?", req.session.zamn);
+  res.redirect("back");
 });
 /**
  * handles all routes that are not matched by any other route.

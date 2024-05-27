@@ -2,7 +2,7 @@
   <table>
     <tr>
       <td>
-        <a id="profileIcon" href="/"><%- include("profileIcon", {userIcon: userCard.userIcon}) %></a>
+        <a id="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("profileIcon", {userIcon: userCard.userIcon}) %></a>
       </td>
       <td>
         <div style="font-weight: bold;"><%= userCard.username %></div>
@@ -10,8 +10,8 @@
         <div class="truncate">
           <%- userCard.skills.slice(0, 2).join(", ") %>
           <%if (userCard.skills.length > 2) {%>. . .<%}%>
-                </div>
-                <div class="truncate text-body-secondary"><%= userCard.location %>
+        </div>
+        <div class="truncate text-body-secondary"><%= userCard.location %>
         </div>
       </td>
     </tr>
