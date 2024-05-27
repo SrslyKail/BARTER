@@ -1,6 +1,8 @@
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const defaultIcon = "imgs/profileIconLoggedOut.png";
 const cloudinaryString = "https://res.cloudinary.com/dxttfq7qd/image/upload/";
+const ObjectId = require("mongodb").ObjectId;
+
 /**
  * A class designed to standardize passing user information to the ejs pages
  */
@@ -39,9 +41,10 @@ class User {
  * Sets the privileges, username, and expiration date for the session
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
- * @param {String} email The email address of this use.
+ * @param {String} email The email address of this user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  * @param {URL | String} userIcon the path to the user icon.
+ * @param {array} history The history of the user.
  */
 function createSession(
   req,
@@ -97,17 +100,18 @@ function getUsername(req) {
  */
 function getUserIcon(req) {
   let user = getUser(req);
-  return user ? user.userIcon : defaultIcon;
+  let icon = user ? user.userIcon : defaultIcon;
+  return formatProfileIconPath(icon);
 }
 
 /**
  *
  * @param {Request} req
- * @returns {URL | String}
+ * @returns {ObjectId | null}
  */
 function getHistory(req) {
   let user = getUser(req);
-  return user ? user.history : null;
+  return user ? new ObjectId(user.history) : null;
 }
 
 /**
@@ -131,10 +135,13 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
-  if (path.includes(cloudinaryString) || path == defaultIcon) {
+  if (path == defaultIcon || path == null || path == undefined) {
+    return "/" + path;
+  } else if (path.includes(cloudinaryString)) {
     return path;
+  } else {
+    return cloudinaryString + path;
   }
-  return cloudinaryString + path;
 }
 
 module.exports = {

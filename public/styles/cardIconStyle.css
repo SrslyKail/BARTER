@@ -60,3 +60,9 @@
     font-size: large;
     /*Optional*/
 }
+
+.heroBannerTitle {
+    background-color: #17191595;
+    font-weight: bold;
+    font-size: x-large;
+}

@@ -59,7 +59,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/imgs", express.static("./imgs"));
 app.use("/styles", express.static("./styles"));
 app.use("/scripts", express.static("./scripts"));
-
+app.use("/audio", express.static("./audio"));
 /* #endregion expressPathing */
 
 /* #region middleware */
@@ -92,6 +92,9 @@ app.use((req, res, next) => {
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
+  // Classic ternary operator to deal with undefined and null :)
+  req.session.zamn = req.session.zamn ? true : false;
+  app.locals.zamn = req.session.zamn;
   next();
 });
 
@@ -118,7 +121,7 @@ function generateNavLinks(req) {
     );
     modalArray.push(
       { name: "View Profile", link: "/profile" },
-      { name: "History", link: "/history" },
+      { name: "History", link: "/history/visited" },
       { name: "Settings", link: "/settings" },
       { name: "Legal", link: "/legal" },
       { name: "Log out", link: "/logout" }
@@ -206,6 +209,9 @@ app.get("/skill/:skill", async (req, res) => {
   //   console.log(req);
   let skill = req.params.skill;
   // console.log(skillCat);
+  if (skill == "Chronoscope Repair") {
+    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
+  }
 
   const category = await userSkillsCollection.findOne({ name: skill });
   // console.log(category);
@@ -362,27 +368,29 @@ app.get("/editProfile", (req, res) => {
 /**
  * History Page.
  */
-app.get("/history", (req, res) => {
-  console.log("History: " + getHistory(req));
-  res.render("history", {});
-});
+app.get("/history", async (req, res) => {
+  let currentUser = await userCollection.findOne({
+    username: req.User.username,
+  });
 
-app.post("/visited", (req, res) => {
-  console.log([
-    new ObjectId("507f1f77bcf86cd799439011"),
-    new ObjectId("507f1f77bcf86cd799439012"),
-    new ObjectId("507f1f77bcf86cd799439013"),
-  ]);
-  res.redirect("/history");
-});
+  // let history = getHistory(req);
+  // console.warn(`TEST CONVERT HIST: history.toArray()`);
+  // console.info(
+  //   `History: ${history}\nKeys: ${Object.keys(history)}\nVisited: ${Object.keys(
+  //     history.visited
+  //   )}\nContacted: ${Object.keys(history.contacted)}`
+  // );
+  // console.log(req.params.filter);
 
-app.post("/contacted", (req, res) => {
-  console.log([
-    new ObjectId("507f1f77bcf86cd799439014"),
-    new ObjectId("507f1f77bcf86cd799439015"),
-    new ObjectId("507f1f77bcf86cd799439016"),
-  ]);
-  res.redirect("/history");
+  // for (const profile of history.visited) {
+  //   try {
+  //     const data = await userCollection.find({_id: profile});
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error message", error);
+  //   }
+  // };
+  // res.render("history", {});
 });
 
 /**
@@ -592,6 +600,13 @@ app.get("/logout", (req, res) => {
 
 app.post("/searchSubmit", (req, res) => {
   //TODO: Search Code.
+});
+
+app.get("/zamn", (req, res) => {
+  req.session.zamn = !req.session.zamn;
+  app.locals.zamn = req.session.zamn;
+  console.warn("ZAMN?", req.session.zamn);
+  res.redirect("back");
 });
 /**
  * handles all routes that are not matched by any other route.
