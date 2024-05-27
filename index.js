@@ -145,6 +145,34 @@ function generateNavLinks(req) {
 /* #endregion middleware */
 
 /* #region serverRouting */
+
+app.get("/testing", async(req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  /* Mock database for presentation*/
+  //   var db = skillCatCollection;
+  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  // CB: This will make it so we only show the names; if you want the id, make _id: 1
+  const all = skillCatCollection.find().project({ image: 1, name: 1 });
+  // console.log(all)
+  /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+    */
+  let skillCats = [];
+  for await (const skillCat of all) {
+    // console.log("All:", skill);
+    skillCats.push(skillCat);
+  }
+  // console.log(skillCats);
+  res.render("testing", {
+    authenticated: authenticated,
+    username: username,
+    parentPage: "/category",
+    db: skillCats,
+  });
+});
+
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
