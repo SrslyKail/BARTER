@@ -99,7 +99,7 @@
     scroll-snap-stop: normal;
 }
 
-.testing {
+.pillContainer {
     width: inherit;
     max-width: 480px;
     height: 100%;

@@ -4,29 +4,27 @@
     include('templates/card-pill-generation, {db:db, count:count}
 
     use DB to send a database to be iterated through
-    use count to determine a maximum number of icons, set to null for full db 
+    **this isn't implemented currently****ask Ben if you need it** use count to determine a maximum number of icons, set to null for full db 
     takes a parent page parameter to format the generated link on an icon, 
       exclude if you don't want a link
       folder format (/foldername)
     
-    Instructions for card-image-icon:
-    Takes image and text parameters to generate card icons
-    Set text=null for no-image icons
+    Instructions for skill-pill-box:
+    Takes image and text parameters to generate pill boxes
+    Set text=null for no-image pills
     Find mandatory CSS and options in cardIconStyle.css
     Template for no text + no image: 
-    <%#- include('templates/components/card-image-icon', { image:"/wow.jpeg", folder:null, text:null}) %>
+    <%#- include('templates/components/skill-pill-box', { image:"/wow.jpeg", folder:null, text:null}) %>
     -->
   <div id="centering">
     <div id="carousel">
       <div class="pillGrid">
-        <!--A loop for generating icons, 
+        <!--A loop for generating pills, 
             loop works with grid settings in cardIconStyle.css
             needs integration testing with bootstrap-->
-        <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
         <% for (let i = 0; i < userCard.skills.length; i ++) {  %>
-        <%- include('components/skill-pill-box', {image:userCard.skills[i].image, text:userCard.skills[i].name}) %>
+        <%- include('components/skill-pill-box', {image:userCard.skills[i].image, text:userCard.skills[i].name, count:i}) %>
         <% } %>
-        <!-- This logic is for stating a max count, it won't work with the forEach above -->
       </div>
     </div>
   </div>
