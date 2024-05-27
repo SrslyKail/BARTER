@@ -49,8 +49,6 @@ const sendPasswordResetEmail =
 
 const uploadRoute = require("./scripts/imgUpload.js");
 
-let zamn = false;
-
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
@@ -93,7 +91,9 @@ app.use((req, res, next) => {
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
-  app.locals.zamn = zamn;
+  // Classic ternary operator to deal with undefined and null :)
+  req.session.zamn = req.session.zamn ? true : false;
+  app.locals.zamn = req.session.zamn;
   next();
 });
 
@@ -208,10 +208,8 @@ app.get("/skill/:skill", async (req, res) => {
   //   console.log(req);
   let skill = req.params.skill;
   // console.log(skillCat);
-  if (skill == "Chronoscope Repair"){
-    app.locals.modalLinks.push(
-      { name: "Zamn!", link: "/zamn" }
-    )
+  if (skill == "Chronoscope Repair") {
+    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
   }
 
   const category = await userSkillsCollection.findOne({ name: skill });
@@ -569,9 +567,9 @@ app.post("/searchSubmit", (req, res) => {
 });
 
 app.get("/zamn", (req, res) => {
-  zamn = !zamn;
-  app.locals.zamn = zamn;
-  console.warn("ZAMN?", zamn);
+  req.session.zamn = !req.session.zamn;
+  app.locals.zamn = req.session.zamn;
+  console.warn("ZAMN?", req.session.zamn);
   res.redirect("back");
 });
 /**
