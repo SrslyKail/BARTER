@@ -52,10 +52,6 @@ const { FindCursor, ChangeStream } = require("mongodb");
 
 const skillsCache = {};
 const skillCatCache = {};
-const { FindCursor, ChangeStream } = require("mongodb");
-
-const skillsCache = {};
-const skillCatCache = {};
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -279,19 +275,14 @@ app.get("/skill/:skill", async (req, res) => {
   // console.log(category);
   const skillName = category.name;
   const skillImage = category.image;
-  // console.log(catImage);
-  /* 
-    CB: the await here is the secret sauce!
-    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-    */
-  // let skills = [];
-
-  // for await (const skillID of skillObjectArray) {
-  //   let curSkill = await skillCollection.findOne({ _id: skillID });
-  // console.log(curSkill)
-  //   skills.push(curSkill);
-  // }
-  // console.log(skills)
+  const skilledUsers = userCollection.find({
+    userSkills: { $in: [category._id] },
+  });
+  let skilledUsersCache = {};
+  for await (const user of skilledUsers) {
+    skilledUsersCache[user.username] = user;
+  }
+  // console.log("Skilled users:\n", skilledUsersCache);
   res.render("skill", {
     authenticated: authenticated,
     username: username,
@@ -369,7 +360,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
-  user = await userCollection.findOne({ username: queryID });
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
