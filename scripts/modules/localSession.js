@@ -86,7 +86,8 @@ function getUsername(req) {
  */
 function getUserIcon(req) {
   let user = getUser(req);
-  return user ? user.userIcon : defaultIcon;
+  let icon = user ? user.userIcon : defaultIcon;
+  return formatProfileIconPath(icon);
 }
 
 /**
@@ -110,8 +111,10 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
-  if (path.includes(cloudinaryString) || path == defaultIcon){
+  if (path.includes(cloudinaryString)) {
     return path;
+  } else if (path == defaultIcon || path == null || path == undefined) {
+    return "/" + path;
   }
   return cloudinaryString + path;
 }
@@ -126,5 +129,5 @@ module.exports = {
   getEmail,
   getUserIcon,
   defaultIcon,
-  formatProfileIconPath
+  formatProfileIconPath,
 };

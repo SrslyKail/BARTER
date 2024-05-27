@@ -78,6 +78,10 @@
   max-height: 10vh;
 }
 
+.vh-4 {
+  max-height: 4vh;
+}
+
 .vh-5 {
   max-height: 5vh;
 }
