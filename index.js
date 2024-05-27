@@ -101,6 +101,54 @@ app.use("/editProfile", uploadRoute);
 /* #region helperFunctions */
 
 /**
+ * Puts all the items from a collection into a cache.
+ * Assumes your collection has a _id attribute at the top level
+ * @param {FindCursor} coll
+ * @param {Object} cache
+ */
+async function cacheCollection(coll, cache) {
+  /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  for await (const item of coll) {
+    cache[item._id] = item;
+    // console.log(item.name);
+  }
+}
+
+/**
+ *
+ * @param {ChangeStream} coll
+ */
+async function watchForChanges(coll) {
+  for await (const change of coll) {
+    console.log(change);
+  }
+}
+
+async function cacheUserSkills() {
+  changeStream = userSkillsCollection.watch();
+  watchForChanges(changeStream);
+  let allSkills = userSkillsCollection.find({});
+  allSkills, skillsCache;
+}
+
+async function cacheSkillCats() {
+  changeStream = skillCatCollection.watch();
+  let allCategories = skillCatCollection.find({});
+  cacheCollection(allCategories, skillCatCache);
+}
+
+function setupDBSkillCache() {
+  console.log("Setting up cache");
+  cacheSkillCats();
+  cacheUserSkills();
+}
+
+// setupDBSkillCache();
+
+/**
  * Generates the navlinks we want a user to access based on permissions
  * within the local session.
  * @param {Request} req
