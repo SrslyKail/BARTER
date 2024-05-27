@@ -348,11 +348,11 @@ app.get("/profile", async (req, res) => {
     userCard: {
       username: username,
       location: location,
-      skills: skills,
+      userSkills: skills,
       email: email,
-      userIcon: formatProfileIconPath(userIcon),
     },
     uploaded: req.query.success,
+    userIcon: formatProfileIconPath(userIcon),
   });
 });
 
