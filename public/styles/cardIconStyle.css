@@ -85,12 +85,13 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     height: inherit;
-    width: auto;
+    width:100%;
+    max-width: 480px;
     display: grid;
     gap: 1em;
     grid-template-rows: repeat(3, 1fr);
     /* margin: 0 3vw 0 3vw; */
-    grid-auto-columns: 86vw;
+    grid-auto-columns: 100%;
     grid-auto-flow: column;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
@@ -99,10 +100,10 @@
 }
 
 .testing {
-    width: 100%;
+    width: inherit;
     max-width: 480px;
     height: 100%;
-    min-height: fit-content;
+    /* min-height: fit-content; */
     scroll-snap-align: start;
     scroll-snap-stop: normal;
     overflow: scroll;
