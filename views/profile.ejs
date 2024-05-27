@@ -11,9 +11,9 @@ todo if this is the profile of said user, they should have the ability to edit w
 <div class="mx-1"> <%- include("templates/components/profileCard", {userCard: userCard}) %> </div>
 <section class="p-4 text-center mb-4">
   <h2><b>Skills</b></h2>
-  <% for (let i = 0; i < userCard.skills.length; i ++) {  %>
-  <a href="/" style="color:black;" class="fs-4 my-4"><u><%=userCard.skills[i]%></u></a><br />
-  <% } %>
+
+  <%- include("templates/skill-pill-generation", {db: userCard.skills})%>
+
   <hr class="my-4">
   <h2><b>Reviews</b></h2>
 </section>

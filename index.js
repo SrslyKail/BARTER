@@ -154,6 +154,7 @@ app.get("/testing", async(req, res) => {
   //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
+  var db = JSON.parse(fs.readFileSync("catsDB.json"));
   // console.log(all)
   /* 
     CB: the await here is the secret sauce!
@@ -169,7 +170,7 @@ app.get("/testing", async(req, res) => {
     authenticated: authenticated,
     username: username,
     parentPage: "/category",
-    db: skillCats,
+    db: db,
   });
 });
 
@@ -178,7 +179,7 @@ app.get("/", async (req, res) => {
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
   //   var db = skillCatCollection;
-  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+    // var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
   // console.log(all)
@@ -360,7 +361,7 @@ app.get("/profile", async (req, res) => {
       _id: { $in: user.userSkills },
     });
     for await (const skill of userSkills) {
-      skills.push(skill.name);
+      skills.push(skill);
     }
   }
 
