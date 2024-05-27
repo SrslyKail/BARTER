@@ -48,6 +48,14 @@ const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
 const uploadRoute = require("./scripts/imgUpload.js");
+const { FindCursor, ChangeStream } = require("mongodb");
+
+const skillsCache = {};
+const skillCatCache = {};
+const { FindCursor, ChangeStream } = require("mongodb");
+
+const skillsCache = {};
+const skillCatCache = {};
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -102,6 +110,61 @@ app.use("/editProfile", uploadRoute);
 /* #endregion middleware */
 
 /* #region helperFunctions */
+
+/**
+ * Puts all the items from a collection into a cache.
+ * Assumes your collection has a name attribute at the top-level.
+ * @param {FindCursor} coll
+ * @param {Object} cache
+ */
+async function cacheCollection(coll, cache) {
+  /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  console.log(coll.toArray());
+  for await (const item of coll) {
+    cache[item.name] = item;
+    // console.log(item.name);
+  }
+}
+
+/**
+ *
+ * @param {ChangeStream} coll
+ */
+async function watchForChanges(coll) {
+  for await (const change of coll) {
+    console.log(change);
+  }
+}
+
+async function cacheUserSkills() {
+  changeStream = userSkillsCollection.watch();
+  watchForChanges(changeStream);
+  // for await (const change of changeStream) {
+  //   console.log("User skills change:\n", change);
+  // }
+  let allSkills = userSkillsCollection.find({});
+  allSkills, skillsCache;
+}
+
+async function cacheSkillCats() {
+  changeStream = skillCatCollection.watch();
+  // for await (const change of changeStream) {
+  //   console.log("Skill Cat change:\n", change);
+  // }
+  let allCategories = skillCatCollection.find({});
+  cacheCollection(allCategories, skillCatCache);
+}
+
+function setupDBSkillCache() {
+  console.log("Setting up cache");
+  cacheSkillCats();
+  cacheUserSkills();
+}
+
+// setupDBSkillCache();
 
 /**
  * Generates the navlinks we want a user to access based on permissions
