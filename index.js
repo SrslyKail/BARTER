@@ -466,11 +466,12 @@ app.get("/history", (req, res) => {
  * Portfolio Page.
  */
 app.get("/portfolio", async (req, res) => {
+  const id = req.query.id;
   const data = await userCollection.findOne({
     username: req.query.username,
   });
 
-  res.send(data.portfolio);
+  res.send(data.portfolio[id]);
 });
 
 /**
