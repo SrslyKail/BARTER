@@ -2,6 +2,18 @@
 
 <%- include("templates/components/searchHero", {searchHeroImage:data.images[0], searchHeroBanner: data.title}) %>
 
+<div class="px-4 my-2 text-center">
+  <div class="col-lg-6 mx-auto">
+    <a class="btn btn-secondary w-25" href="/editPortfolio?username=<%= username %>&id=<%= id %>">
+    <i class="bi bi-pencil-square"></i>
+    Edit Page
+    </a>
+    <p class="lead mb-4"><%= data.description %></p>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+    </div>
+  </div>
+</div>
+
 <!-- <div id="iconGridContainer"> -->
   <!-- <div class="iconGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-8"> -->
   <%# data.images.forEach(element => { %>
@@ -10,5 +22,4 @@
 <!-- </div> -->
 
 <%- include("templates/portfolio-icon-generation", {db:data.images, count:null})%>
-
 <%- include("templates/footer") %>

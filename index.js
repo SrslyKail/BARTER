@@ -277,11 +277,11 @@ app.get("/skill/:skill", async (req, res) => {
 
   const skilldb = await userSkillsCollection.findOne({ name: skill });
 
-
   //********BUG HERE ************/
   if (skilldb == null) {
-    res.redirect("/404")
-  } else { }
+    res.redirect("/404");
+  } else {
+  }
   // console.log(category);
   const skillName = skilldb.name;
   const skillImage = skilldb.image;
@@ -485,7 +485,13 @@ app.get("/history", (req, res) => {
  * Portfolio Page.
  */
 app.get("/portfolio", async (req, res) => {
+  const username = req.query.username;
   const id = req.query.id;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
 
   if (!id) {
     res.redirect("/profile");
@@ -498,49 +504,41 @@ app.get("/portfolio", async (req, res) => {
 
   res.render("portfolio", {
     data: data.portfolio[id],
-  });
-
-  return;
-
-  /* #region bens code */
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  //   console.log(req);
-  let skill = req.params.skill;
-  // console.log(skillCat);
-  if (skill == "Chronoscope Repair") {
-    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
-  }
-
-  const skilldb = await userSkillsCollection.findOne({ name: skill });
-  // console.log(category);
-  const skillName = skilldb.name;
-  const skillImage = skilldb.image;
-  const skilledUsers = userCollection.find({
-    userSkills: { $in: [skilldb._id] },
-  });
-  let skilledUsersCache = [];
-  for await (const user of skilledUsers) {
-    skilledUsersCache.push({
-      username: user.username,
-      location: user.location,
-      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
-      email: user.email,
-      userIcon: formatProfileIconPath(user.userIcon),
-    });
-  }
-
-  // console.log(skilledUsersCache);
-
-  res.render("skill", {
-    authenticated: authenticated,
     username: username,
-    db: skilledUsersCache,
-    skillName: skillName,
-    skillImage: skillImage,
+    id: id,
   });
+});
+
+/**
+ * Edit Portfolio Page.
+ */
+app.get("/editPortfolio", async (req, res) => {
+  const username = req.query.username;
+  const id = req.query.id;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  if (!id) {
+    res.redirect("/profile");
+    return;
+  }
+
+  const data = await userCollection.findOne({
+    username: username,
+  });
+
+  res.render("editPortfolio", {
+    title: data.portfolio[id].title,
+    images: data.portfolio[id].images,
+    description: data.portfolio[id].description,
+    id: id,
+  });
+
   return;
-  /* #endregion bens code */
+  res.send(data.portfolio[id]);
 });
 
 /**
