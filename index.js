@@ -473,6 +473,12 @@ app.get("/history", (req, res) => {
  */
 app.get("/portfolio", async (req, res) => {
   const id = req.query.id;
+
+  if (!id) {
+    res.redirect("/profile");
+    return;
+  }
+
   const data = await userCollection.findOne({
     username: req.query.username,
   });
