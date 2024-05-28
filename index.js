@@ -634,7 +634,6 @@ app.post("/submitUser", async (req, res) => {
     longitude: Number(req.body.long),
     latitude: Number(req.body.lat),
   };
-  console.log(geo);
   var errors = [];
 
   //this should be global
@@ -676,11 +675,10 @@ app.post("/submitUser", async (req, res) => {
       },
       contactInfo: {
         email: email,
-        address: null,
-        phone: null,
       },
       userIcon: defaultIcon,
       history: { visited: [], contacted: [] },
+      userSkills: [],
     });
 
     createSession(

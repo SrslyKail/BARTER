@@ -1,36 +1,30 @@
 {
-  "$schema": "https://json-schema.org/draft/2019-09/schema",
-  "$id": "http://example.com/example.json",
-  "type": "object",
+  "bsonType": "object",
   "default": {},
   "title": "Root Schema",
   "required": [
-    "userName",
+    "username",
     "email",
     "password",
     "isAdmin",
-    "userLocation",
-    "contactInfo",
     "userIcon",
-    "userSkills",
-    "reviews",
     "history"
   ],
   "properties": {
     "userName": {
-      "type": "string",
+      "bsonType": "string",
       "default": "",
       "title": "The userName Schema",
       "examples": ["testUser"]
     },
     "email": {
-      "type": "string",
+      "bsonType": "string",
       "default": "",
       "title": "The email Schema",
       "examples": ["test@test.ca"]
     },
     "password": {
-      "type": "string",
+      "bsonType": "string",
       "default": "",
       "title": "The password Schema",
       "examples": [
@@ -38,32 +32,32 @@
       ]
     },
     "isAdmin": {
-      "type": "boolean",
+      "bsonType": "boolean",
       "default": false,
       "title": "The isAdmin Schema",
       "examples": [false]
     },
     "userLocation": {
-      "type": "object",
+      "bsonType": "object",
       "default": {},
       "title": "The userLocation Schema",
       "required": ["geo"],
       "properties": {
         "geo": {
-          "type": "object",
+          "bsonType": "object",
           "default": {},
           "title": "The geo Schema",
           "required": ["latitude", "longitude"],
           "properties": {
             "latitude": {
-              "type": "number",
-              "default": 0.0,
+              "bsonType": "number",
+              "default": 0,
               "title": "The latitude Schema",
               "examples": [49.045003959125594]
             },
             "longitude": {
-              "type": "number",
-              "default": 0.0,
+              "bsonType": "number",
+              "default": 0,
               "title": "The longitude Schema",
               "examples": [-122.83962962932493]
             }
@@ -86,25 +80,25 @@
       ]
     },
     "contactInfo": {
-      "type": "object",
+      "bsonType": "object",
       "default": {},
       "title": "The contactInfo Schema",
       "required": ["email", "address", "phone"],
       "properties": {
         "email": {
-          "type": "string",
+          "bsonType": "string",
           "default": "",
           "title": "The email Schema",
           "examples": ["testUser@test.com"]
         },
         "address": {
-          "type": "string",
+          "bsonType": "string",
           "default": "",
           "title": "The address Schema",
           "examples": ["123 Test Street"]
         },
         "phone": {
-          "type": "string",
+          "bsonType": "string",
           "default": "",
           "title": "The phone Schema",
           "examples": ["7787787778"]
@@ -119,24 +113,24 @@
       ]
     },
     "userIcon": {
-      "type": "string",
+      "bsonType": "string",
       "default": "",
       "title": "The userIcon Schema",
       "examples": ["url"]
     },
     "userSkills": {
-      "type": "array",
+      "bsonType": "array",
       "default": [],
       "title": "The userSkills Schema",
       "items": {
-        "type": "string",
+        "bsonbsonType": "objectId",
         "title": "A Schema",
         "examples": ["ObjectID('AAAA')", "ObjectID('BBBB')", "ObjectID('CCCC')"]
       },
       "examples": [["ObjectID('AAAA')", "ObjectID('BBBB')", "ObjectID('CCCC')"]]
     },
     "reviews": {
-      "type": "object",
+      "bsonType": "object",
       "default": {},
       "title": "The reviews Schema",
       "required": [],
@@ -144,17 +138,17 @@
       "examples": [{}]
     },
     "history": {
-      "type": "object",
+      "bsonType": "object",
       "default": {},
       "title": "The history Schema",
       "required": ["visited", "contacted"],
       "properties": {
         "visited": {
-          "type": "array",
+          "bsonType": "array",
           "default": [],
           "title": "The visited Schema",
           "items": {
-            "type": "string",
+            "bsonType": "objectId",
             "title": "A Schema",
             "examples": [
               "ObjectID('DDDD')",
@@ -167,11 +161,11 @@
           ]
         },
         "contacted": {
-          "type": "array",
+          "bsonType": "array",
           "default": [],
           "title": "The contacted Schema",
           "items": {
-            "type": "string",
+            "bsonType": "objectId",
             "title": "A Schema",
             "examples": [
               "ObjectID('GGGG')",
