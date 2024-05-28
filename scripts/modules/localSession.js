@@ -153,7 +153,9 @@ function getEmail(req) {
  */
 function formatProfileIconPath(path) {
   if (path == undefined || path == null || path == defaultIcon) {
-    return "/" + path;
+    return "/" + defaultIcon;
+  } else if (path.includes(defaultIcon)) {
+    return path;
   } else if (path.includes(cloudinaryString)) {
     return path;
   } else {

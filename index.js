@@ -630,6 +630,11 @@ app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
   var email = req.body.email;
+  let geo = {
+    longitude: Number(req.body.long),
+    latitude: Number(req.body.lat),
+  };
+  console.log(geo);
   var errors = [];
 
   //this should be global
@@ -666,6 +671,9 @@ app.post("/submitUser", async (req, res) => {
       email: email,
       password: hashedPassword,
       isAdmin: false,
+      userLocation: {
+        geo: geo,
+      },
       contactInfo: {
         email: email,
         address: null,
@@ -681,8 +689,7 @@ app.post("/submitUser", async (req, res) => {
       email,
       newDoc.insertedId,
       { visited: [], contacted: [] },
-      false,
-      defaultIcon
+      false
     );
 
     res.redirect("/");

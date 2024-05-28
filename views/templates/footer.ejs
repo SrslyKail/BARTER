@@ -30,6 +30,31 @@
   const positionOptions = {
     enableHighAccuracy: true,
   };
+  let formLong;
+  let formLat;
+
+  function startProcessGeo() {
+    formLong = document.getElementById("long");
+    formLat = document.getElementById("lat");
+
+    navigator.geolocation.watchPosition((position) => {
+        if (formLong && formLat) {
+          applyGeoToForm(position);
+        }
+        sendGeo(position);
+      },
+      null,
+      positionOptions
+    );
+
+
+  }
+
+  function applyGeoToForm(position) {
+    console.log("applying", position.coords);
+    formLong.value = position.coords.longitude;
+    formLat.value = position.coords.latitude;
+  }
 
   function sendGeo(position) {
     socket.emit("position", {
@@ -40,12 +65,7 @@
       id: id,
     })
   }
-
-  navigator.geolocation.watchPosition(
-    sendGeo,
-    null,
-    positionOptions
-  );
+  document.addEventListener("DOMContentLoaded", startProcessGeo)
 </script>
 </body>
 
