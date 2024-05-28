@@ -460,6 +460,17 @@ app.get("/history", (req, res) => {
 });
 
 /**
+ * Portfolio Page.
+ */
+app.get("/portfolio", async (req, res) => {
+  const data = await userCollection.findOne({
+    username: req.query.username,
+  });
+
+  res.send(data.portfolio);
+});
+
+/**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {
