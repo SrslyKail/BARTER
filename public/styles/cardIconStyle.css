@@ -162,6 +162,25 @@
     /*Optional*/
 }
 
+#paginate {
+    margin-top: 2em;
+    pointer-events:none;
+}
+
+.pagCircle{
+    width:24px;
+    height:24px;
+    pointer-events:auto;
+}
+
+.pagIcon{
+    pointer-events: auto;
+}
+
+.activeCircle > circle{
+    fill: #676767;
+}
+
 .heroBannerTitle {
     background-color: #17191595;
     font-weight: bold;
