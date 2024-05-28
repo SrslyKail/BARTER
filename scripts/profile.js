@@ -3,6 +3,8 @@ let currentPage = 0;
 const maxPage = (document.getElementsByClassName("pillGrid")[0].children.length + 1) % 3;
 const left = document.getElementById("leftPag");
 const right = document.getElementById("rightPag");
+const pillGrid = document.getElementsByClassName("pillGrid")[0]
+console.log(pillGrid)
 let goto
 let actCirc = "circle0"
 let oldCirc
@@ -61,6 +63,25 @@ function setCircleListeners() {
         curCircle.addEventListener("click", scrollTo)
     }
 }
+
+// pillGrid.addEventListener("scroll")
+// pillGrid.addEventListener("scrollend")
+const output = document.getElementById("output");
+console.log(output)
+function testing() {
+
+    pillGrid.addEventListener("scroll", (event) => {
+        output.innerHTML = "Scroll event fired, waiting for scrollend...";
+    });
+
+    pillGrid.addEventListener("scrollend", (event) => {
+        output.innerHTML = "Scrollend event fired!";
+    });
+}
+
+testing()
+
+
 
 
 
