@@ -119,7 +119,3 @@ document.getElementById("pill0").scrollIntoView();
 sliding();
 setArrowListeners();
 setCircleListeners();
-
-function toggleEdit() {
-  $(".bi-pencil-square").toggleClass("d-none");
-}
