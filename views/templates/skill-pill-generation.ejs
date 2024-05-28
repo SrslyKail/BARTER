@@ -22,8 +22,8 @@
         <!--A loop for generating pills, 
             loop works with grid settings in cardIconStyle.css
             needs integration testing with bootstrap-->
-        <% for (let i = 0; i < userCard.skills.length; i ++) {  %>
-        <%- include('components/skill-pill-box', {image:userCard.skills[i].image, text:userCard.skills[i].name, count:i}) %>
+        <% for (let i = 0; i < db.length; i ++) {  %>
+        <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i}) %>
         <% } %>
       </div>
     </div>

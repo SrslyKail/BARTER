@@ -1,6 +1,8 @@
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const defaultIcon = "imgs/profileIconLoggedOut.png";
 const cloudinaryString = "https://res.cloudinary.com/dxttfq7qd/image/upload/";
+const ObjectId = require("mongodb").ObjectId;
+
 /**
  * A class designed to standardize passing user information to the ejs pages
  */
@@ -12,7 +14,14 @@ class User {
    * @param {String} email
    * @param {URL | String} userIcon
    */
-  constructor(authenticated, admin, username, email, userIcon = defaultIcon) {
+  constructor(
+    authenticated,
+    admin,
+    username,
+    email,
+    userIcon = defaultIcon,
+    history
+  ) {
     /** @type {boolean} */
     this.isAuthenticated = authenticated;
     /** @type {boolean} */
@@ -21,7 +30,10 @@ class User {
     this.username = username;
     /** @type {string} */
     this.email = email;
+    /** @type {URL | String} */
     this.userIcon = formatProfileIconPath(userIcon);
+    /** @type {array} */
+    this.history = history;
   }
 }
 
@@ -29,19 +41,21 @@ class User {
  * Sets the privileges, username, and expiration date for the session
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
- * @param {String} email The email address of this use.
+ * @param {String} email The email address of this user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  * @param {URL | String} userIcon the path to the user icon.
+ * @param {array} history The history of the user.
  */
 function createSession(
   req,
   username,
   email,
   admin = false,
-  userIcon = defaultIcon
+  userIcon = defaultIcon,
+  history
 ) {
   req.session.cookie.maxAge = expireTime;
-  let user = new User(true, admin, username, email, userIcon);
+  let user = new User(true, admin, username, email, userIcon, history);
   req.session.user = user;
 }
 
@@ -93,6 +107,16 @@ function getUserIcon(req) {
 /**
  *
  * @param {Request} req
+ * @returns {ObjectId | null}
+ */
+function getHistory(req) {
+  let user = getUser(req);
+  return user ? new ObjectId(user.history) : null;
+}
+
+/**
+ *
+ * @param {Request} req
  * @returns {URL | String}
  */
 function getUser(req) {
@@ -128,6 +152,7 @@ module.exports = {
   getUsername,
   getUser,
   getEmail,
+  getHistory,
   getUserIcon,
   defaultIcon,
   formatProfileIconPath,

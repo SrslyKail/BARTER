@@ -1,0 +1,22 @@
+<%- include("templates/header") %>
+<title><% if (typeof filter !== 'undefined') %></title>
+
+<div class="d-flex justify-content-center text-center">
+    <h1><% if (typeof filter !== 'undefined') %></h1>
+</div><br>
+<div class="d-flex justify-content-center text-center">
+    <p>CHECK YOUR VIEW HISTORY</p>
+</div>
+
+<div class="d-flex container justify-content-center">
+  <a class="btn btn-secondary btn-lg" href="/history/visited">VISITED</a>
+  <a class="btn btn-dark btn-lg" href="/history/contacted">CONTACTED</a>
+</div>
+
+<% if (typeof data !== 'undefined') { %>
+  <% data.forEach(profile => { %>
+    <%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
+  <% }); %>
+<% } %>
+
+<%- include("templates/footer") %>

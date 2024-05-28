@@ -27,6 +27,7 @@ const {
   getUsername,
   getUserIcon,
   getEmail,
+  getHistory,
   defaultIcon,
   formatProfileIconPath,
 } = require("./scripts/modules/localSession");
@@ -35,9 +36,9 @@ const {
   getCollection,
   ObjectId,
 } = require("./scripts/modules/databaseConnection");
-const userCollection = getCollection("users");
+
 /** @type {Collection} */
-const profileCollection = getCollection("profiles");
+const userCollection = getCollection("users");
 /** @type {Collection} */
 const skillCatCollection = getCollection("skillCats");
 /** @type {Collection} */
@@ -48,6 +49,10 @@ const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
 const uploadRoute = require("./scripts/imgUpload.js");
+const { FindCursor, ChangeStream } = require("mongodb");
+
+const skillsCache = {};
+const skillCatCache = {};
 
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -104,6 +109,54 @@ app.use("/editProfile", uploadRoute);
 /* #region helperFunctions */
 
 /**
+ * Puts all the items from a collection into a cache.
+ * Assumes your collection has a name attribute at the top-level.
+ * @param {FindCursor} coll
+ * @param {Object} cache
+ */
+async function cacheCollection(coll, cache) {
+  /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+  */
+  for await (const item of coll) {
+    cache[item.name] = item;
+    // console.log(item.name);
+  }
+}
+
+/**
+ *
+ * @param {ChangeStream} coll
+ */
+async function watchForChanges(coll) {
+  for await (const change of coll) {
+    console.log(change);
+  }
+}
+
+async function cacheUserSkills() {
+  changeStream = userSkillsCollection.watch();
+  watchForChanges(changeStream);
+  let allSkills = userSkillsCollection.find({});
+  allSkills, skillsCache;
+}
+
+async function cacheSkillCats() {
+  changeStream = skillCatCollection.watch();
+  let allCategories = skillCatCollection.find({});
+  cacheCollection(allCategories, skillCatCache);
+}
+
+function setupDBSkillCache() {
+  console.log("Setting up cache");
+  cacheSkillCats();
+  cacheUserSkills();
+}
+
+// setupDBSkillCache();
+
+/**
  * Generates the navlinks we want a user to access based on permissions
  * within the local session.
  * @param {Request} req
@@ -120,7 +173,7 @@ function generateNavLinks(req) {
     );
     modalArray.push(
       { name: "View Profile", link: "/profile" },
-      { name: "History", link: "/history" },
+      { name: "History", link: "/history/visited" },
       { name: "Settings", link: "/settings" },
       { name: "Legal", link: "/legal" },
       { name: "Log out", link: "/logout" }
@@ -241,30 +294,32 @@ app.get("/skill/:skill", async (req, res) => {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
   }
 
-  const category = await userSkillsCollection.findOne({ name: skill });
+  const skilldb = await userSkillsCollection.findOne({ name: skill });
   // console.log(category);
-  const skillName = category.name;
-  const skillImage = category.image;
-  // console.log(catImage);
-  /* 
-    CB: the await here is the secret sauce!
-    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-    */
-  // let skills = [];
+  const skillName = skilldb.name;
+  const skillImage = skilldb.image;
+  const skilledUsers = userCollection.find({
+    userSkills: { $in: [skilldb._id] },
+  });
+  let skilledUsersCache = [];
+  for await (const user of skilledUsers) {
+    skilledUsersCache.push({
+      username: user.username,
+      location: user.location,
+      skills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      email: user.email,
+      userIcon: formatProfileIconPath(user.userIcon),
+    });
+  }
 
-  // for await (const skillID of skillObjectArray) {
-  //   let curSkill = await skillCollection.findOne({ _id: skillID });
-  // console.log(curSkill)
-  //   skills.push(curSkill);
-  // }
-  // console.log(skills)
+  // console.log(skilledUsersCache);
+
   res.render("skill", {
     authenticated: authenticated,
     username: username,
-    // db: skills,
-    // parentPage: "/profile",
-    catName: skillName,
-    catImage: skillImage,
+    db: skilledUsersCache,
+    skillName: skillName,
+    skillImage: skillImage,
   });
   return;
 });
@@ -310,7 +365,14 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
-    createSession(req, user.username, user.email, user.isAdmin, user.userIcon);
+    createSession(
+      req,
+      user.username,
+      user.email,
+      user.isAdmin,
+      user.userIcon,
+      user.history
+    );
     res.redirect("/");
     return;
   } else {
@@ -335,7 +397,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
-  user = await userCollection.findOne({ username: queryID });
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
@@ -369,11 +431,11 @@ app.get("/profile", async (req, res) => {
     userCard: {
       username: username,
       location: location,
-      skills: skills,
+      userSkills: skills,
       email: email,
-      userIcon: formatProfileIconPath(userIcon),
     },
     uploaded: req.query.success,
+    userIcon: formatProfileIconPath(userIcon),
   });
 });
 
@@ -384,6 +446,46 @@ app.get("/editProfile", (req, res) => {
   res.render("editProfile", {
     name: req.query.name,
   });
+});
+
+/**
+ * History Page.
+ */
+app.get("/history/:filter", async (req, res) => {
+  const filter = req.params.filter;
+
+  let users = [];
+
+  //Check current user.
+  let currentUser = getUser(req);
+
+  if (!currentUser) {
+    return res.redirect("/");
+  }
+
+  currentUser = await userCollection.findOne({
+    username: getUsername(req),
+  });
+
+  // console.log(currentUser.history.visited);
+
+  const data = userCollection.find({
+    _id: { $in: currentUser.history[filter] },
+  });
+
+  for await (const user of data) {
+    users.push(user);
+  }
+
+  res.render("history", {
+    data: users,
+    filter: filter,
+    formatProfileIconPath: formatProfileIconPath,
+  });
+});
+
+app.get("/history", (req, res) => {
+  res.render("history", {});
 });
 
 /**
