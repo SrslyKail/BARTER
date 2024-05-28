@@ -4,7 +4,6 @@ const maxPage = (document.getElementsByClassName("pillGrid")[0].children.length 
 const left = document.getElementById("leftPag");
 const right = document.getElementById("rightPag");
 const pillGrid = document.getElementsByClassName("pillGrid")[0]
-console.log(pillGrid)
 let goto
 let actCirc = "circle0"
 let oldCirc
@@ -64,26 +63,58 @@ function setCircleListeners() {
     }
 }
 
+function isElementInViewport(el) {
+
+    // Special bonus for those using jQuery
+    if (typeof jQuery === "function" && el instanceof jQuery) {
+        el = el[0];
+    }
+
+    var rect = el.getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+    );
+}
+
 // pillGrid.addEventListener("scroll")
 // pillGrid.addEventListener("scrollend")
-const output = document.getElementById("output");
-console.log(output)
+
+async function findPill() {
+    setTimeout(() => {
+        for (let i = 0; i < pillGrid.children.length; i++) {
+            if (isElementInViewport(pillGrid.children[i])) {
+                // console.log(actCirc)
+                document.getElementById(actCirc).classList.toggle("activeCircle");
+                actCirc = "circle" + (i / 3)
+                // console.log(i)
+                currentPage = (i/3)
+                // console.log("Current Page: " + currentPage)
+                setArrowListeners()
+                document.getElementById(actCirc).classList.toggle("activeCircle");
+                // document.getElementById(pillGrid.children[i]).scrollIntoView()
+                break
+            }
+        }
+    }, "500")
+
+}
+
 function testing() {
+    viewElement = document.getElementById("carousel")
+    // console.log(viewElement)
 
-    pillGrid.addEventListener("scroll", (event) => {
-        output.innerHTML = "Scroll event fired, waiting for scrollend...";
-    });
+    // pillGrid.addEventListener("scroll", (event) => {
+    //     output.innerHTML = "Scroll event fired, waiting for scrollend...";
+    // });
 
-    pillGrid.addEventListener("scrollend", (event) => {
-        output.innerHTML = "Scrollend event fired!";
-    });
+    pillGrid.addEventListener("scrollend", findPill)
 }
 
 testing()
-
-
-
-
 
 
 document.getElementById("pill0").scrollIntoView()
