@@ -1,5 +1,8 @@
 <%- include("templates/header", {index: false}) %>
-<%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
+<div id="heroDiv">
+  <%#- include("templates/components/backButton", {link: "/category/" + skillName})%>
+  <%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
+</div>
 <div>
   <% db.forEach((user) => { %>
   <%- include('templates/components/profileCard', {userCard: user}); %>
@@ -7,4 +10,11 @@
   <%#- db.forEach((user) =>  %>
 
 </div>
+
+<!-- <script>
+  function goBack(){
+    history.back()  }
+  document.getElementById("backButton").addEventListener("click", goBack)
+</script> -->
+
 <%- include("templates/footer") %>
