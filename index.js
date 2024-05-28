@@ -277,7 +277,7 @@ app.get("/skill/:skill", async (req, res) => {
     skilledUsersCache.push({
       username: user.username,
       location: user.location,
-      skills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
       email: user.email,
       userIcon: formatProfileIconPath(user.userIcon),
     });
