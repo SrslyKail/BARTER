@@ -1,18 +1,21 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 d-flex justify-content-center">
-  <fieldset>
-    <legend>Edit your profile:</legend>
-    <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
+    <fieldset>
+      <legend>Edit your profile:</legend>
       <div class="mb-3">
         <label for="inputUsername" class="form-label">Edit Username</label>
-        <input type="email" class="form-control" value="<%- name %>" id=" inputUsername">
+        <input type="text" class="form-control" value="<%- name %>" id=" inputUsername">
       </div>
       <div class="mb-3">
-        <label for="formFile" class="form-label">Edit Profile Picture:</label>
-        <input class="form-control" type="file" name="image" id="formFile">
-      </div>
-      <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
-    </form>
+        <label for="imputEmail" class="form-label">Edit Email</label>
+        <input type="email" class="form-control" value="<%- email %>" id=" inputEmail">
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Edit Profile Picture:</label>
+          <input class="form-control" type="file" name="image" id="formFile">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
+  </form>
   </fieldset>
 </div>
 <%- include("templates/footer") %>

@@ -1,8 +1,13 @@
 <%- include("templates/header", {index: false}) %>
-<%- include("templates/components/searchHero", {searchHeroImage:catImage, searchHeroBanner: catName}) %>
 
+<div id="heroDiv">
+  <%- include("templates/components/backButton", {link:"/"})%>
+  <%- include("templates/components/searchHero", {searchHeroImage:catImage, searchHeroBanner: catName}) %>
+</div>
 </div>
 
 <%- include('templates/card-icon-generation', { db:db, count:null})%>
+
+
 
 <%- include("templates/footer") %>

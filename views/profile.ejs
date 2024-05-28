@@ -5,17 +5,16 @@
 todo if this is the profile of said user, they should have the ability to edit whatever.
 -->
 <a href="/editProfile?name=<%- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a>
-<% if (uploaded) {%>
+<% if (typeof uploaded !== 'undefined') { %>
 <h1 class="text-success text-center">Upload Success</h1>
 <% } %>
-<div class="mx-1"> <%- include("templates/components/profileCard", {userCard: userCard}) %> </div>
+<div class="mx-1"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
 <section class="p-4 text-center mb-4">
   <h2><b>Skills</b></h2>
-  <% for (let i = 0; i < userCard.skills.length; i ++) {  %>
-  <a href="/" style="color:black;" class="fs-4 my-4"><u><%=userCard.skills[i]%></u></a><br />
-  <% } %>
+  <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
   <hr class="my-4">
   <h2><b>Reviews</b></h2>
 </section>
+<script src="/scripts/profile.js"></script>
 
 <%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>

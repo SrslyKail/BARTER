@@ -30,6 +30,7 @@ const {
   getUsername,
   getUserIcon,
   getEmail,
+  getHistory,
   defaultIcon,
   formatProfileIconPath,
   getUserId,
@@ -112,6 +113,17 @@ app.use("/editProfile", uploadRoute);
 
 /* #region helperFunctions */
 
+/** All the arguments the userCard needs */
+class userCard {
+  constructor(username, location = null, userSkills, email, userIcon) {
+    (this.username = username),
+      (this.location = location),
+      (this.userSkills = userSkills),
+      (this.email = email),
+      (this.userIcon = formatProfileIconPath(userIcon));
+  }
+}
+
 /**
  * Puts all the items from a collection into a cache.
  * Assumes your collection has a _id attribute at the top level
@@ -177,7 +189,7 @@ function generateNavLinks(req) {
     );
     modalArray.push(
       { name: "View Profile", link: "/profile" },
-      { name: "History", link: "/history" },
+      { name: "History", link: "/history/visited" },
       { name: "Settings", link: "/settings" },
       { name: "Legal", link: "/legal" },
       { name: "Log out", link: "/logout" }
@@ -207,7 +219,7 @@ app.get("/", async (req, res) => {
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
   //   var db = skillCatCollection;
-  //   var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  // var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
   // console.log(all)
@@ -270,6 +282,12 @@ app.get("/skill/:skill", async (req, res) => {
   }
 
   const skilldb = await userSkillsCollection.findOne({ name: skill });
+
+  //********BUG HERE ************/
+  if (skilldb == null) {
+    res.redirect("/404");
+  } else {
+  }
   // console.log(category);
   const skillName = skilldb.name;
   const skillImage = skilldb.image;
@@ -281,7 +299,7 @@ app.get("/skill/:skill", async (req, res) => {
     skilledUsersCache.push({
       username: user.username,
       location: user.location,
-      skills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
       email: user.email,
       userIcon: formatProfileIconPath(user.userIcon),
     });
@@ -347,7 +365,8 @@ app.post("/loggingin", async (req, res) => {
       user.email,
       user._id,
       user.isAdmin,
-      user.userIcon
+      user.userIcon,
+      user.history
     );
     res.redirect("/");
     return;
@@ -399,18 +418,12 @@ app.get("/profile", async (req, res) => {
       _id: { $in: user.userSkills },
     });
     for await (const skill of userSkills) {
-      skills.push(skill.name);
+      skills.push(skill);
     }
   }
 
   res.render("profile", {
-    userCard: {
-      username: username,
-      location: location,
-      skills: skills,
-      email: email,
-      userIcon: formatProfileIconPath(userIcon),
-    },
+    userCard: new userCard(username, location, skills, email, userIcon),
     uploaded: req.query.success,
   });
 });
@@ -420,8 +433,57 @@ app.get("/profile", async (req, res) => {
  */
 app.get("/editProfile", (req, res) => {
   res.render("editProfile", {
-    name: req.query.name,
+    name: getUsername(req),
+    email: getEmail(req),
   });
+});
+
+/**
+ * History Page.
+ */
+app.get("/history/:filter", async (req, res) => {
+  const filter = req.params.filter;
+
+  let users = [];
+
+  //Check current user.
+  let currentUser = getUser(req);
+
+  if (!currentUser) {
+    return res.redirect("/");
+  }
+
+  currentUser = await userCollection.findOne({
+    username: getUsername(req),
+  });
+
+  // console.log(currentUser.history.visited);
+
+  const data = userCollection.find({
+    _id: { $in: currentUser.history[filter] },
+  });
+
+  for await (const user of data) {
+    skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
+    let userSkills = [];
+    for await (const skill of skillNames) {
+      userSkills.push(skill.name);
+    }
+    users.push(
+      new userCard(user.username, null, userSkills, user.email, user.userIcon)
+    );
+    // console.log(newUserCard);
+  }
+
+  res.render("history", {
+    data: users,
+    filter: filter,
+    formatProfileIconPath: formatProfileIconPath,
+  });
+});
+
+app.get("/history", (req, res) => {
+  res.render("history", {});
 });
 
 /**

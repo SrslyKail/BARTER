@@ -3,6 +3,8 @@ const { ObjectId } = require("mongodb");
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const defaultIcon = "imgs/profileIconLoggedOut.png";
 const cloudinaryString = "https://res.cloudinary.com/dxttfq7qd/image/upload/";
+const ObjectId = require("mongodb").ObjectId;
+
 /**
  * A class designed to standardize passing user information to the ejs pages
  */
@@ -12,8 +14,9 @@ class User {
    * @param {Boolean} admin
    * @param {String} username
    * @param {String} email
-   * @param {URL | String} userIcon
    * @param {ObjectId} userId
+   * @param {Array} history
+   * @param {URL | String} userIcon
    */
   constructor(
     authenticated,
@@ -21,7 +24,8 @@ class User {
     username,
     email,
     userIcon = defaultIcon,
-    userId
+    userId,
+    history
   ) {
     /** @type {Boolean} */
     this.isAuthenticated = authenticated;
@@ -31,10 +35,12 @@ class User {
     this.username = username;
     /** @type {String} */
     this.email = email;
-    /** @type {String | URL} */
+    /** @type {URL | String} */
     this.userIcon = formatProfileIconPath(userIcon);
     /** @type {ObjectId} */
     this.userId = userId;
+    /** @type {Array} */
+    this.history = history;
   }
 }
 
@@ -42,8 +48,9 @@ class User {
  * Sets the privileges, username, and expiration date for the session
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
- * @param {String} email The email address of this use.
+ * @param {String} email The email address of this user.
  * @param {ObjectId} userId
+ * @param {Array} history The history of the user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  * @param {URL | String} userIcon the path to the user icon.
  */
@@ -52,11 +59,12 @@ function createSession(
   username,
   email,
   userId,
+  history,
   admin = false,
   userIcon = defaultIcon
 ) {
   req.session.cookie.maxAge = expireTime;
-  let user = new User(true, admin, username, email, userIcon, userId);
+  let user = new User(true, admin, username, email, userId, history, userIcon);
   req.session.user = user;
 }
 
@@ -118,6 +126,16 @@ function getUserId(req) {
 /**
  *
  * @param {Request} req
+ * @returns {ObjectId | null}
+ */
+function getHistory(req) {
+  let user = getUser(req);
+  return user ? new ObjectId(user.history) : null;
+}
+
+/**
+ *
+ * @param {Request} req
  * @returns {URL | String}
  */
 function getUser(req) {
@@ -136,7 +154,7 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
-  if (path == defaultIcon || path == null || path == undefined) {
+  if (path == undefined || path == null || path == defaultIcon) {
     return "/" + path;
   } else if (path.includes(cloudinaryString)) {
     return path;
@@ -153,6 +171,7 @@ module.exports = {
   getUsername,
   getUser,
   getEmail,
+  getHistory,
   getUserIcon,
   getUserId,
   defaultIcon,
