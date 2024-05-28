@@ -240,7 +240,6 @@ app.get("/category/:skillCat", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   let skillCat = req.params.skillCat;
-
   const category = await skillCatCollection.findOne({ name: skillCat });
   const skillObjectArray = category.catSkills;
   const catName = category.name;
@@ -271,6 +270,7 @@ app.get("/skill/:skill", async (req, res) => {
   var authenticated = isAuthenticated(req);
   //   console.log(req);
   let skill = req.params.skill;
+  let referrer = req.get("referrer")
   // console.log(skillCat);
   if (skill == "Chronoscope Repair") {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
@@ -308,6 +308,7 @@ app.get("/skill/:skill", async (req, res) => {
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
+    referrer:referrer,
   });
   return;
 });
