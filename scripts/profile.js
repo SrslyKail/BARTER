@@ -1,4 +1,3 @@
-
 let currentPage = 0;
 const maxPage = (document.getElementsByClassName("pillGrid")[0].children.length + 1) % 3;
 const left = document.getElementById("leftPag");
@@ -6,7 +5,6 @@ const right = document.getElementById("rightPag");
 const pillGrid = document.getElementsByClassName("pillGrid")[0]
 let goto
 let actCirc = "circle0"
-let oldCirc
 
 function leftButton() {
 
@@ -79,10 +77,6 @@ function isElementInViewport(el) {
         rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
     );
 }
-
-// pillGrid.addEventListener("scroll")
-// pillGrid.addEventListener("scrollend")
-
 async function findPill() {
     setTimeout(() => {
         for (let i = 0; i < pillGrid.children.length; i++) {
@@ -100,24 +94,14 @@ async function findPill() {
             }
         }
     }, "500")
-
 }
 
-function testing() {
-    viewElement = document.getElementById("carousel")
-    // console.log(viewElement)
-
-    // pillGrid.addEventListener("scroll", (event) => {
-    //     output.innerHTML = "Scroll event fired, waiting for scrollend...";
-    // });
-
+function sliding() {
     pillGrid.addEventListener("scrollend", findPill)
 }
 
-testing()
-
-
 document.getElementById("pill0").scrollIntoView()
 
+sliding()
 setArrowListeners()
 setCircleListeners()
