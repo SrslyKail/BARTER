@@ -1,7 +1,7 @@
   <!-- Instructions: 
     Use this to create groups of icons
 
-    include('templates/card-icon-generation, {db:db, count:count}
+    include('templates/portfolio-icon-generation, {db:db, count:count}
 
     use DB to send a database to be iterated through
     use count to determine a maximum number of icons, set to null for full db 
@@ -25,12 +25,12 @@
       <%if(count===null) {%>
       <!-- The 1 below here is just for testing, a count needs to be set or we need a for-each setup -->
       <% db.forEach(element => { %>
-      <div class="col-5 col-md-3"><%- include('components/card-image-icon', {image:element.image, text:element.name, folder:parentPage}) %> </div>
+      <div class="col-5 col-md-3"><%- include('components/portfolio-image-icon', {image:element}) %> </div>
       <% }); %>
       <!-- This logic is for stating a max count, it won't work with the forEach above -->
       <%} else {%>
       <% for(i=0; i < catCount && i< count ; i++) { %>
-      <%- include('components/card-image-icon', {image:db.image, text:db.name, folder:parentPage})%>
+      <%- include('components/portfolio-image-icon', {image:image})%>
       <% }} %>
     </div>
   </div>
