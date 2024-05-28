@@ -1,5 +1,6 @@
 let currentPage = 0;
-const maxPage = (document.getElementsByClassName("pillGrid")[0].children.length + 1) % 3;
+let maxPage = (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3;
+
 const left = document.getElementById("leftPag");
 const right = document.getElementById("rightPag");
 const pillGrid = document.getElementsByClassName("pillGrid")[0]
@@ -70,6 +71,7 @@ function isElementInViewport(el) {
 
     var rect = el.getBoundingClientRect();
 
+    //I need to adjust the below for non-mobile view it should use the bounding rectangle of carousel rather than the window/document
     return (
         rect.top >= 0 &&
         rect.left >= 0 &&
