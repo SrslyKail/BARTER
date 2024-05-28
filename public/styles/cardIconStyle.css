@@ -1,5 +1,5 @@
 #iconGridContainer {
-    display:flex;
+    display: flex;
     justify-content: center;
 }
 
@@ -74,11 +74,15 @@
     font-size: x-large;
 }
 
-#backDiv{
+#backDiv {
     position: absolute;
     margin: 1em 0 0 1vw;
     /* mix-blend-mode: plus-darker; */
     mix-blend-mode: difference;
+    background-clip: text;
+    color: transparent;
+    filter: invert(1);
+
 }
 
 #centering {
@@ -99,7 +103,7 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     height: inherit;
-    width:100%;
+    width: 100%;
     max-width: 480px;
     display: grid;
     gap: 14px;
@@ -171,20 +175,20 @@
 
 #paginate {
     margin-top: 2em;
-    pointer-events:none;
+    pointer-events: none;
 }
 
-.pagCircle{
-    width:24px;
-    height:24px;
-    pointer-events:auto;
-}
-
-.pagIcon{
+.pagCircle {
+    width: 24px;
+    height: 24px;
     pointer-events: auto;
 }
 
-.activeCircle > circle{
+.pagIcon {
+    pointer-events: auto;
+}
+
+.activeCircle>circle {
     fill: #676767;
 }
 
