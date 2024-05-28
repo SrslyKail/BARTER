@@ -695,6 +695,14 @@ app.get("/zamn", (req, res) => {
   console.warn("ZAMN?", req.session.zamn);
   res.redirect("back");
 });
+
+app.get("/settings", (req, res) => {
+  res.render("settings")
+});
+
+app.get("/legal", (req, res) => {
+  res.render("legal")
+});
 /**
  * handles all routes that are not matched by any other route.
  * renders a 404 page and sets the response status to 404.
