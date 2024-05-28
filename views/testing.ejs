@@ -1,0 +1,17 @@
+<%- include("templates/header", {index: true}) %>
+<%- include("templates/components/searchHero", {searchHeroImage:null, searchHeroBanner: null}) %>
+
+</div>
+
+<div id="centering">
+  <div id="carousel">
+    <div class="pillGrid">
+
+      <%- include('templates/skill-pill-generation.ejs', {db:db}) %>
+
+
+    </div>
+  </div>
+</div>
+
+<%- include("templates/footer") %>

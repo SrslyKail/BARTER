@@ -11,9 +11,7 @@ todo if this is the profile of said user, they should have the ability to edit w
 <div class="mx-1"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
 <section class="p-4 text-center mb-4">
   <h2><b>Skills</b></h2>
-  <% for (let i = 0; i < userCard.userSkills.length; i ++) {  %>
-  <a href="/" style="color:black;" class="fs-4 my-4"><u><%=userCard.userSkills[i]%></u></a><br />
-  <% } %>
+  <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
   <hr class="my-4">
   <h2><b>Reviews</b></h2>
   <h2><b>Portfolio</b><a href="/editPortfolio?username=<%- userCard.username %>" class="btn btn-secondary">Edit Profile</a></h2>
@@ -23,5 +21,6 @@ todo if this is the profile of said user, they should have the ability to edit w
     <% }; %>
   <% } %>
 </section>
+<script src="/scripts/profile.js"></script>
 
 <%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>
