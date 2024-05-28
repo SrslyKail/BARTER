@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const defaultIcon = "imgs/profileIconLoggedOut.png";
 const cloudinaryString = "https://res.cloudinary.com/dxttfq7qd/image/upload/";
@@ -11,17 +13,28 @@ class User {
    * @param {String} username
    * @param {String} email
    * @param {URL | String} userIcon
+   * @param {ObjectId} userId
    */
-  constructor(authenticated, admin, username, email, userIcon = defaultIcon) {
-    /** @type {boolean} */
+  constructor(
+    authenticated,
+    admin,
+    username,
+    email,
+    userIcon = defaultIcon,
+    userId
+  ) {
+    /** @type {Boolean} */
     this.isAuthenticated = authenticated;
-    /** @type {boolean} */
+    /** @type {Boolean} */
     this.isAdmin = admin;
-    /** @type {string} */
+    /** @type {String} */
     this.username = username;
-    /** @type {string} */
+    /** @type {String} */
     this.email = email;
+    /** @type {String | URL} */
     this.userIcon = formatProfileIconPath(userIcon);
+    /** @type {ObjectId} */
+    this.userId = userId;
   }
 }
 
@@ -30,6 +43,7 @@ class User {
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
  * @param {String} email The email address of this use.
+ * @param {ObjectId} userId
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  * @param {URL | String} userIcon the path to the user icon.
  */
@@ -37,11 +51,12 @@ function createSession(
   req,
   username,
   email,
+  userId,
   admin = false,
   userIcon = defaultIcon
 ) {
   req.session.cookie.maxAge = expireTime;
-  let user = new User(true, admin, username, email, userIcon);
+  let user = new User(true, admin, username, email, userIcon, userId);
   req.session.user = user;
 }
 
@@ -93,6 +108,16 @@ function getUserIcon(req) {
 /**
  *
  * @param {Request} req
+ * @returns {ObjectId | null}
+ */
+function getUserId(req) {
+  let user = getUser(req);
+  return user ? user.userId : null;
+}
+
+/**
+ *
+ * @param {Request} req
  * @returns {URL | String}
  */
 function getUser(req) {
@@ -129,6 +154,7 @@ module.exports = {
   getUser,
   getEmail,
   getUserIcon,
+  getUserId,
   defaultIcon,
   formatProfileIconPath,
 };

@@ -32,6 +32,7 @@ const {
   getEmail,
   defaultIcon,
   formatProfileIconPath,
+  getUserId,
 } = require("./scripts/modules/localSession");
 const {
   getMongoStore,
@@ -98,9 +99,10 @@ app.use((req, res, next) => {
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
+  app.locals._id = getUserId(req);
   // Classic ternary operator to deal with undefined and null :)
-  req.session.zamn = req.session.zamn ? true : false;
-  app.locals.zamn = req.session.zamn;
+  app.locals.zamn = req.session.zamn ? true : false;
+
   next();
 });
 
@@ -338,7 +340,15 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
-    createSession(req, user.username, user.email, user.isAdmin, user.userIcon);
+    console.log(user._id);
+    createSession(
+      req,
+      user.username,
+      user.email,
+      user._id,
+      user.isAdmin,
+      user.userIcon
+    );
     res.redirect("/");
     return;
   } else {
@@ -589,22 +599,25 @@ app.post("/submitUser", async (req, res) => {
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert into collection
-    await userCollection.insertOne({
+    let newDoc = await userCollection.insertOne({
       username: username,
       email: email,
       password: hashedPassword,
     });
+    console.warn("new doc:\n", newDoc);
+    console.warn("objectID:", newDoc.insertedId);
+    console.log(await userCollection.findOne({ _id: newDoc.insertedId }));
 
-    createSession(req, username, false);
+    createSession(req, username, email, newDoc.insertedId, false);
+
     res.redirect("/");
     return;
-  } else {
-    //catch-all redirect to signup, sends errors
-    res.render("signup", {
-      errors: errors,
-    });
-    return;
   }
+  //catch-all redirect to signup, sends errors
+  res.render("signup", {
+    errors: errors,
+  });
+  return;
 });
 
 /**
@@ -646,8 +659,18 @@ let server = app.listen(port, () => {
 });
 let io = require("socket.io")(server);
 io.on("connection", (socket) => {
-  socket.on("position", (position) => {
-    // console.info("user transmitted a position");
-    // console.log(position);
+  socket.on("position", async (position) => {
+    // req.session.position = position.geo;
+    console.log(position.geo);
+    // if (position.id.length == 24) {
+    //   console.log(position.id);
+    //   await userCollection
+    //     .findOne({
+    //       _id: ObjectId.createFromHexString(position.id),
+    //     })
+    //     .then((col) => {
+    //       console.log(col);
+    //     });
+    // }
   });
 });

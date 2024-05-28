@@ -33,9 +33,9 @@
 
   function sendGeo(position) {
     socket.emit("position", {
-      position: {
-        long: position.coords.longitude,
-        lat: position.coords.latitude
+      geo: {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
       },
       id: id,
     })
