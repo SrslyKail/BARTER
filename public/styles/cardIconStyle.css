@@ -1,5 +1,11 @@
+#iconGridContainer {
+    display:flex;
+    justify-content: center;
+}
+
 /* Grid for testing (expands infinitely) */
 .iconGrid {
+    max-width: 960px;
     margin: 2em;
     padding: 2em;
     display: grid;
@@ -7,6 +13,7 @@
     grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
     grid-auto-rows: auto;
     grid-auto-flow: row;
+    align-self: center;
 }
 
 /* Mandatory CSS unless noted as optional*/
