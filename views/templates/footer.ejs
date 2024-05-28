@@ -12,15 +12,40 @@
 
 <!-- Scripts go here -->
 <script>
-  // I don't know why, but this is what works
   console.log(<%=zamn%>)
   if (<%=zamn%>) {
+    // I don't know why, but this is what works
     document.addEventListener("DOMContentLoaded", () => {
       document.body.addEventListener("click", () => {
         new Audio("https://res.cloudinary.com/djdztuwwe/video/upload/v1716578719/qvw5b8ghcmlcirpo4ezq.mp3").play();
       })
     })
   }
+</script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const socket = io();
+  const id = "<%= typeof _id !== 'undefined' ? _id : " " %>";
+
+  const positionOptions = {
+    enableHighAccuracy: true,
+  };
+
+  function sendGeo(position) {
+    socket.emit("position", {
+      position: {
+        long: position.coords.longitude,
+        lat: position.coords.latitude
+      },
+      id: id,
+    })
+  }
+
+  navigator.geolocation.watchPosition(
+    sendGeo,
+    null,
+    positionOptions
+  );
 </script>
 </body>
 

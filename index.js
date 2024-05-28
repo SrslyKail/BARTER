@@ -4,6 +4,9 @@
 require("./utils.js");
 require("dotenv").config();
 const express = require("express");
+
+const app = express();
+
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const Collection = require("mongodb").Collection;
@@ -13,11 +16,11 @@ const fs = require("fs");
 const Joi = require("joi");
 
 /* #endregion requiredModules */
-
+/* #region userImports */
 const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
-const app = express();
+
 const {
   User,
   isAuthenticated,
@@ -52,7 +55,7 @@ const { FindCursor, ChangeStream } = require("mongodb");
 
 const skillsCache = {};
 const skillCatCache = {};
-
+/* #endRegion userImports */
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
@@ -638,6 +641,13 @@ app.get("*", (req, res) => {
 /* #endregion serverRouting */
 
 /** starts the server and listens on the specified port */
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.info("Node application listening on port " + port);
+});
+let io = require("socket.io")(server);
+io.on("connection", (socket) => {
+  socket.on("position", (position) => {
+    // console.info("user transmitted a position");
+    // console.log(position);
+  });
 });
