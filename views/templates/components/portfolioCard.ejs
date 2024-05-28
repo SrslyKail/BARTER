@@ -1,0 +1,43 @@
+<div class="d-flex justify-content-center">
+  <table>
+    <tr>
+      <td>
+        <a id="profileIcon"><img src="<%= formatProfileIconPath(image) %>"></a>
+      </td>
+      <td>
+        <div style="font-weight: bold;"><%- title %></div>
+        <div>
+          <% if (description.length > 50) { %>
+            <% let shortdesc = description.substring(0, 50) %>
+            <div><%- shortdesc + "..." %></div>
+            <a href="<%- link %>">Read More</a>
+          <% } %>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+<style>
+  #profileIcon * {
+    border: 1px;
+    border-radius: 20%;
+    height: 16vh !important;
+    width: auto;
+  }
+
+  /* this is here because i only need these styles applied to this specific table */
+  table {
+    border: 1px solid gray;
+    background-color: lightgray;
+    border-radius: 15px;
+    border-collapse: separate;
+    padding: 2%;
+    margin: 2% 0 2% 0;
+    min-width: 90%;
+  }
+
+  table * {
+    padding: 1pt 0 1pt 4pt;
+    font-size: 15pt;
+  }
+</style>

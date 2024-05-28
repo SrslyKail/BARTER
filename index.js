@@ -376,7 +376,8 @@ app.get("/profile", async (req, res) => {
     // email = getEmail(req);
     // userIcon = getUserIcon(req);
   }
-  user = await userCollection.findOne({ username: queryID });
+  // user = await userCollection.findOne({ username: queryID });
+  user = await userCollection.findOne({ username: "password" });
   //if we cant find the requested profile, get the current users profile
   if (!user) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
@@ -407,6 +408,8 @@ app.get("/profile", async (req, res) => {
     },
     uploaded: req.query.success,
     userIcon: formatProfileIconPath(userIcon),
+    portfolio: user.portfolio,
+    formatProfileIconPath: formatProfileIconPath,
   });
 });
 
