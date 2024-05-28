@@ -420,7 +420,8 @@ app.get("/profile", async (req, res) => {
  */
 app.get("/editProfile", (req, res) => {
   res.render("editProfile", {
-    name: req.query.name,
+    name: getUsername(req),
+    email: getEmail(req),
   });
 });
 

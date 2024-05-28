@@ -3,7 +3,11 @@
   <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
     <div class="mb-3">
       <label for="inputUsername" class="form-label">Edit Username</label>
-      <input type="email" class="form-control" value="<%- name %>" id=" inputUsername">
+      <input type="text" class="form-control" value="<%- name %>" id=" inputUsername">
+    </div>
+    <div class="mb-3">
+      <label for="inputUsername" class="form-label">Edit Email</label>
+      <input type="email" class="form-control" value="<%- email %>" id=" inputUsername">
     </div>
     <div class="mb-3">
       <label for="formFile" class="form-label">Edit Profile Picture:</label>
