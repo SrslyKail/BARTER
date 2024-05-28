@@ -95,7 +95,7 @@
     width:100%;
     max-width: 480px;
     display: grid;
-    gap: 1em;
+    gap: 14px;
     grid-template-rows: repeat(3, 1fr);
     /* margin: 0 3vw 0 3vw; */
     grid-auto-columns: 100%;

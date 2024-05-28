@@ -62,19 +62,30 @@ function setCircleListeners() {
     }
 }
 
+// const carousel = document.getElementById("carousel")
+
 function isElementInViewport(el) {
 
-    // Special bonus for those using jQuery
-    if (typeof jQuery === "function" && el instanceof jQuery) {
-        el = el[0];
+    let rect = el.getBoundingClientRect();
+    // let carouselSize = carousel.getBoundingClientRect
+
+
+
+    //modifier calculates a sort of margin for defining what's in the viewport
+    let modifier = (window.innerWidth / 2) - 240
+    if (modifier < 0) { modifier = 0 }
+    while (modifier < (window.innerWidth / 2)) {
+        modifier += 494
     }
+    modifier -= 496
 
-    var rect = el.getBoundingClientRect();
+    // let compareTo = {width: carousel.width, height: carousel.height} // this also includes margin/padding, just FYI
 
-    //I need to adjust the below for non-mobile view it should use the bounding rectangle of carousel rather than the window/document
     return (
+
         rect.top >= 0 &&
-        rect.left >= 0 &&
+        rect.left >= (0 + modifier) &&
+
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
         rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
     );
@@ -87,7 +98,7 @@ async function findPill() {
                 document.getElementById(actCirc).classList.toggle("activeCircle");
                 actCirc = "circle" + (i / 3)
                 // console.log(i)
-                currentPage = (i/3)
+                currentPage = (i / 3)
                 // console.log("Current Page: " + currentPage)
                 setArrowListeners()
                 document.getElementById(actCirc).classList.toggle("activeCircle");
