@@ -74,6 +74,13 @@
     font-size: x-large;
 }
 
+#backDiv{
+    position: absolute;
+    margin: 1em 0 0 1vw;
+    /* mix-blend-mode: plus-darker; */
+    mix-blend-mode: difference;
+}
+
 #centering {
     display: flex;
     justify-content: center;

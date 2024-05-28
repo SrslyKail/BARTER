@@ -15,6 +15,7 @@
     Find mandatory CSS and options in cardIconStyle.css
     Template for no text + no image: 
     <%#- include('templates/components/card-image-icon', { image:"/wow.jpeg", folder:null, text:null}) %>
+    For Vincent: add userString:"dxttfq7qd" when calling card-icon-generation
     -->
   <div id="iconGridContainer">
     <div class="iconGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-8">
@@ -30,7 +31,7 @@
       <!-- This logic is for stating a max count, it won't work with the forEach above -->
       <%} else {%>
       <% for(i=0; i < catCount && i< count ; i++) { %>
-      <%- include('components/card-image-icon', {image:db.image, text:db.name, folder:parentPage})%>
+      <%- include('components/card-image-icon', {image:db.image, text:db.name, folder:parentPage, inputUser:userString})%>
       <% }} %>
     </div>
   </div>
