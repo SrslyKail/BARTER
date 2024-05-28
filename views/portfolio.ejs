@@ -2,11 +2,13 @@
 
 <%- include("templates/components/searchHero", {searchHeroImage:data.images[0], searchHeroBanner: data.title}) %>
 
-<div id="iconGridContainer">
-  <div class="iconGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-8">
-  <% data.images.forEach(element => { %>
-    <div class="col-5 col-md-3"><%- include('templates/components/card-image-icon', {image:element, text:null, folder:null, inputUser: "dxttfq7qd"}) %> </div>
-  <% }); %>
-</div>
+<!-- <div id="iconGridContainer"> -->
+  <!-- <div class="iconGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-8"> -->
+  <%# data.images.forEach(element => { %>
+    <!-- <div class="col-5 col-md-3"><%#- include('templates/components/card-image-icon', {image:element, text:null, folder:null, inputUser: "dxttfq7qd"}) %> </div> -->
+  <%# }); %>
+<!-- </div> -->
+
+<%- include("templates/portfolio-icon-generation", {db:data.images, count:null})%>
 
 <%- include("templates/footer") %>
