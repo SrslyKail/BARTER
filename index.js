@@ -364,9 +364,9 @@ app.post("/loggingin", async (req, res) => {
       user.username,
       user.email,
       user._id,
+      user.history,
       user.isAdmin,
-      user.userIcon,
-      user.history
+      user.userIcon
     );
     res.redirect("/");
     return;
@@ -665,12 +665,25 @@ app.post("/submitUser", async (req, res) => {
       username: username,
       email: email,
       password: hashedPassword,
+      isAdmin: false,
+      contactInfo: {
+        email: email,
+        address: null,
+        phone: null,
+      },
+      userIcon: defaultIcon,
+      history: { visited: [], contacted: [] },
     });
-    console.warn("new doc:\n", newDoc);
-    console.warn("objectID:", newDoc.insertedId);
-    console.log(await userCollection.findOne({ _id: newDoc.insertedId }));
 
-    createSession(req, username, email, newDoc.insertedId, false);
+    createSession(
+      req,
+      username,
+      email,
+      newDoc.insertedId,
+      { visited: [], contacted: [] },
+      false,
+      defaultIcon
+    );
 
     res.redirect("/");
     return;

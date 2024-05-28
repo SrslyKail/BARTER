@@ -1,5 +1,3 @@
-const { ObjectId } = require("mongodb");
-
 const expireTime = 1 * 60 * 60 * 1000; //expires after 1 HOUR
 const defaultIcon = "imgs/profileIconLoggedOut.png";
 const cloudinaryString = "https://res.cloudinary.com/dxttfq7qd/image/upload/";
