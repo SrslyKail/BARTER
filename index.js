@@ -77,6 +77,7 @@ app.use(
 );
 
 app.use("/editProfile", uploadRoute);
+app.use("/editPortfolio", uploadRoute);
 
 /**
  * sets the view engine to ejs, configures the express app,
@@ -101,8 +102,6 @@ app.use((req, res, next) => {
   app.locals.zamn = req.session.zamn;
   next();
 });
-
-app.use("/editProfile", uploadRoute);
 
 /* #endregion middleware */
 
@@ -210,7 +209,7 @@ function generateNavLinks(req) {
 
 /* #region serverRouting */
 
-app.get("/testing", async(req, res) => {
+app.get("/testing", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
@@ -243,7 +242,7 @@ app.get("/", async (req, res) => {
   var authenticated = isAuthenticated(req);
   /* Mock database for presentation*/
   //   var db = skillCatCollection;
-    // var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
+  // var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
   // console.log(all)
@@ -520,7 +519,51 @@ app.get("/portfolio", async (req, res) => {
     username: req.query.username,
   });
 
-  res.send(data.portfolio[id]);
+  res.render("portfolio", {
+    data: data.portfolio[id],
+  });
+
+  return;
+
+  /* #region bens code */
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+  //   console.log(req);
+  let skill = req.params.skill;
+  // console.log(skillCat);
+  if (skill == "Chronoscope Repair") {
+    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
+  }
+
+  const skilldb = await userSkillsCollection.findOne({ name: skill });
+  // console.log(category);
+  const skillName = skilldb.name;
+  const skillImage = skilldb.image;
+  const skilledUsers = userCollection.find({
+    userSkills: { $in: [skilldb._id] },
+  });
+  let skilledUsersCache = [];
+  for await (const user of skilledUsers) {
+    skilledUsersCache.push({
+      username: user.username,
+      location: user.location,
+      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      email: user.email,
+      userIcon: formatProfileIconPath(user.userIcon),
+    });
+  }
+
+  // console.log(skilledUsersCache);
+
+  res.render("skill", {
+    authenticated: authenticated,
+    username: username,
+    db: skilledUsersCache,
+    skillName: skillName,
+    skillImage: skillImage,
+  });
+  return;
+  /* #endregion bens code */
 });
 
 /**

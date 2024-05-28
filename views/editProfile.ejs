@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 d-flex justify-content-center">
-  <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editProfile/upload?type=profile&name=<%- name %>" method="post" enctype="multipart/form-data" class="">
     <div class="mb-3">
       <label for="inputUsername" class="form-label">Edit Username</label>
       <input type="text" class="form-control" value="<%- name %>" id=" inputUsername">

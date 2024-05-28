@@ -5,7 +5,7 @@
         <a id="profileIcon"><img src="<%= formatProfileIconPath(image) %>"></a>
       </td>
       <td>
-        <div style="font-weight: bold;"><%- title %></div>
+        <div style="font-weight: bold;"><%- title %><a href="/editPortfolio/upload?type=portfolioItem&item=<%- title %>"><i class="bi bi-pencil-square btn d-none"></i></a></div>
         <div>
           <% if (description.length > 50) { %>
             <% let shortdesc = description.substring(0, 50) %>
