@@ -327,7 +327,6 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
         user.userLocation
       )
     );
-    console.log(user);
   }
 
   // console.log(skilledUsersCache);
@@ -446,7 +445,6 @@ app.get("/profile", async (req, res) => {
       skills.push(skill);
     }
   }
-  console.warn("User data:", user);
 
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
