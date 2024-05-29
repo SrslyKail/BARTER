@@ -407,6 +407,11 @@ form.d-grid {
   grid-area: reviews;
 }
 
+#contactButton * {
+  font-weight: 700; 
+  margin-bottom:0;
+}
+
 /* #endregion Profile Container*/
 
 
