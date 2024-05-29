@@ -386,6 +386,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
+  let referrer = req.get("referrer")
 
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
@@ -419,6 +420,7 @@ app.get("/profile", async (req, res) => {
   res.render("profile", {
     userCard: new userCard(username, location, skills, email, userIcon),
     uploaded: req.query.success,
+    referrer: referrer,
   });
 });
 
