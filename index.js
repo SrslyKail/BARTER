@@ -358,7 +358,6 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
-    console.log(user._id);
     createSession(
       req,
       user.username,
@@ -437,6 +436,12 @@ app.get("/editProfile", (req, res) => {
     email: getEmail(req),
   });
 });
+
+// app.post("/editProfile/upload", (req, res) => {
+//   console.log(req);
+
+//   console.log();
+// })
 
 /**
  * History Page.
@@ -719,7 +724,6 @@ app.post("/searchSubmit", (req, res) => {
 app.get("/zamn", (req, res) => {
   req.session.zamn = !req.session.zamn;
   app.locals.zamn = req.session.zamn;
-  console.warn("ZAMN?", req.session.zamn);
   res.redirect("back");
 });
 /**
@@ -741,7 +745,7 @@ let io = require("socket.io")(server);
 io.on("connection", (socket) => {
   socket.on("position", async (position) => {
     // req.session.position = position.geo;
-    console.log(position.geo);
+    // console.log(position.geo);
     // if (position.id.length == 24) {
     //   console.log(position.id);
     //   await userCollection

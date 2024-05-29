@@ -11,7 +11,7 @@
     "history"
   ],
   "properties": {
-    "userName": {
+    "username": {
       "bsonType": "string",
       "default": "",
       "title": "The userName Schema",

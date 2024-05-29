@@ -12,7 +12,6 @@
 
 <!-- Scripts go here -->
 <script>
-  console.log(<%=zamn%>)
   if (<%=zamn%>) {
     // I don't know why, but this is what works
     document.addEventListener("DOMContentLoaded", () => {
@@ -34,11 +33,13 @@
   let formLat;
 
   function startProcessGeo() {
-    formLong = document.getElementById("long");
-    formLat = document.getElementById("lat");
-
     navigator.geolocation.watchPosition((position) => {
-        if (formLong && formLat) {
+        formLong = document.getElementById("long");
+        formLat = document.getElementById("lat");
+        if (
+          (formLong && formLat) 
+          && !(formLong.disabled && formLat.disabled)
+        ) {
           applyGeoToForm(position);
         }
         sendGeo(position);

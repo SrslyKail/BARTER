@@ -152,6 +152,7 @@ function getEmail(req) {
  * @returns {URL | String}
  */
 function formatProfileIconPath(path) {
+  path = `${path}`;
   if (path == undefined || path == null || path == defaultIcon) {
     return "/" + defaultIcon;
   } else if (path.includes(defaultIcon)) {

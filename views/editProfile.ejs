@@ -5,17 +5,62 @@
       <legend>Edit your profile:</legend>
       <div class="mb-3">
         <label for="inputUsername" class="form-label">Edit Username</label>
-        <input type="text" class="form-control" value="<%- name %>" id=" inputUsername">
+        <input type="text" class="form-control" value="<%- name %>" name="username" id="inputUsername">
       </div>
       <div class="mb-3">
         <label for="imputEmail" class="form-label">Edit Email</label>
-        <input type="email" class="form-control" value="<%- email %>" id=" inputEmail">
-        <div class="mb-3">
-          <label for="formFile" class="form-label">Edit Profile Picture:</label>
-          <input class="form-control" type="file" name="image" id="formFile">
-        </div>
-        <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
+        <input type="email" class="form-control" value="<%- email %>" name="email" id="inputEmail">
+      </div>
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Edit Profile Picture:</label>
+        <input class="form-control" type="file" name="userIcon" id="formFile">
+      </div>
+      <div id="geoUpdateParent" class="input-group mb-3">
+        <label class="input-group-text" for="long">Longitude</label>
+        <input id="long" type="text" class="form-control text-truncate" name="long" readonly disabled hidden>
+      </div>
+      <div class="input-group mb-3">
+        <label class="input-group-text" for="lat">Latitude</label>
+        <input id="lat" type="text" class="form-control text-truncate" name="lat" readonly disabled hidden>
+      </div>
+      <button id="updateGeoButton" type="button" class="btn btn-primary mb-3" onclick="captureGeo()">Update Location?</button>
+      <button type="submit" class="btn btn-primary my-3">Save Edits</button>
+    </fieldset>
   </form>
-  </fieldset>
 </div>
+<script>
+  let geoUpdated = false;
+
+  async function captureGeo() {
+    let updateGeoButton = document.getElementById("updateGeoButton");
+    updateGeoButton.textContent = "Updating...";
+
+    navigator.geolocation.getCurrentPosition((position) => {
+
+      let formLong = document.getElementById("long");
+      let formLat = document.getElementById("lat");
+      formLong.value = position.coords.longitude;
+      formLat.value = position.coords.latitude;
+      formLong.hidden = false;
+      formLat.hidden = false;
+      formLong.disabled = false;
+      formLat.disabled = false;
+      updateGeoButton.textContent = "Update Location?";
+      geoUpdated = true;
+    }, (err => {
+      updateGeoButton.textContent = "Try again?";
+    }), {
+      timeout: 10000
+    });
+  }
+
+  document.addEventListener("submit", (e) => {
+    if (geoUpdated) {
+      Object.keys(e).forEach(key => {
+        console.log(e[key]);
+      })
+      console.log("Submitting updated geo");
+    }
+  })
+</script>
 <%- include("templates/footer") %>

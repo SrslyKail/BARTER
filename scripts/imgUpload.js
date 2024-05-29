@@ -5,6 +5,7 @@ const userCollection = getCollection("users");
 const formatProfileIconPath =
   require("./modules/localSession").formatProfileIconPath;
 const multer = require("multer");
+const { getUsername } = require("./modules/localSession");
 const cloudinary = require("cloudinary").v2;
 
 const storage = multer.diskStorage({
@@ -22,42 +23,41 @@ cloudinary.config({
 
 const upload = multer({ storage: storage });
 
-router.post("/upload", upload.single("image"), function (req, res) {
-  cloudinary.uploader.upload(req.file.path, function (err, result) {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({
-        success: false,
-        message: "Error",
-      });
-    }
-
-    // console.info({
-    //   success: true,
-    //   message: "Uploaded!",
-    //   data: result,
-    // });
-    let scheme = "/upload/";
-    let img = result.url.split(scheme)[1];
-    req.session.user.userIcon = formatProfileIconPath(img);
-    UpdateProfileOnMongo(result, req.query.name);
-
-    res.redirect("/profile");
-  });
+router.post("/upload", upload.single("userIcon"), async function (req, res) {
+  console.log(req);
+  let data = JSON.stringify(req.body);
+  console.log(req.file);
+  console.warn(data);
+  if (req.file) {
+    cloudinary.uploader.upload(req.file.path, function (err, result) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Error",
+        });
+      }
+      let scheme = "/upload/";
+      let img = result.url.split(scheme)[1];
+      data[userIcon] = img;
+      console.log(data);
+      req.session.user.userIcon = formatProfileIconPath(img);
+    });
+  }
+  await updateMongoProfile(data);
+  res.redirect("/profile");
 });
 
-const UpdateProfileOnMongo = async (data, name) => {
-  let scheme = "/upload/";
-  let img = data.url.split(scheme)[1];
-
+async function updateMongoProfile(data) {
+  console.log(data);
   await userCollection.updateOne(
-    { username: name },
+    { username: getUsername() },
     {
       $set: {
-        userIcon: img,
+        data,
       },
     }
   );
-};
+}
 
 module.exports = router;
