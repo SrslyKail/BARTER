@@ -133,6 +133,14 @@ async function validateCatParam(req, res, next) {
   }
 }
 
+async function checkAuth(req, res, next) {
+  if(isAuthenticated(req)){
+    next()
+  } else {
+    res.status(401).json({ message: "You are not authorized to submit ratings." });
+  }
+}
+
 /* #endregion middleware */
 
 /* #region helperFunctions */
@@ -484,6 +492,17 @@ app.get("/editProfile", (req, res) => {
     email: getEmail(req),
   });
 });
+
+/**Post to submit rating from profile. */
+app.post("/submit-rating", checkAuth, (req, res) => {
+  let value = req.body.rating
+  let id = getUserId(req)
+  // console.log(req)
+  console.log(id)
+  console.log(value);
+
+})
+
 
 // app.post("/editProfile/upload", (req, res) => {
 //   console.log(req);
