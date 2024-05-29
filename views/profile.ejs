@@ -13,40 +13,21 @@
     <!-- <a id = "subEditButton" href="/editProfile?name=<%#- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a> -->
   </div>
 
-  <div id="container">
+<div id="container">
 
-    <div id="cardArea">
-      <div id="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
-    </div>
-    <div id="pillArea" class="pt-4 text-center">
-      <h2><b>Skills</b></h2>
-      <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
-    </div>
-
-<div id="porfolioArea" class="p-4 text-center">
-  <hr class="my-4 pb-1-5">
-  <h2>
-    <b>Portfolio</b>
-    <a class="btn btn-secondary" href="/editPortfolio?username=<%= userCard.username %>">
-      <i class="bi bi-plus-square"></i>
-      Add
-    </a>
-  </h2>
-  <% if (typeof portfolio !== 'undefined') {%>
-    <% for(let i = 0; i < portfolio.length; i++) { %>
-      <%- include("templates/components/portfolioCard", { title: portfolio[i].title, 
-                                                          image: portfolio[i].images[0], 
-                                                          description: portfolio[i].description, 
-                                                          formatProfileIconPath: formatProfileIconPath, 
-                                                          link: "/portfolio?username="+userCard.username+"&id="+i}) %>
-    <% }; %>
-  <% } %>
+  <div id="cardArea">
+    <div id="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
   </div>
 
-<div id="reviewArea" class="px-4 text-center mb-4">
+  <div id="pillArea" class="pt-4 text-center">
+    <h2><b>Skills</b></h2>
+    <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
+  </div>
+
+  <div id="reviewArea" class="px-4 text-center mb-4">
     <hr class="my-4 pb-1-5">
     <h2><b>Reviews</b></h2>
-</div>
+  </div>
 
 </div>
 

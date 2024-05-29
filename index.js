@@ -512,27 +512,36 @@ app.get("/history", (req, res) => {
  * Portfolio Page.
  */
 app.get("/portfolio", async (req, res) => {
-  const username = req.query.username;
-  const id = req.query.id;
+  const skill = req.query.skill;
+  let gallery = [];
+  let description = "";
 
-  if (!username) {
-    res.redirect("/profile");
-    return;
-  }
-
-  if (!id) {
-    res.redirect("/profile");
-    return;
-  }
-
-  const data = await userCollection.findOne({
-    username: req.query.username,
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
   });
 
+  let data = await userCollection.findOne({
+    username: "pascal",
+  });
+
+  data.portfolio.forEach((item) => {
+    if (item.title === skillData._id.toString()) {
+      gallery = item.images;
+      description = item.description;
+      return;
+    }
+  });
+
+  res.send({
+    gallery: gallery,
+    description: description,
+  });
+  return;
+
   res.render("portfolio", {
-    data: data.portfolio[id],
-    username: username,
-    id: id,
+    name: skillData.name,
+    banner: skillData.image,
+    description: skillData.description,
   });
 });
 
