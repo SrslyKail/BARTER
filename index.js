@@ -135,7 +135,7 @@ async function validateCatParam(req, res, next) {
 }
 
 async function checkAuth(req, res, next) {
-  if(isAuthenticated(req)){
+  if (isAuthenticated(req)) {
     next()
   } else {
     res.status(401).json({ message: "You are not authorized to submit ratings." });
@@ -246,16 +246,16 @@ function generateNavLinks(req) {
 
 /** Sending a rating to the server */
 
-async function addRating(profileID, userID, rateValue) {
-  let ratedBefore = db.Rates.find({ userId: 'user1', profileID: 'post1' }).count()
+async function addRating(ratedID, userID, rateValue) {
+  let ratedBefore = await db.Rates.find({ userId: 'user1', ratedID: 'post1' }).count()
   if (!ratedBefore) {
-    let profileID = 'profile1'; // the profile userobject goes here
+    let ratedID = 'profile1'; // the profile userobject goes here
     let userId = 'user1'; // the current user user object goes here
     let rateValue = rateValue; // to 5
     let rate =
     {
       userId: userId,
-      postId: postId,
+      ratedID: ratedID,
       value: rateValue,
       date: new Date()
     };
@@ -478,6 +478,8 @@ app.get("/profile", async (req, res) => {
     }
   }
 
+  console.log(getUserId(req))
+
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
@@ -502,6 +504,9 @@ app.post("/submit-rating", checkAuth, (req, res) => {
   // console.log(req)
   console.log(id)
   console.log(value);
+
+
+  addRating(*** ratedID ***, id, value)
 
 })
 
