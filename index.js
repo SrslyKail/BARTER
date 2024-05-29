@@ -163,7 +163,7 @@ async function cacheCollection(coll, cache) {
  */
 async function watchForChanges(coll) {
   for await (const change of coll) {
-    console.log(change);
+    // console.log(change);
   }
 }
 
@@ -181,7 +181,7 @@ async function cacheSkillCats() {
 }
 
 function setupDBSkillCache() {
-  console.log("Setting up cache");
+  // console.log("Setting up cache");
   cacheSkillCats();
   cacheUserSkills();
 }
@@ -289,7 +289,7 @@ app.get("/category/:skillCat", validateCatParam, async (req, res) => {
 app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
-  //   console.log(req);
+  // console.log(req);
   let skill = req.params.skill;
   let referrer = req.get("referrer");
   // console.log(skillCat);
