@@ -1,18 +1,18 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 text-center">
-  <form action="/editPortfolio/upload?type=portfolioItem&username=<%= username %>&id=<%- id %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editPortfolio/upload?type=portfolioItem&username=<%= username %>&index=<%- index %>" method="post" enctype="multipart/form-data" class="">
     <div>
       <label for="portfolioTitle" class="form-label">Edit Title: </label>
-      <input type="text" class="form-control" value="<%- data.title %>" name="title" id=" portfolioTitle">
+      <input type="text" class="form-control" value="<%- title %>" name="title" id=" portfolioTitle">
     </div>
 
     <div>
       <label for="portfolioDesc" class="form-label">Edit Description: </label>
-      <textarea class="form-control" name="description" id=" portfolioDesc" rows="10"><%- data.description %></textarea>
+      <textarea class="form-control" name="description" id=" portfolioDesc" rows="10"><%- description %></textarea>
     </div>
 
     <div>
-      <%- include("templates/portfolio-icon-generation", {db: data.images, count:null})%>
+      <%- include("templates/portfolio-icon-generation", {db: images, count:null, username: username })%>
     </div>
     <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
   </form>

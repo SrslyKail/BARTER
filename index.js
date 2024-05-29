@@ -541,14 +541,14 @@ app.get("/portfolio", async (req, res) => {
  */
 app.get("/editPortfolio", async (req, res) => {
   const username = req.query.username;
-  const id = req.query.id;
+  const index = req.query.index;
 
   if (!username) {
     res.redirect("/profile");
     return;
   }
 
-  if (!id) {
+  if (!index) {
     res.redirect("/profile");
     return;
   }
@@ -557,12 +557,16 @@ app.get("/editPortfolio", async (req, res) => {
     username: username,
   });
 
-  // res.send(data.portfolio[id]);
+  // res.send({
+  //   data: data.portfolio[index].images,
+  // });
   // return;
 
   res.render("editPortfolio", {
-    data: data.portfolio[id],
-    id: id,
+    title: data.portfolio[index].title,
+    description: data.portfolio[index].description,
+    images: data.portfolio[index].images,
+    index: index,
     username: username,
   });
 });
