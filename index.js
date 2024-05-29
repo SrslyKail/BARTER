@@ -137,12 +137,12 @@ async function validateCatParam(req, res, next) {
 
 /** All the arguments the userCard needs */
 class userCard {
-  constructor(username, location = null, userSkills, email, userIcon) {
+  constructor(username, userSkills, email, userIcon, userLocation = null) {
     this.username = username;
-    this.location = location;
     this.userSkills = userSkills;
     this.email = email;
     this.userIcon = formatProfileIconPath(userIcon);
+    this.userLocation = userLocation;
   }
 }
 
@@ -318,13 +318,16 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   });
   let skilledUsersCache = [];
   for await (const user of skilledUsers) {
-    skilledUsersCache.push({
-      username: user.username,
-      location: user.location,
-      userSkills: [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
-      email: user.email,
-      userIcon: formatProfileIconPath(user.userIcon),
-    });
+    skilledUsersCache.push(
+      new userCard(
+        user.username,
+        [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
+        user.email,
+        user.userIcon,
+        user.userLocation
+      )
+    );
+    console.log(user);
   }
 
   // console.log(skilledUsersCache);
@@ -412,7 +415,6 @@ app.get("/profile", async (req, res) => {
 
   let username, email, userIcon, user;
   let skills = [];
-  let location = "spam";
   let queryID = req.query.id;
   let referrer = req.get("referrer");
 
@@ -434,7 +436,7 @@ app.get("/profile", async (req, res) => {
   username = user.username;
   email = user.email;
   userIcon = user.userIcon;
-  location = user.location;
+  location = user.userLocation;
 
   if (user.userSkills != undefined && user.userSkills.length > 0) {
     let userSkills = userSkillsCollection.find({
@@ -444,9 +446,10 @@ app.get("/profile", async (req, res) => {
       skills.push(skill);
     }
   }
+  console.warn("User data:", user);
 
   res.render("profile", {
-    userCard: new userCard(username, location, skills, email, userIcon),
+    userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
     referrer: referrer,
   });
@@ -500,7 +503,13 @@ app.get("/history/:filter", async (req, res) => {
       userSkills.push(skill);
     }
     users.push(
-      new userCard(user.username, null, userSkills, user.email, user.userIcon)
+      new userCard(
+        user.username,
+        userSkills,
+        user.email,
+        user.userIcon,
+        user.userLocation
+      )
     );
     // console.log(newUserCard);
   }
