@@ -24,10 +24,7 @@ cloudinary.config({
 const upload = multer({ storage: storage });
 
 router.post("/upload", upload.single("userIcon"), async function (req, res) {
-  console.log(req);
   let data = JSON.stringify(req.body);
-  console.log(req.file);
-  console.warn(data);
   if (req.file) {
     cloudinary.uploader.upload(req.file.path, function (err, result) {
       if (err) {
@@ -44,18 +41,25 @@ router.post("/upload", upload.single("userIcon"), async function (req, res) {
       req.session.user.userIcon = formatProfileIconPath(img);
     });
   }
-  await updateMongoProfile(data);
+  await updateMongoProfile(req, data);
   res.redirect("/profile");
 });
 
-async function updateMongoProfile(data) {
-  console.log(data);
+async function updateMongoProfile(req, data) {
+  data = JSON.parse(data);
+  let keys = Object.keys(data);
+  if (keys.includes("longitude")) {
+    data["geo"] = {
+      longitude: Number(data["longitude"]),
+      latitude: Number(data["latitude"]),
+    };
+    delete data["longitude"];
+    delete data["latitude"];
+  }
   await userCollection.updateOne(
-    { username: getUsername() },
+    { username: getUsername(req) },
     {
-      $set: {
-        data,
-      },
+      $set: data,
     }
   );
 }

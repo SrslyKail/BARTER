@@ -320,7 +320,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     skilledUsersCache.push({
       username: user.username,
       location: user.location,
-      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need //huhh??
+      userSkills: [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
       email: user.email,
       userIcon: formatProfileIconPath(user.userIcon),
     });
