@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <% var isHomePage = false %>
+  <!-- <%# var isHomePage = false %> what is this for? -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BARTER</title>
@@ -34,6 +34,7 @@
     <%# } %>
     <button id="profileButton" type="button" class="shadow-none bg-transparent  border-0 vh-5 d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#optionsOverlay">
       <%- include("components/profileIcon.ejs", {classes: "rounded-circle"}) %> </button>
+      
   </nav>
   <!-- #endregion navbar -->
   <!-- #region modal -->

@@ -276,42 +276,6 @@ app.get("/skill/:skill", async (req, res) => {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
   }
 
-  const skilldb = await userSkillsCollection.findOne({ name: skill });
-
-
-  //********BUG HERE ************/
-  if (skilldb == null) {
-    res.redirect("/404")
-  } else { }
-  // console.log(category);
-  const skillName = skilldb.name;
-  const skillImage = skilldb.image;
-  const skilledUsers = userCollection.find({
-    userSkills: { $in: [skilldb._id] },
-  });
-  let skilledUsersCache = [];
-  for await (const user of skilledUsers) {
-    skilledUsersCache.push({
-      username: user.username,
-      location: user.location,
-      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
-      email: user.email,
-      userIcon: formatProfileIconPath(user.userIcon),
-    });
-  }
-
-  // console.log(skilledUsersCache);
-
-  res.render("skill", {
-    authenticated: authenticated,
-    username: username,
-    db: skilledUsersCache,
-    skillName: skillName,
-    skillImage: skillImage,
-  });
-  return;
-});
-
 /**
  * Post method for Try Again btn in loginInvalid.ejs
  */
@@ -557,9 +521,9 @@ app.post("/passwordResetting", async (req, res) => {
 });
 
 //user has been found, so lets change the email now.
-app.get("/passwordChange", (req, res) => {
-  res.render("passwordChange", {});
-});
+app.get("/passwordChange", (req, res) => { 
+  res.render("passwordChange", {}); 
+}); 
 
 //changing password code
 app.post("/passwordChanging", async (req, res) => {
@@ -613,10 +577,10 @@ app.post("/passwordChanging", async (req, res) => {
  * Then inserts a user, creates a session, and redirects to root.
  */
 //Added signup route back.
-app.get("/signup", (req, res) => {
-  res.render("signup", {
-    errors: [],
-  });
+app.get("/signup", (req, res) => { 
+  res.render("signup", { 
+    errors: [], 
+  }); 
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -658,6 +622,8 @@ app.post("/submitUser", async (req, res) => {
       username: username,
       email: email,
       password: hashedPassword,
+      isAdmin: false,
+      userIcon: "imgs/profileIconLoggedOut.png"
     });
 
     createSession(req, username, false);
