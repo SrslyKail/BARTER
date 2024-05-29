@@ -11,8 +11,11 @@
           <% let skills = userCard.userSkills.slice(0, 2).map((skill) => skill.name) %>
           <%- skills.join(", ") %>
           <%if (userCard.userSkills.length > 2) {%>. . .<%}%>
-          </div>
-          <div class="truncate text-body-secondary"><%= userCard.location %>
+        </div>
+        <div class="truncate text-body-secondary"><% if(typeof userCard.userLocation.placeName !== undefined){ %>
+          <%= userCard.userLocation.placeName %>
+          <% } %>
+
         </div>
       </td>
     </tr>
