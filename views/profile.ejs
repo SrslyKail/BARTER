@@ -22,29 +22,9 @@
       <h2><b>Skills</b></h2>
       <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
     </div>
-    <div id="reviewArea">
-      <div id="reviewArea" class="p-4 text-center mb-4">
-        <hr class="my-4 pb-1-5">
-        <h2><b>Reviews</b></h2>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- po:
-/profile/username(UPD: IMPLEMENTED AS /profile?id=username SHOULD BE SUFFICIENT FOR MVP) should be how any user's profile is accessed. I THINK
-todo if this is the profile of said user, they should have the ability to edit whatever.
--->
-<a href="/editProfile?type=profile&username=<%- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a>
-<% if (typeof uploaded !== 'undefined') { %>
-<h1 class="text-success text-center">Upload Success</h1>
-<% } %>
-<div class="mx-1"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
-<section class="p-4 text-center mb-4">
-  <h2><b>Skills</b></h2>
-  <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
-  <hr class="my-4">
-  <h2><b>Reviews</b></h2>
+<div id="porfolioArea" class="p-4 text-center">
+  <hr class="my-4 pb-1-5">
   <h2>
     <b>Portfolio</b>
     <a class="btn btn-secondary" href="/editPortfolio?username=<%= userCard.username %>">
@@ -54,9 +34,22 @@ todo if this is the profile of said user, they should have the ability to edit w
   </h2>
   <% if (typeof portfolio !== 'undefined') {%>
     <% for(let i = 0; i < portfolio.length; i++) { %>
-      <%- include("templates/components/portfolioCard", {title: portfolio[i].title, image: portfolio[i].images[0], description: portfolio[i].description, formatProfileIconPath: formatProfileIconPath, link: "/portfolio?username="+userCard.username+"&id="+i}) %>
+      <%- include("templates/components/portfolioCard", { title: portfolio[i].title, 
+                                                          image: portfolio[i].images[0], 
+                                                          description: portfolio[i].description, 
+                                                          formatProfileIconPath: formatProfileIconPath, 
+                                                          link: "/portfolio?username="+userCard.username+"&id="+i}) %>
     <% }; %>
   <% } %>
-</section>
+  </div>
+
+<div id="reviewArea" class="px-4 text-center mb-4">
+    <hr class="my-4 pb-1-5">
+    <h2><b>Reviews</b></h2>
+</div>
+
+</div>
+
+</div>
 <script src="/scripts/profile.js"></script>
 <%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>

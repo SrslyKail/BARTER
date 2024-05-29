@@ -417,8 +417,9 @@ app.get("/profile", async (req, res) => {
     // email = getEmail(req);
     // userIcon = getUserIcon(req);
   }
-  // user = await userCollection.findOne({ username: queryID });
-  user = await userCollection.findOne({ username: "password" });
+  user = await userCollection.findOne({ username: queryID });
+  //user = await userCollection.findOne({ username: "Paul" });
+  
   //if we cant find the requested profile, get the current users profile
   if (!user) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
