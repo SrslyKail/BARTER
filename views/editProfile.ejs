@@ -1,13 +1,13 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 d-flex justify-content-center">
-  <form action="/editProfile/upload?type=profile&name=<%- name %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editProfile/upload?type=profile&username=<%- name %>" method="post" enctype="multipart/form-data" class="">
     <div class="mb-3">
       <label for="inputUsername" class="form-label">Edit Username</label>
-      <input type="text" class="form-control" value="<%- name %>" id=" inputUsername">
+      <input type="text" class="form-control" value="<%- name %>" name="username" id=" inputUsername">
     </div>
     <div class="mb-3">
-      <label for="inputUsername" class="form-label">Edit Email</label>
-      <input type="email" class="form-control" value="<%- email %>" id=" inputUsername">
+      <label for="inputEmail" class="form-label">Edit Email</label>
+      <input type="email" class="form-control" value="<%- email %>" name="email" id=" inputEmail">
     </div>
     <div class="mb-3">
       <label for="formFile" class="form-label">Edit Profile Picture:</label>

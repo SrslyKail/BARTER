@@ -514,14 +514,9 @@ app.get("/portfolio", async (req, res) => {
  */
 app.get("/editPortfolio", async (req, res) => {
   const username = req.query.username;
-  const id = req.query.id;
+  let id = parseInt(req.query.id);
 
   if (!username) {
-    res.redirect("/profile");
-    return;
-  }
-
-  if (!id) {
     res.redirect("/profile");
     return;
   }
@@ -530,15 +525,25 @@ app.get("/editPortfolio", async (req, res) => {
     username: username,
   });
 
+  if (typeof id == undefined) {
+    id = data.portfolio.length + 1;
+  }
+
+  const portfolioItem = data.portfolio[id] || {
+    title: "",
+    images: [],
+    description: "",
+  };
+
   res.render("editPortfolio", {
-    title: data.portfolio[id].title,
-    images: data.portfolio[id].images,
-    description: data.portfolio[id].description,
+    title: portfolioItem.title || "",
+    images: portfolioItem.images || [],
+    description: portfolioItem.description || "",
     id: id,
+    username: username,
   });
 
   return;
-  res.send(data.portfolio[id]);
 });
 
 /**

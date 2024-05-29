@@ -1,14 +1,14 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 text-center">
-  <form action="/editProfile/upload?type=portfolio&id=<%- id %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editPortfolio/upload?type=portfolioItem&username=<%= username %>&id=<%- id %>" method="post" enctype="multipart/form-data" class="">
     <div>
       <label for="portfolioTitle" class="form-label">Edit Title: </label>
-      <input type="text" class="form-control" value="<%- title %>" id=" portfolioTitle">
+      <input type="text" class="form-control" value="<%- title %>" name="title" id=" portfolioTitle">
     </div>
 
     <div>
       <label for="portfolioDesc" class="form-label">Edit Description: </label>
-      <textarea class="form-control" id=" portfolioDesc" rows="10"><%- description %></textarea>
+      <textarea class="form-control" name="description" id=" portfolioDesc" rows="10"><%- description %></textarea>
     </div>
 
     <div>

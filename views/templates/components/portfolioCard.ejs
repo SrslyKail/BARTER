@@ -11,6 +11,9 @@
             <% let shortdesc = description.substring(0, 50) %>
             <div><%- shortdesc + "..." %></div>
             <a href="<%- link %>">Read More</a>
+          <% } else {%>
+            <div><%- description %></div>
+            <a href="<%- link %>">Read More</a>
           <% } %>
         </div>
       </td>

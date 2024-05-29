@@ -23,18 +23,24 @@ cloudinary.config({
 const upload = multer({ storage: storage });
 
 router.post("/upload", upload.single("image"), async function (req, res) {
-  //For Portfolio Item Changing
+  //Init for both
   const type = req.query.type;
-  const item = req.query.item;
+  const username = req.query.username;
+
+  //For Portfolio Item Changing
+  const id = req.query.id;
+  const title = req.body.title;
+  const description = req.body.description;
 
   //For Profile Picture Changing
-  const name = req.query.name;
+  const email = req.body.email;
 
   try {
     if (type === "profile") {
-      await updatePFP(req, res, name);
-    } else if (type === "portfolioItem") {
-      await updatePortfolioItem(req, res, item);
+      await updatePFP(req, res, username, email);
+    }
+    if (type === "portfolioItem") {
+      await updatePortfolioItem(req, res, username, id, title, description);
     }
   } catch (error) {
     console.error(error);
@@ -45,14 +51,19 @@ router.post("/upload", upload.single("image"), async function (req, res) {
   }
 });
 
-const updatePFP = async (req, res, name) => {
+// ---------------------------------------------------------------------//
+// --------------------FUNCTIONS TO UPDATE DEPENDING ON IMAGE -----------//
+// ---------------------------------------------------------------------//
+
+/* #region ----------------- PROFILE PICTURE -------------------------- */
+const updatePFP = async (req, res, username, email) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const data = await cloudinary.uploader.upload(req.file.path);
     let scheme = "/upload/";
-    let img = result.url.split(scheme)[1];
+    let img = data.url.split(scheme)[1];
     req.session.user.userIcon = formatProfileIconPath(img);
 
-    await UpdateProfileOnMongo(result, name);
+    await UpdateProfileOnMongo(data, username, email);
 
     res.redirect("/profile");
   } catch (err) {
@@ -64,12 +75,12 @@ const updatePFP = async (req, res, name) => {
   }
 };
 
-const UpdateProfileOnMongo = async (data, name) => {
+const UpdateProfileOnMongo = async (data, username, email) => {
   let scheme = "/upload/";
   let img = data.url.split(scheme)[1];
 
   await userCollection.updateOne(
-    { username: name },
+    { username: username },
     {
       $set: {
         userIcon: img,
@@ -77,39 +88,71 @@ const UpdateProfileOnMongo = async (data, name) => {
     }
   );
 };
+/* #endregion ----------------- PROFILE PICTURE ---------------------- */
 
-const updatePortfolioItem = async (req, res, item) => {
-  res.send(item);
-  //   try {
-  //     const result = await cloudinary.uploader.upload(req.file.path);
-  //     let scheme = "/upload/";
-  //     let img = result.url.split(scheme)[1];
-  //     req.session.user.userIcon = formatProfileIconPath(img);
+// -------------------- PORTFOLIIO EDITING -----------//
 
-  //     await updateItemOnMongo(result, item);
+const updatePortfolioItem = async (
+  req,
+  res,
+  username,
+  id,
+  title,
+  description
+) => {
+  try {
+    await UpdatePortfolioOnMongo(req, username, id, title, description);
+    res.redirect("/profile");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Error uploading the image",
+    });
+  }
+};
 
-  //     res.redirect("/profile");
-  //   } catch (err) {
-  //     console.error(err);
-  //     res.status(500).json({
-  //       success: false,
-  //       message: "Error uploading the image",
-  //     });
-  //   }
-  // };
+const UpdatePortfolioOnMongo = async (
+  req,
+  username,
+  id,
+  title,
+  description
+) => {
+  const index = parseInt(id, 10);
 
-  // const updateItemOnMongo = async (data, item) => {
-  //   let scheme = "/upload/";
-  //   let img = data.url.split(scheme)[1];
+  const user = await userCollection.findOne({ username: username });
 
-  //   await userCollection.updateOne(
-  //     { username: item },
-  //     {
-  //       $set: {
-  //         title: title,
-  //       },
-  //     }
-  //   );
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (index >= 0 && index < user.portfolio.length) {
+    await userCollection.updateOne(
+      { username: username },
+      {
+        $set: {
+          [`portfolio.${index}.title`]: title,
+          [`portfolio.${index}.description`]: description,
+        },
+      }
+    );
+  } else if (index === user.portfolio.length) {
+    await userCollection.updateOne(
+      { username: username },
+      {
+        $push: {
+          portfolio: {
+            title: title,
+            description: description,
+            images: [], // Initialize images if necessary
+          },
+        },
+      }
+    );
+  } else {
+    throw new Error("Invalid index");
+  }
 };
 
 module.exports = router;
