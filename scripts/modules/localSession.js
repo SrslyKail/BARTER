@@ -16,14 +16,14 @@ class User {
    * @param {Array} history
    * @param {URL | String} userIcon
    */
-  constructor( 
+  constructor(
     authenticated,
     admin,
     username,
     email,
-    userIcon = defaultIcon,
     userId,
-    history
+    history,
+    userIcon = defaultIcon
   ) {
     /** @type {Boolean} */
     this.isAuthenticated = authenticated;
@@ -33,12 +33,12 @@ class User {
     this.username = username;
     /** @type {String} */
     this.email = email;
-    /** @type {URL | String} */
-    this.userIcon = formatProfileIconPath(userIcon);
     /** @type {ObjectId} */
     this.userId = userId;
     /** @type {Array} */
     this.history = history;
+    /** @type {URL | String} */
+    this.userIcon = formatProfileIconPath(userIcon);
   }
 }
 
