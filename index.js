@@ -419,7 +419,7 @@ app.get("/profile", async (req, res) => {
   }
   user = await userCollection.findOne({ username: queryID });
   //user = await userCollection.findOne({ username: "Paul" });
-  
+
   //if we cant find the requested profile, get the current users profile
   if (!user) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
@@ -541,9 +541,14 @@ app.get("/portfolio", async (req, res) => {
  */
 app.get("/editPortfolio", async (req, res) => {
   const username = req.query.username;
-  let id = parseInt(req.query.id);
+  const id = req.query.id;
 
   if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  if (!id) {
     res.redirect("/profile");
     return;
   }
@@ -552,25 +557,14 @@ app.get("/editPortfolio", async (req, res) => {
     username: username,
   });
 
-  if (typeof id == undefined) {
-    id = data.portfolio.length + 1;
-  }
-
-  const portfolioItem = data.portfolio[id] || {
-    title: "",
-    images: [],
-    description: "",
-  };
+  // res.send(data.portfolio[id]);
+  // return;
 
   res.render("editPortfolio", {
-    title: portfolioItem.title || "",
-    images: portfolioItem.images || [],
-    description: portfolioItem.description || "",
+    data: data.portfolio[id],
     id: id,
     username: username,
   });
-
-  return;
 });
 
 /**
