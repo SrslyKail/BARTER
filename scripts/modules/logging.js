@@ -1,3 +1,4 @@
+//are any of these being used anywhere??
 // Log events flag
 let logPointerEventsEnabled = false;
 
@@ -21,7 +22,7 @@ function logPointerEvents(prefix, ev) {
       `  pointerID   = ${ev.pointerId}\n` +
       `  pointerType = ${ev.pointerType}\n` +
       `  isPrimary   = ${ev.isPrimary}`;
-    //console.log(`${s}`);
+    console.log(`${s}`);
   }
 }
 
@@ -48,7 +49,7 @@ function logAllEvents() {
  * Useful mostly for messages you want while debugging, but not in regular use.
  * @param {String} message
  */
-function log(message) { //is this being used Anywhere?
+function log(message) {
   if (logging) {
     console.log(message);
   }
