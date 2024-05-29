@@ -49,9 +49,11 @@ async function updateMongoProfile(req, data) {
   data = JSON.parse(data);
   let keys = Object.keys(data);
   if (keys.includes("longitude")) {
-    data["geo"] = {
-      longitude: Number(data["longitude"]),
-      latitude: Number(data["latitude"]),
+    data["userLocation"] = {
+      geo: {
+        longitude: Number(data["longitude"]),
+        latitude: Number(data["latitude"]),
+      },
     };
     delete data["longitude"];
     delete data["latitude"];
