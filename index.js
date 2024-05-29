@@ -246,24 +246,7 @@ function generateNavLinks(req) {
 
 /** Sending a rating to the server */
 
-async function addRating(ratedID, userID, rateValue) {
-  let ratedBefore = await db.Rates.find({ userId: 'user1', ratedID: 'post1' }).count()
-  if (!ratedBefore) {
-    let ratedID = 'profile1'; // the profile userobject goes here
-    let userId = 'user1'; // the current user user object goes here
-    let rateValue = rateValue; // to 5
-    let rate =
-    {
-      userId: userId,
-      ratedID: ratedID,
-      value: rateValue,
-      date: new Date()
-    };
 
-    ratingsCollection.insert(rate);
-    userCollection.update({ "_id": profileID }, { $inc: { 'rateCount': 1, 'rateValue': rateValue } });
-  }
-}
 
 /* #endregion middleware */
 
@@ -432,6 +415,8 @@ app.post("/loggingin", async (req, res) => {
   }
 });
 
+
+
 app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
@@ -496,17 +481,58 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
+async function addRating(ratedID, userID, rateValue) {
+  let ratedBefore = await ratingsCollection.findOne({ userId: userID, ratedID: ratedID })
+  console.log("if statement here " + ratedBefore)
+
+  if (ratedBefore != null) {
+    let profID = ratedID; // the profile userobject goes here
+    let curID = userID; // the current user user object goes here
+    let rate =
+    {
+      userID: userID,
+      ratedID: curID,
+      rateValue: rateValue,
+      date: new Date()
+    };
+
+    ratingsCollection.insertOne(rate);
+
+    await userCollection.findOneAndUpdate(
+      { "_id": new ObjectId(profID) },
+      {
+        $inc: { 'rateCount': 1, 'rateValue': rateValue }
+      }
+    );
+
+  }
+  else {
+    console.log("it's working")
+  }
+}
+
+
 /**Post to submit rating from profile. */
-app.post("/submit-rating", checkAuth, (req, res) => {
-  let value = req.body.rating
+app.post("/submit-rating", checkAuth, async (req, res) => {
+
+
+  let refString = req.get("referrer")
+  //This is kinda gross but it works
+  let textArray = refString.split("=");
+  let value = Number(req.body.rating)
   let id = getUserId(req)
+  let profID = textArray[1]
+
+  Joi.number().min(1).max(5).required().validate(value)
+
   // console.log(req)
-  console.log(id)
-  console.log(value);
+  // console.log(id)
+  // console.log(typeof value);
 
+  //Rated, Rater, Number
+  await addRating(profID, id, value)
 
-  // addRating(*** ratedID ***, id, value)
-
+  res.redirect("back")
 })
 
 
