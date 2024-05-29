@@ -109,6 +109,27 @@ app.use((req, res, next) => {
 
 app.use("/editProfile", uploadRoute);
 
+/** middleware function for catching bad skill/category parameters */
+async function validateSkillParam(req, res, next) {
+  const param = req.params;
+  const test = await userSkillsCollection.findOne({ name: param.skill });
+  if (test == null) {
+    res.status(404).json({ message: "Skill not found." });
+  } else {
+    next();
+  }
+}
+
+async function validateCatParam(req, res, next) {
+  const param = req.params;
+  const test = await skillCatCollection.findOne({ name: param.skillCat });
+  if (test == null) {
+    res.status(404).json({ message: "Category not found." });
+  } else {
+    next();
+  }
+}
+
 /* #endregion middleware */
 
 /* #region helperFunctions */
@@ -116,11 +137,11 @@ app.use("/editProfile", uploadRoute);
 /** All the arguments the userCard needs */
 class userCard {
   constructor(username, location = null, userSkills, email, userIcon) {
-    (this.username = username),
-      (this.location = location),
-      (this.userSkills = userSkills),
-      (this.email = email),
-      (this.userIcon = formatProfileIconPath(userIcon));
+    this.username = username;
+    this.location = location;
+    this.userSkills = userSkills;
+    this.email = email;
+    this.userIcon = formatProfileIconPath(userIcon);
   }
 }
 
@@ -147,7 +168,7 @@ async function cacheCollection(coll, cache) {
  */
 async function watchForChanges(coll) {
   for await (const change of coll) {
-    console.log(change);
+    // console.log(change);
   }
 }
 
@@ -165,7 +186,7 @@ async function cacheSkillCats() {
 }
 
 function setupDBSkillCache() {
-  console.log("Setting up cache");
+  // console.log("Setting up cache");
   cacheSkillCats();
   cacheUserSkills();
 }
@@ -241,11 +262,10 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/category/:skillCat", async (req, res) => {
+app.get("/category/:skillCat", validateCatParam, async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   let skillCat = req.params.skillCat;
-
   const category = await skillCatCollection.findOne({ name: skillCat });
   const skillObjectArray = category.catSkills;
   const catName = category.name;
@@ -271,11 +291,12 @@ app.get("/category/:skillCat", async (req, res) => {
   return;
 });
 
-app.get("/skill/:skill", async (req, res) => {
+app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
-  //   console.log(req);
+  // console.log(req);
   let skill = req.params.skill;
+  let referrer = req.get("referrer");
   // console.log(skillCat);
   if (skill == "Chronoscope Repair") {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
@@ -299,7 +320,7 @@ app.get("/skill/:skill", async (req, res) => {
     skilledUsersCache.push({
       username: user.username,
       location: user.location,
-      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need //huhh??
       email: user.email,
       userIcon: formatProfileIconPath(user.userIcon),
     });
@@ -313,6 +334,7 @@ app.get("/skill/:skill", async (req, res) => {
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
+    referrer: referrer,
   });
   return;
 });
@@ -391,6 +413,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
+  let referrer = req.get("referrer");
 
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
@@ -424,6 +447,7 @@ app.get("/profile", async (req, res) => {
   res.render("profile", {
     userCard: new userCard(username, location, skills, email, userIcon),
     uploaded: req.query.success,
+    referrer: referrer,
   });
 });
 
@@ -472,7 +496,7 @@ app.get("/history/:filter", async (req, res) => {
     skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
     let userSkills = [];
     for await (const skill of skillNames) {
-      userSkills.push(skill.name);
+      userSkills.push(skill);
     }
     users.push(
       new userCard(user.username, null, userSkills, user.email, user.userIcon)
@@ -725,6 +749,14 @@ app.get("/zamn", (req, res) => {
   req.session.zamn = !req.session.zamn;
   app.locals.zamn = req.session.zamn;
   res.redirect("back");
+});
+
+app.get("/settings", (req, res) => {
+  res.render("settings");
+});
+
+app.get("/legal", (req, res) => {
+  res.render("legal");
 });
 /**
  * handles all routes that are not matched by any other route.

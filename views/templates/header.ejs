@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <% var isHomePage = false %>
+  <!-- <%# var isHomePage = false %> what is this for? -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BARTER</title>
@@ -17,18 +17,18 @@
   <link rel="icon" type="image/x-icon" href="/styles/favicon.ico">
   <!-- Import our default style sheet -->
   <link href="/styles/style.css" rel="stylesheet">
-  <link href="/styles/cardIconStyle.css" rel="stylesheet">
 </head>
 
 <body>
   <%- include("svgs") %>
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
-  <nav class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark">
+  <nav class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark navbar-main">
     <a class="vh-4 d-inline-flex" href="/"><%- include("components/logo") %></a>
     <div style="flex-grow: 1;"></div>
     <button id="profileButton" type="button" class="shadow-none bg-transparent  border-0 vh-5 d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#optionsOverlay">
       <%- include("components/profileIcon.ejs", {classes: "rounded-circle"}) %> </button>
+
   </nav>
   <!-- #endregion navbar -->
   <!-- #region modal -->

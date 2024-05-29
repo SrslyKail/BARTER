@@ -16,7 +16,7 @@ class User {
    * @param {Array} history
    * @param {URL | String} userIcon
    */
-  constructor(
+  constructor( 
     authenticated,
     admin,
     username,
