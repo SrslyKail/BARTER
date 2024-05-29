@@ -7,9 +7,10 @@
   <%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
 </div>
 <div>
-  <% db.forEach((user) => { %>
-  <%- include('templates/components/profileCard', {userCard: user}); %>
-  <% }) %>
+  <% db.forEach((skillUser) => { %>
+  <% if(skillUser.username != user.username){ %>
+  <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+  <%}}) %>
   <%#- db.forEach((user) =>  %>
 
 </div>
