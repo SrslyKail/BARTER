@@ -485,13 +485,13 @@ async function addRating(ratedID, userID, rateValue) {
   let ratedBefore = await ratingsCollection.findOne({ userId: userID, ratedID: ratedID })
   console.log("if statement here " + ratedBefore)
 
-  if (ratedBefore == null) {
+  if (ratedBefore != null) {
     let profID = ratedID; // the profile userobject goes here
     let curID = userID; // the current user user object goes here
     let rate =
     {
-      userID: userID,
-      ratedID: curID,
+      userID: curID,
+      ratedID: profID,
       rateValue: rateValue,
       date: new Date()
     };
