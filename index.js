@@ -136,9 +136,11 @@ async function validateCatParam(req, res, next) {
 
 async function checkAuth(req, res, next) {
   if (isAuthenticated(req)) {
-    next()
+    next();
   } else {
-    res.status(401).json({ message: "You are not authorized to submit ratings." });
+    res
+      .status(401)
+      .json({ message: "You are not authorized to submit ratings." });
   }
 }
 
@@ -245,8 +247,6 @@ function generateNavLinks(req) {
 }
 
 /** Sending a rating to the server */
-
-
 
 /* #endregion middleware */
 
@@ -415,8 +415,6 @@ app.post("/loggingin", async (req, res) => {
   }
 });
 
-
-
 app.get("/loginInvalid", async (req, res) => {
   res.render("loginInvalid");
 });
@@ -463,7 +461,6 @@ app.get("/profile", async (req, res) => {
     }
   }
 
-
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
@@ -481,60 +478,76 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
+/**
+ *
+ * @param {ObjectId} ratedID
+ * @param {ObjectId} userID
+ * @param {Number} rateValue
+ */
 async function addRating(ratedID, userID, rateValue) {
-  let ratedBefore = await ratingsCollection.findOne({ userId: userID, ratedID: ratedID })
-  console.log("if statement here " + ratedBefore)
+  let ratedBefore = await ratingsCollection.findOne({
+    userId: userID,
+    ratedID: ratedID,
+  });
+  console.log("if statement here " + ratedBefore);
 
   if (ratedBefore == null) {
     let profID = ratedID; // the profile userobject goes here
     let curID = userID; // the current user user object goes here
-    let rate =
-    {
+    console.time("Profile ID:", profID);
+    console.log("userID:", curID);
+    let rate = {
       userID: userID,
       ratedID: curID,
       rateValue: rateValue,
-      date: new Date()
+      date: new Date(),
     };
 
     ratingsCollection.insertOne(rate);
 
     await userCollection.findOneAndUpdate(
-      { "username": profID },
+      { username: profID },
       {
-        $inc: { 'rateCount': 1, 'rateValue': rateValue }
+        $inc: { rateCount: 1, rateValue: rateValue },
       }
     );
-
-  }
-  else {
-    console.log("it's working")
+  } else {
+    console.log("it's working");
   }
 }
 
-
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
-
-
-  let refString = req.get("referrer")
+  let refString = req.get("referrer");
   //This is kinda gross but it works
+  console.log(refString);
   let textArray = refString.split("=");
-  let value = Number(req.body.rating)
-  let id = getUserId(req)
-  let profID = textArray[1]
+  let value = Number(req.body.rating);
+  let id = getUserId(req);
+  let profID = textArray[1];
 
-  Joi.number().min(1).max(5).required().validate(value)
+  console.log("Pascal?", profID);
+
+  let pascalID = await userCollection.findOne({ username: profID });
+  let pascalObj = pascalID._id;
+  let pascal = await userCollection.findOne({ _id: pascalObj });
+
+  Joi.number().min(1).max(5).required().validate(value);
 
   // console.log(req)
   // console.log(id)
   // console.log(typeof value);
 
   //Rated, Rater, Number
-  await addRating(profID, id, value)
+  let ratee = ObjectId.createFromHexString(getUserId(req));
+  let rateeUC = await userCollection.findOne({ _id: ratee });
 
-  res.redirect("back")
-})
+  // console.log("Current user ID:", ratee);
+  // console.log("Ratee from UC:\n", rateeUC);
+  await addRating(profID, id, value);
 
+  res.redirect("back");
+});
 
 // app.post("/editProfile/upload", (req, res) => {
 //   console.log(req);
