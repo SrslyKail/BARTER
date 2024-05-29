@@ -98,6 +98,10 @@
   max-height: none;
 }
 
+.pb-1-5 {
+  padding-bottom:1.5vh;
+}
+
 /* <a> links for login, register, forgot password */
 .link {
   color: rgb(0, 140, 255);
@@ -254,7 +258,7 @@ form.d-grid {
   max-width: 480px;
   overflow: hidden;
   height: auto;
-  margin: 3vh 6vw 3vh 6vw;
+  margin: 3vh 6vw 0 6vw;
 }
 
 .pillGrid {
