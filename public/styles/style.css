@@ -210,6 +210,12 @@ form.d-grid {
 
 /* #region sub nav bar (skillCats, skills, and profile)*/
 
+.navbar-main {
+  box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3),
+              5px 5px 20px rgba(0, 0, 0, 0.15) inset, 
+              -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
+}
+
 .subNavButton {
   display: flex;
   /* mix-blend-mode: plus-darker; */
@@ -401,4 +407,47 @@ form.d-grid {
   grid-area: reviews;
 }
 
+#contactButton * {
+  font-weight: 700; 
+  margin-bottom:0;
+}
+
 /* #endregion Profile Container*/
+
+
+/* #region Profile Card */
+
+.profileIcon * {
+  border: 1px;
+  border-radius: 20%;
+  height: 16vh !important;
+  width: auto;
+}
+
+.profileCardTable {
+  border: 1px solid gray;
+  background-color: white;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 
+              0 5px 20px 0 rgba(0, 0, 0, 0.2), 
+              5px 5px 10px rgba(126, 126, 126, 0.15) inset, 
+              -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
+}
+
+.profileCardTable * {
+  padding: 1pt 0 1pt 4pt;
+  font-size: 15pt;
+}
+
+.userCardSKills {
+  width: 40vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* #endregion Profile Card */

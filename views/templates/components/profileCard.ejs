@@ -1,13 +1,13 @@
 <div class="d-flex justify-content-center">
-  <table>
+  <table class="profileCardTable">
     <tr>
       <td>
-        <a id="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("profileIcon", {userIcon: userCard.userIcon}) %></a>
+        <a class="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("profileIcon", {userIcon: userCard.userIcon}) %></a>
       </td>
       <td>
         <div style="font-weight: bold;"><%= userCard.username %></div>
         <div>4.9★★★★★ 3 reviews</div><!-- unsure where this is going to be stored and how -->
-        <div class="truncate">
+        <div class="userCardSKills truncate">
           <% let skills = userCard.userSkills.slice(0, 2).map((skill) => skill.name) %>
           <%- skills.join(", ") %>
           <%if (userCard.userSkills.length > 2) {%>. . .<%}%>
@@ -18,36 +18,3 @@
     </tr>
   </table>
 </div>
-
-<!--todo figure out how to add styles to children without clunky id-ing....-->
-<style>
-  #profileIcon * {
-    border: 1px;
-    border-radius: 20%;
-    height: 16vh !important;
-    width: auto;
-  }
-
-  /* this is here because i only need these styles applied to this specific table */
-  table {
-    border: 1px solid gray;
-    background-color: lightgray;
-    border-radius: 15px;
-    border-collapse: separate;
-    padding: 2%;
-    margin: 2% 0 2% 0;
-    min-width: 90%;
-  }
-
-  table * {
-    padding: 1pt 0 1pt 4pt;
-    font-size: 15pt;
-  }
-
-  .truncate {
-    width: 40vw;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>
