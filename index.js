@@ -98,6 +98,7 @@ app.use(express.urlencoded({ extended: false }));
  * Generate local variables we need for every page
  */
 app.use((req, res, next) => {
+  // console.log(req.session.user);
   app.locals.user =
     req.session.user != "undefined" ? req.session.user : undefined;
   app.locals.authenticated = isAuthenticated(req);
