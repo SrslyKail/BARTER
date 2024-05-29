@@ -99,7 +99,7 @@
 }
 
 .pb-1-5 {
-  padding-bottom:1.5vh;
+  padding-bottom: 1.5vh;
 }
 
 /* <a> links for login, register, forgot password */
@@ -107,6 +107,7 @@
   color: rgb(0, 140, 255);
   text-decoration: none;
 }
+
 /* #endregion generics */
 
 /* #region Icon Grid and Icons */
@@ -194,11 +195,11 @@
 
 .centerGrid {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   text-align: center;
   align-items: center;
   justify-content: center;
-  width:75vw;
+  width: 75vw;
   max-width: 560px;
 }
 
@@ -206,21 +207,22 @@ form.d-grid {
   width: 75vw;
   max-width: 560px;
 }
+
 /* #endregion Hero Banner */
 
 /* #region sub nav bar (skillCats, skills, and profile)*/
 
 .navbar-main {
   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3),
-              5px 5px 20px rgba(0, 0, 0, 0.15) inset, 
-              -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
+    5px 5px 20px rgba(0, 0, 0, 0.15) inset,
+    -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
 }
 
 .subNavButton {
   display: flex;
   /* mix-blend-mode: plus-darker; */
   /* mix-blend-mode:lighten; */
-  color:white;
+  color: white;
   /* background-clip: text; */
   /* color: transparent; */
   /* filter: invert(1); */
@@ -232,7 +234,7 @@ form.d-grid {
   height: 5vh;
   width: 5vh;
   align-self: center;
-  fill:white;
+  fill: white;
   mix-blend-mode: difference;
 }
 
@@ -371,17 +373,17 @@ form.d-grid {
   display: grid;
   grid-template-rows: 7vh 30vh auto 30vh;
   grid-template-areas:
-      "gap"
-      "card"
-      "pills"
-      "reviews";
+    "gap"
+    "card"
+    "pills"
+    "reviews";
   height: 100vh;
   width: 100vw;
   overflow: visible;
 }
 
 #cardArea {
-  display:grid;
+  display: grid;
   grid-template-rows: 7vh auto;
   width: inherit;
   height: 100%;
@@ -393,7 +395,7 @@ form.d-grid {
 }
 
 #profilePageCard {
-  grid-row:2;
+  grid-row: 2;
   max-width: 480px;
 }
 
@@ -408,8 +410,8 @@ form.d-grid {
 }
 
 #contactButton * {
-  font-weight: 700; 
-  margin-bottom:0;
+  font-weight: 700;
+  margin-bottom: 0;
 }
 
 /* #endregion Profile Container*/
@@ -432,10 +434,10 @@ form.d-grid {
   padding: 2%;
   margin: 2% 0 2% 0;
   min-width: 90%;
-  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 
-              0 5px 20px 0 rgba(0, 0, 0, 0.2), 
-              5px 5px 10px rgba(126, 126, 126, 0.15) inset, 
-              -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4),
+    0 5px 20px 0 rgba(0, 0, 0, 0.2),
+    5px 5px 10px rgba(126, 126, 126, 0.15) inset,
+    -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
 }
 
 .profileCardTable * {
@@ -451,3 +453,27 @@ form.d-grid {
 }
 
 /* #endregion Profile Card */
+
+.stars input {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+.stars label {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-right: 6px;
+  height: 60px;
+  width: 60px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='transparent' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  font-size: 0;
+  cursor: pointer;
+}
+
+.stars input:nth-child(1):checked ~ label:nth-of-type(-n + 1),
+.stars input:nth-child(2):checked ~ label:nth-of-type(-n + 2),
+.stars input:nth-child(3):checked ~ label:nth-of-type(-n + 3),
+.stars input:nth-child(4):checked ~ label:nth-of-type(-n + 4),
+.stars input:nth-child(5):checked ~ label:nth-of-type(-n + 5) {
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='maroon' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}

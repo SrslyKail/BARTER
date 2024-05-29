@@ -47,6 +47,8 @@ const userCollection = getCollection("users");
 const skillCatCollection = getCollection("skillCats");
 /** @type {Collection} */
 const userSkillsCollection = getCollection("skills");
+/** @type {Collection} */
+const ratingsCollection = getCollection("ratings");
 
 const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
@@ -230,6 +232,27 @@ function generateNavLinks(req) {
     );
   }
   return modalArray;
+}
+
+/** Sending a rating to the server */
+
+async function addRating(profileID, userID, rateValue) {
+  let ratedBefore = db.Rates.find({ userId: 'user1', profileID: 'post1' }).count()
+  if (!ratedBefore) {
+    let profileID = 'profile1'; // the profile userobject goes here
+    let userId = 'user1'; // the current user user object goes here
+    let rateValue = rateValue; // to 5
+    let rate =
+    {
+      userId: userId,
+      postId: postId,
+      value: rateValue,
+      date: new Date()
+    };
+
+    ratingsCollection.insert(rate);
+    userCollection.update({ "_id": profileID }, { $inc: { 'rateCount': 1, 'rateValue': rateValue } });
+  }
 }
 
 /* #endregion middleware */
