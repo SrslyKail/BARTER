@@ -21,7 +21,7 @@ function logPointerEvents(prefix, ev) {
       `  pointerID   = ${ev.pointerId}\n` +
       `  pointerType = ${ev.pointerType}\n` +
       `  isPrimary   = ${ev.isPrimary}`;
-    console.log(`${s}`);
+    //console.log(`${s}`);
   }
 }
 
@@ -48,7 +48,7 @@ function logAllEvents() {
  * Useful mostly for messages you want while debugging, but not in regular use.
  * @param {String} message
  */
-function log(message) {
+function log(message) { //is this being used Anywhere?
   if (logging) {
     console.log(message);
   }
