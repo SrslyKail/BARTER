@@ -368,7 +368,8 @@
   grid-row: 1 / span 2;
   align-items: center;
   justify-items: center;
-  background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/t1utr30j4ooaodat1gs7.jpg");
+  /* placeholder background (maybe default?) */
+  background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg");
 }
 
 #profilePageCard {
