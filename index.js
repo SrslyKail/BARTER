@@ -532,16 +532,18 @@ app.get("/portfolio", async (req, res) => {
     }
   });
 
-  res.send({
-    gallery: gallery,
-    description: description,
-  });
-  return;
+  // res.send({
+  //   gallery: gallery,
+  //   description: description,
+  // });
+  // return;
 
   res.render("portfolio", {
-    name: skillData.name,
-    banner: skillData.image,
-    description: skillData.description,
+    title: skill,
+    images: gallery,
+    banner: gallery[0],
+    description: description,
+    username: "pascal"
   });
 });
 
