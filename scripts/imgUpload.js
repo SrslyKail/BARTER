@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+
+const {
+  getUsername,
+  formatProfileIconPath,
+} = require("./modules/localSession");
+const { getPlaceName } = require("./modules/location");
 const { getCollection } = require("./modules/databaseConnection");
 const userCollection = getCollection("users");
-const formatProfileIconPath =
-  require("./modules/localSession").formatProfileIconPath;
-const multer = require("multer");
-const { getUsername } = require("./modules/localSession");
-const cloudinary = require("cloudinary").v2;
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -55,6 +58,12 @@ async function updateMongoProfile(req, data) {
         latitude: Number(data["latitude"]),
       },
     };
+    let placeName = await getPlaceName(
+      Number(data["longitude"]),
+      Number(data["latitude"])
+    );
+    data["userLocation"]["placeName"] = placeName;
+
     delete data["longitude"];
     delete data["latitude"];
   }
