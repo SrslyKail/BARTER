@@ -14,7 +14,7 @@ class User {
    * @param {String} email
    * @param {URL | String} userIcon
    */
-  constructor(
+  constructor( 
     authenticated,
     admin,
     username,
@@ -23,17 +23,17 @@ class User {
     history
   ) {
     /** @type {boolean} */
-    this.isAuthenticated = authenticated;
+    this.isAuthenticated = authenticated; 
     /** @type {boolean} */
-    this.isAdmin = admin;
+    this.isAdmin = admin; 
     /** @type {string} */
-    this.username = username;
+    this.username = username; 
     /** @type {string} */
-    this.email = email;
+    this.email = email; 
     /** @type {URL | String} */
-    this.userIcon = formatProfileIconPath(userIcon);
+    this.userIcon = formatProfileIconPath(userIcon); 
     /** @type {array} */
-    this.history = history;
+    this.history = history; 
   }
 }
 

@@ -319,7 +319,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     skilledUsersCache.push({
       username: user.username,
       location: user.location,
-      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need
+      userSkills: [], //Dont pass skills in; the user already knows the displayed person has the skills they need //huhh??
       email: user.email,
       userIcon: formatProfileIconPath(user.userIcon),
     });
@@ -585,9 +585,9 @@ app.post("/passwordResetting", async (req, res) => {
 });
 
 //user has been found, so lets change the email now.
-app.get("/passwordChange", (req, res) => {
-  res.render("passwordChange", {});
-});
+app.get("/passwordChange", (req, res) => { 
+  res.render("passwordChange", {}); 
+}); 
 
 //changing password code
 app.post("/passwordChanging", async (req, res) => {
@@ -641,10 +641,10 @@ app.post("/passwordChanging", async (req, res) => {
  * Then inserts a user, creates a session, and redirects to root.
  */
 //Added signup route back.
-app.get("/signup", (req, res) => {
-  res.render("signup", {
-    errors: [],
-  });
+app.get("/signup", (req, res) => { 
+  res.render("signup", { 
+    errors: [], 
+  }); 
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -686,6 +686,8 @@ app.post("/submitUser", async (req, res) => {
       username: username,
       email: email,
       password: hashedPassword,
+      isAdmin: false,
+      userIcon: "imgs/profileIconLoggedOut.png"
     });
 
     createSession(req, username, false);

@@ -6,12 +6,12 @@
       </td>
       <td>
         <div style="font-weight: bold;"><%= userCard.username %></div>
-        <div>rating</div><!-- unsure where this is going to be stored and how -->
+        <div>4.9★★★★★ 3 reviews</div><!-- unsure where this is going to be stored and how -->
         <div class="truncate">
           <%- userCard.userSkills.slice(0, 2).join(", ") %>
           <%if (userCard.userSkills.length > 2) {%>. . .<%}%>
-                </div>
-                <div class="truncate text-body-secondary"><%= userCard.location %>
+          </div>
+          <div class="truncate text-body-secondary"><%= userCard.location %>
         </div>
       </td>
     </tr>
