@@ -108,7 +108,6 @@ app.use("/editProfile", uploadRoute);
 /** middleware function for catching bad skill/category parameters */
 async function validateSkillParam(req, res, next) {
   const param = req.params
-  console.log(param.skill)
   const test =  await userSkillsCollection.findOne({name:param.skill})
   if(test==null){
     res.status(404).json({message: "Skill not found."})
