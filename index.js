@@ -478,7 +478,6 @@ app.get("/profile", async (req, res) => {
     }
   }
 
-  console.log(getUserId(req))
 
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
@@ -506,7 +505,7 @@ app.post("/submit-rating", checkAuth, (req, res) => {
   console.log(value);
 
 
-  addRating(*** ratedID ***, id, value)
+  // addRating(*** ratedID ***, id, value)
 
 })
 
