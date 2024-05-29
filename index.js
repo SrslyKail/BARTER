@@ -375,7 +375,6 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
-    console.log("userIcon stored in mongo:", user.userIcon);
     createSession(
       req,
       user.username,
