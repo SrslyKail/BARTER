@@ -184,14 +184,24 @@
   background-color: #17191595;
   font-weight: bold;
   font-size: x-large;
+  /* Change width here to change background of hero text */
+  width: 100%;
 }
 
-.heroBannerTitle {
-  background-color: #17191595;
-  font-weight: bold;
-  font-size: x-large;
+.centerGrid {
+  display: flex;
+  flex-direction:column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width:75vw;
+  max-width: 560px;
 }
 
+form.d-grid {
+  width: 75vw;
+  max-width: 560px;
+}
 /* #endregion Hero Banner */
 
 /* #region sub nav bar (skillCats, skills, and profile)*/
