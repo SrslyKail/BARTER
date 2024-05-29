@@ -484,7 +484,7 @@ app.get("/history/:filter", async (req, res) => {
     skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
     let userSkills = [];
     for await (const skill of skillNames) {
-      userSkills.push(skill.name);
+      userSkills.push(skill);
     }
     users.push(
       new userCard(user.username, null, userSkills, user.email, user.userIcon)
