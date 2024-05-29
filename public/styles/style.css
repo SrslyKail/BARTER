@@ -98,9 +98,356 @@
   max-height: none;
 }
 
+.pb-1-5 {
+  padding-bottom:1.5vh;
+}
+
 /* <a> links for login, register, forgot password */
 .link {
   color: rgb(0, 140, 255);
   text-decoration: none;
 }
 /* #endregion generics */
+
+/* #region Icon Grid and Icons */
+#iconGridContainer {
+  display: flex;
+  justify-content: center;
+}
+
+/* Grid for testing (expands infinitely) */
+.iconGrid {
+  max-width: 960px;
+  margin: 2em;
+  padding: 2em;
+  display: grid;
+  gap: 2em;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  grid-auto-rows: auto;
+  grid-auto-flow: row;
+  align-self: center;
+}
+
+/* Mandatory CSS unless noted as optional*/
+.cardImageIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  height: inherit;
+  /* The good version */
+  clip-path: rect(0px 0px 100% 100% round 7%);
+  /* The version for chrome :c */
+  clip-path: fill-box;
+  aspect-ratio: 25/22;
+}
+
+.cardImageIcon :is(img, a) {
+  height: 100%;
+  position: absolute;
+}
+
+.cardTextDiv {
+  pointer-events: none;
+  text-align: center;
+  position: relative;
+  background-color: #17191595;
+  /*Optional Hex: RRGGBBAA*/
+  align-content: center;
+  /*Optional: needed with higher text background height*/
+  height: auto;
+  min-height: 2.5em;
+  /*Optional: adjusts text background height*/
+  width: inherit;
+
+}
+
+/* Enable below for text to only be visible on hover*/
+/* .cardTextDiv {
+  opacity:0;
+}
+.cardImageIcon :is(img, a):hover + .cardTextDiv{
+  opacity: 100;
+  transition: opacity 0.1s linear;
+  
+} */
+
+.iconText {
+  color: #FFFAEE;
+  /*Optional*/
+  font-size: large;
+  /*Optional*/
+}
+
+/* #endregion Icon Grid and Icons */
+
+/* #region Hero Banner */
+
+.heroBannerTitle {
+  background-color: #17191595;
+  font-weight: bold;
+  font-size: x-large;
+  /* Change width here to change background of hero text */
+  width: 100%;
+}
+
+.centerGrid {
+  display: flex;
+  flex-direction:column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width:75vw;
+  max-width: 560px;
+}
+
+form.d-grid {
+  width: 75vw;
+  max-width: 560px;
+}
+/* #endregion Hero Banner */
+
+/* #region sub nav bar (skillCats, skills, and profile)*/
+
+.navbar-main {
+  box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3),
+              5px 5px 20px rgba(0, 0, 0, 0.15) inset, 
+              -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
+}
+
+.subNavButton {
+  display: flex;
+  /* mix-blend-mode: plus-darker; */
+  /* mix-blend-mode:lighten; */
+  color:white;
+  /* background-clip: text; */
+  /* color: transparent; */
+  /* filter: invert(1); */
+  height: inherit;
+  align-content: center;
+}
+
+#backButton {
+  height: 5vh;
+  width: 5vh;
+  align-self: center;
+  fill:white;
+  mix-blend-mode: difference;
+}
+
+#subEditButton {
+  height: 5vh;
+  width: 5vh;
+  align-self: center;
+}
+
+#subbar {
+  padding: 0 4vw 0 2vw;
+  position: absolute;
+  width: 100%;
+  height: 7vh;
+  align-content: center;
+}
+
+/* #endregion sub nav bar (skillCats, skills, and profile) */
+
+/* #region Pill Grid and Pills */
+
+#centering {
+  display: flex;
+  justify-content: center;
+}
+
+#carousel {
+  width: 86vw;
+  max-width: 480px;
+  overflow: hidden;
+  height: auto;
+  margin: 3vh 6vw 0 6vw;
+}
+
+.pillGrid {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  height: inherit;
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  gap: 14px;
+  grid-template-rows: repeat(3, 1fr);
+  /* margin: 0 3vw 0 3vw; */
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.pillContainer {
+  width: inherit;
+  max-width: 480px;
+  height: 100%;
+  /* min-height: fit-content; */
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+}
+
+.pillbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+  width: inherit;
+  height: inherit;
+  /* The good version */
+  clip-path: rect(0px 0px 100% 100% round 7%);
+  /* The version for chrome :c */
+  clip-path: fill-box;
+  aspect-ratio: 37/7;
+}
+
+.pillbox :is(img, a) {
+  height: inherit;
+  width: inherit;
+  position: absolute;
+}
+
+.pillTextDiv {
+  pointer-events: none;
+  text-align: center;
+  position: relative;
+  /*Optional Hex: RRGGBBAA*/
+  align-content: center;
+  /*Optional: needed with higher text background height*/
+  height: auto;
+  min-height: 2.5em;
+  /*Optional: adjusts text background height*/
+  width: inherit;
+
+}
+
+.pillText {
+  color: #FFFAEE;
+  background-color: #17191595;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  /*Optional*/
+  font-size: large;
+  /*Optional*/
+}
+
+/* #endregion Pill Grid */
+
+/* #region Pill Pagination */
+
+#paginate {
+  margin-top: 2em;
+  pointer-events: none;
+}
+
+.pagCircle {
+  width: 24px;
+  height: 24px;
+  pointer-events: auto;
+}
+
+.pagIcon {
+  pointer-events: auto;
+}
+
+.activeCircle>circle {
+  fill: #676767;
+}
+
+/* #endregion Pill Pagination */
+
+/* #region Profile Container */
+
+#container {
+  display: grid;
+  grid-template-rows: 7vh 30vh auto 30vh;
+  grid-template-areas:
+      "gap"
+      "card"
+      "pills"
+      "reviews";
+  height: 100vh;
+  width: 100vw;
+  overflow: visible;
+}
+
+#cardArea {
+  display:grid;
+  grid-template-rows: 7vh auto;
+  width: inherit;
+  height: 100%;
+  grid-row: 1 / span 2;
+  align-items: center;
+  justify-items: center;
+  /* placeholder background (maybe default?) */
+  background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg");
+}
+
+#profilePageCard {
+  grid-row:2;
+  max-width: 480px;
+}
+
+#pillArea {
+  width: inherit;
+  grid-row: 3;
+}
+
+#reviewArea {
+  width: inherit;
+  grid-area: reviews;
+}
+
+#contactButton * {
+  font-weight: 700; 
+  margin-bottom:0;
+}
+
+/* #endregion Profile Container*/
+
+
+/* #region Profile Card */
+
+.profileIcon * {
+  border: 1px;
+  border-radius: 20%;
+  height: 16vh !important;
+  width: auto;
+}
+
+.profileCardTable {
+  border: 1px solid gray;
+  background-color: white;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 2%;
+  margin: 2% 0 2% 0;
+  min-width: 90%;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 
+              0 5px 20px 0 rgba(0, 0, 0, 0.2), 
+              5px 5px 10px rgba(126, 126, 126, 0.15) inset, 
+              -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
+}
+
+.profileCardTable * {
+  padding: 1pt 0 1pt 4pt;
+  font-size: 15pt;
+}
+
+.userCardSKills {
+  width: 40vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* #endregion Profile Card */

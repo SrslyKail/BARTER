@@ -1,3 +1,4 @@
+//are any of these being used anywhere??
 // Log events flag
 let logPointerEventsEnabled = false;
 

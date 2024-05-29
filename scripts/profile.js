@@ -114,7 +114,7 @@ function sliding() {
   pillGrid.addEventListener("scrollend", findPill);
 }
 
-document.getElementById("pill0").scrollIntoView();
+// document.getElementById("pill0").scrollIntoView()
 
 sliding();
 setArrowListeners();
