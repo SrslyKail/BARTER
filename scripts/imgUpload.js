@@ -59,8 +59,7 @@ router.post("/upload", upload.single("image"), async function (req, res) {
 const updatePFP = async (req, res, username, email) => {
   try {
     const data = await cloudinary.uploader.upload(req.file.path);
-    let scheme = "/upload/";
-    let img = data.url.split(scheme)[1];
+    let img = data.url.split("/upload/")[1].split("/")[1].split(".")[0];
     req.session.user.userIcon = formatProfileIconPath(img);
 
     await UpdateProfileOnMongo(data, username, email);
