@@ -104,23 +104,22 @@ app.use((req, res, next) => {
 
 app.use("/editProfile", uploadRoute);
 
-
 /** middleware function for catching bad skill/category parameters */
 async function validateSkillParam(req, res, next) {
-  const param = req.params
-  const test =  await userSkillsCollection.findOne({name:param.skill})
-  if(test==null){
-    res.status(404).json({message: "Skill not found."})
+  const param = req.params;
+  const test = await userSkillsCollection.findOne({ name: param.skill });
+  if (test == null) {
+    res.status(404).json({ message: "Skill not found." });
   } else {
     next();
   }
 }
 
 async function validateCatParam(req, res, next) {
-  const param = req.params
-  const test =  await skillCatCollection.findOne({name:param.skillCat})
-  if(test==null){
-    res.status(404).json({message: "Category not found."})
+  const param = req.params;
+  const test = await skillCatCollection.findOne({ name: param.skillCat });
+  if (test == null) {
+    res.status(404).json({ message: "Category not found." });
   } else {
     next();
   }
@@ -133,11 +132,11 @@ async function validateCatParam(req, res, next) {
 /** All the arguments the userCard needs */
 class userCard {
   constructor(username, location = null, userSkills, email, userIcon) {
-    (this.username = username),
-      (this.location = location),
-      (this.userSkills = userSkills),
-      (this.email = email),
-      (this.userIcon = formatProfileIconPath(userIcon));
+    this.username = username;
+    this.location = location;
+    this.userSkills = userSkills;
+    this.email = email;
+    this.userIcon = formatProfileIconPath(userIcon);
   }
 }
 
@@ -292,7 +291,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   var authenticated = isAuthenticated(req);
   //   console.log(req);
   let skill = req.params.skill;
-  let referrer = req.get("referrer")
+  let referrer = req.get("referrer");
   // console.log(skillCat);
   if (skill == "Chronoscope Repair") {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
@@ -300,13 +299,11 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
 
   const skilldb = await userSkillsCollection.findOne({ name: skill });
 
-  
-
-
   //********BUG HERE ************/
   if (skilldb == null) {
-    res.redirect("/404")
-  } else { }
+    res.redirect("/404");
+  } else {
+  }
   // console.log(category);
   const skillName = skilldb.name;
   const skillImage = skilldb.image;
@@ -332,7 +329,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
-    referrer:referrer,
+    referrer: referrer,
   });
   return;
 });
@@ -378,6 +375,7 @@ app.post("/loggingin", async (req, res) => {
   }
   if (await bcrypt.compare(password, result[0].password)) {
     const user = result[0];
+    console.log("userIcon stored in mongo:", user.userIcon);
     createSession(
       req,
       user.username,
@@ -410,7 +408,7 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let location = "spam";
   let queryID = req.query.id;
-  let referrer = req.get("referrer")
+  let referrer = req.get("referrer");
 
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
@@ -584,9 +582,9 @@ app.post("/passwordResetting", async (req, res) => {
 });
 
 //user has been found, so lets change the email now.
-app.get("/passwordChange", (req, res) => { 
-  res.render("passwordChange", {}); 
-}); 
+app.get("/passwordChange", (req, res) => {
+  res.render("passwordChange", {});
+});
 
 //changing password code
 app.post("/passwordChanging", async (req, res) => {
@@ -640,10 +638,10 @@ app.post("/passwordChanging", async (req, res) => {
  * Then inserts a user, creates a session, and redirects to root.
  */
 //Added signup route back.
-app.get("/signup", (req, res) => { 
-  res.render("signup", { 
-    errors: [], 
-  }); 
+app.get("/signup", (req, res) => {
+  res.render("signup", {
+    errors: [],
+  });
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -686,7 +684,7 @@ app.post("/submitUser", async (req, res) => {
       email: email,
       password: hashedPassword,
       isAdmin: false,
-      userIcon: "imgs/profileIconLoggedOut.png"
+      userIcon: "imgs/profileIconLoggedOut.png",
     });
 
     createSession(req, username, false);
@@ -725,11 +723,11 @@ app.get("/zamn", (req, res) => {
 });
 
 app.get("/settings", (req, res) => {
-  res.render("settings")
+  res.render("settings");
 });
 
 app.get("/legal", (req, res) => {
-  res.render("legal")
+  res.render("legal");
 });
 /**
  * handles all routes that are not matched by any other route.
