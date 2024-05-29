@@ -104,6 +104,29 @@ app.use((req, res, next) => {
 
 app.use("/editProfile", uploadRoute);
 
+
+/** middleware function for catching bad skill/category parameters */
+async function validateSkillParam(req, res, next) {
+  const param = req.params
+  console.log(param.skill)
+  const test =  await userSkillsCollection.findOne({name:param.skill})
+  if(test==null){
+    res.status(404).json({message: "Skill not found."})
+  } else {
+    next();
+  }
+}
+
+async function validateCatParam(req, res, next) {
+  const param = req.params
+  const test =  await skillCatCollection.findOne({name:param.skillCat})
+  if(test==null){
+    res.status(404).json({message: "Category not found."})
+  } else {
+    next();
+  }
+}
+
 /* #endregion middleware */
 
 /* #region helperFunctions */
@@ -236,7 +259,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/category/:skillCat", async (req, res) => {
+app.get("/category/:skillCat", validateCatParam, async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   let skillCat = req.params.skillCat;
@@ -265,7 +288,7 @@ app.get("/category/:skillCat", async (req, res) => {
   return;
 });
 
-app.get("/skill/:skill", async (req, res) => {
+app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   //   console.log(req);
@@ -277,6 +300,8 @@ app.get("/skill/:skill", async (req, res) => {
   }
 
   const skilldb = await userSkillsCollection.findOne({ name: skill });
+
+  
 
 
   //********BUG HERE ************/
