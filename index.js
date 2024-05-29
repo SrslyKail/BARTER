@@ -491,7 +491,7 @@ async function addRating(ratedID, userID, rateValue) {
   });
   console.log("if statement here " + ratedBefore);
 
-  if (ratedBefore == null) {
+  if (ratedBefore != null) {
     let profID = ratedID; // the profile userobject goes here
     let curID = userID; // the current user user object goes here
     console.time("Profile ID:", profID);
