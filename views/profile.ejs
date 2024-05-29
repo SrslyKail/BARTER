@@ -4,8 +4,12 @@
     <%- include("templates/components/backButton", {link: referrer})%>
     <%if (user.username == userCard.username) {%>
     <div style="flex-grow: 1;"></div>
-    <%let linkString = "/editProfile?name=" + user.username %>
-    <%- include("templates/components/editButton", {link:linkString})%> <%}%>
+
+    <!-- po: this feels like too easy of a solution so i left the old code in the comments below -->
+    <%- include("templates/components/editButton", {link:"/editProfile"})%> <%}%>
+    
+    <%#let linkString = "/editProfile?name=" + user.username %>
+    <%#- include("templates/components/editButton", {link:linkString}) }%>
     <!-- <a id = "subEditButton" href="/editProfile?name=<%#- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a> -->
   </div>
 
