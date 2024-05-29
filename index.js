@@ -485,7 +485,7 @@ async function addRating(ratedID, userID, rateValue) {
   let ratedBefore = await ratingsCollection.findOne({ userId: userID, ratedID: ratedID })
   console.log("if statement here " + ratedBefore)
 
-  if (ratedBefore != null) {
+  if (ratedBefore == null) {
     let profID = ratedID; // the profile userobject goes here
     let curID = userID; // the current user user object goes here
     let rate =
@@ -499,7 +499,7 @@ async function addRating(ratedID, userID, rateValue) {
     ratingsCollection.insertOne(rate);
 
     await userCollection.findOneAndUpdate(
-      { "_id": new ObjectId(profID) },
+      { "username": profID },
       {
         $inc: { 'rateCount': 1, 'rateValue': rateValue }
       }
