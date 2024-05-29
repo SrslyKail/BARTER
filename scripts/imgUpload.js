@@ -40,7 +40,7 @@ router.post("/upload", upload.single("userIcon"), async function (req, res) {
       let scheme = "/upload/";
       let img = result.url.split(scheme)[1];
       data[userIcon] = img;
-      console.log(data);
+      // console.log(data);
       req.session.user.userIcon = formatProfileIconPath(img);
     });
   }

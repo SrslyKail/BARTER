@@ -37,8 +37,8 @@
         formLong = document.getElementById("long");
         formLat = document.getElementById("lat");
         if (
-          (formLong && formLat) 
-          && !(formLong.disabled && formLat.disabled)
+          (formLong && formLat) &&
+          !(formLong.disabled && formLat.disabled)
         ) {
           applyGeoToForm(position);
         }
@@ -52,7 +52,7 @@
   }
 
   function applyGeoToForm(position) {
-    console.log("applying", position.coords);
+    // console.log("applying", position.coords);
     formLong.value = position.coords.longitude;
     formLat.value = position.coords.latitude;
   }
