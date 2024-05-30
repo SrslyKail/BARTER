@@ -80,7 +80,6 @@ function isAuthenticated(req) {
 }
 
 function refreshCookieTime(req) {
-  console.log("Before updating:", req.session.cookie.maxAge);
   req.session.cookie.maxAge = isAuthenticated(req)
     ? (req.session.cookie.maxAge += expireTime - req.session.cookie.maxAge)
     : null;
