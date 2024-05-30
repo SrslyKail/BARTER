@@ -399,8 +399,14 @@ form.d-grid {
 }
 
 #profilePageCard {
+  display: inline-flex;
+  justify-content: center;
+  align-content: center;
+  padding: 1vh 1.5vw 3vh 1.5vw;
   grid-row: 2;
-  max-width: 480px;
+  max-width: 680px;
+  width: 100%;
+  height: 100%;
 }
 
 #pillArea {
@@ -430,6 +436,17 @@ form.d-grid {
   width: auto;
 }
 
+.profileIconContainer {
+  grid-area: icon;
+  display:flex;
+  justify-content: center;
+  /* align-content: center; */
+}
+
+.profileIcon {
+  display:flex;
+}
+
 .profileCardTable {
   border: 1px solid gray;
   background-color: white;
@@ -438,6 +455,8 @@ form.d-grid {
   padding: 2%;
   margin: 2% 0 2% 0;
   min-width: 90%;
+  width: 100%;
+  height: 100%;
   box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4),
     0 5px 20px 0 rgba(0, 0, 0, 0.2),
     5px 5px 10px rgba(126, 126, 126, 0.15) inset,
@@ -449,11 +468,74 @@ form.d-grid {
   font-size: 15pt;
 }
 
-.userCardSKills {
-  width: 40vw;
+.profileCardDataGrid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 25% 25% 25% 25%;
+  grid-template-areas:
+    "icon name"
+    "icon rating"
+    "icon skills"
+    "icon location";
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+}
+
+.userCardSkills {
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  grid-area: skills;
+}
+
+.userCardLocation {
+  grid-area: location;
+}
+
+.svgStar {
+  width: 12%;
+}
+
+.cardRatingContainer {
+  grid-area: rating;
+}
+
+.starRatings {
+  /* display: flex; */
+  justify-content: center;
+  position: relative;
+  grid-area: rating;
+  height: 2.5em;
+  width: 100%;
+  /* background-color: red; */
+}
+
+.cardStarsFill {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+}
+
+.cardStarsEmpty {
+  width: 100%;
+  position: absolute;
+  /* clip-path: inset(0 20% 0 0); */
+  text-align: center;
+}
+
+.cardRating {
+  grid-area: info;
+  display: flex;
+}
+
+.cardWords {
+  display: inline-flex;
+
 }
 
 /* #endregion Profile Card */
@@ -509,32 +591,36 @@ form.d-grid {
   flex-direction: column;
   margin-bottom: 10vh;
   align-items: center;
-}
 
-.svgStar {
-  width: 18%;
-}
+  .svgStar {
+    width: 16%;
+  }
 
-.starRatings {
-  display:flex;
-  justify-content: center;  
-  position: relative;
-  grid-column: 2;
-  height: 2.5em;
-  width: 100%;
-  /* background-color: red; */
-}
+  .starRatings {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    grid-column: 2;
+    height: 2.5em;
+    width: 100%;
+    /* background-color: red; */
+  }
 
-.cardStarsFill {
-  width: 360px;
-  position: absolute;
-  text-align: center;
-}
-.cardStarsEmpty {
-  width: 360px;
-  position: absolute;
-  /* clip-path: inset(0 20% 0 0); */
-  text-align: center;
+  .cardStarsFill {
+    width: 50%;
+    position: absolute;
+    text-align: center;
+  }
+
+  .cardStarsEmpty {
+    width: 50%;
+    position: absolute;
+    /* clip-path: inset(0 20% 0 0); */
+    text-align: center;
+  }
+
+
+
 }
 
 /* #endregion Profile Rating Menu */
