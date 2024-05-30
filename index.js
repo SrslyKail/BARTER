@@ -153,12 +153,25 @@ async function checkAuth(req, res, next) {
 
 /** All the arguments the userCard needs */
 class userCard {
-  constructor(username, userSkills, email, userIcon, userLocation = null) {
+  constructor(
+    username,
+    userSkills,
+    email,
+    userIcon,
+    userLocation = null,
+    rateValue = null,
+    rateCount = null
+  ) {
     this.username = username;
     this.userSkills = userSkills;
     this.email = email;
     this.userIcon = formatProfileIconPath(userIcon);
     this.userLocation = userLocation;
+    // console.log("Creating userCard class for", username);
+    // console.log("passed ratevalue", rateValue);
+    // console.log("passed ratecount", rateCount);
+    this.rateValue = rateValue;
+    this.rateCount = rateCount;
   }
 }
 
@@ -348,7 +361,9 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
         [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
         user.email,
         user.userIcon,
-        user.userLocation
+        user.userLocation,
+        typeof user.rateValue !== "undefined" ? user.rateValue : null,
+        typeof user.rateCount !== "undefined" ? user.rateCount : null
       )
     );
   }
@@ -477,18 +492,31 @@ app.get("/profile", async (req, res) => {
   }
 
   let ratedBefore = await ratingsCollection.findOne({
-    userID: new ObjectId(getUserId(req)),
+    userID: ObjectId.createFromHexString(getUserId(req)),
     ratedID: user._id,
   });
-
-  res.render("profile", {
-    userCard: new userCard(username, skills, email, userIcon, location),
+  let args = {
+    userCard: new userCard(
+      username,
+      skills,
+      email,
+      userIcon,
+      location,
+      user.rateValue,
+      user.rateCount
+    ),
     uploaded: req.query.success,
     portfolio: user.portfolio,
     formatProfileIconPath: formatProfileIconPath,
     referrer: referrer,
     ratedBefore: ratedBefore,
-  });
+  };
+  // if (user.rateCount) {
+  //   args["rateCount"] = user.rateCount;
+  //   args["rateValue"] = user.rateValue;
+  // }
+
+  res.render("profile", args);
 });
 
 /**
@@ -534,6 +562,8 @@ async function addRating(ratedID, userID, rateValue) {
 
     await ratingsCollection.insertOne(rate);
 
+    // console.log(ratedID)
+
     await userCollection.findOneAndUpdate(
       { _id: ratedID },
       {
@@ -574,6 +604,7 @@ async function addRating(ratedID, userID, rateValue) {
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
+  // console.log("referred:", refString);
 
   //This is kinda gross but it works
   // console.log(refString);

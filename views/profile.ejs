@@ -29,8 +29,10 @@
       <%if (user.username == userCard.username) {%>
       <h2><b>Your Rating:</b></h2>
       <form id="rating">
-        <%#- include("templates/components/cardStars", {rateValue: rateValue, rateCount:rateCount percent: (Math.round((rateValue/(rateCount*5)) * 1000) / 10)})%>
-        <%- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
+        <% if (userCard.rateCount != null) {%>
+        <%- include("templates/components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: Math.round(100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
+        <% } %>
+        <%#- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
       </form>
       <%} else {%>
       <h2><b>Leave a Rating:</b></h2>
