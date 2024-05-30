@@ -251,6 +251,16 @@ function generateNavLinks(req) {
 /* #endregion middleware */
 
 /* #region serverRouting */
+
+app.get("/testing", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+
+  // console.log(skillCats);
+  res.render("testing");
+});  
+
+
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);

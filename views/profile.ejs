@@ -29,6 +29,9 @@
       <hr class="my-4 pb-1-5">
       <%if (user.username == userCard.username) {%>
       <h2><b>Your Rating:</b></h2>
+      <form id="rating">
+        <%- include("templates/components/cardStars", {percent:50})%>
+      </form>
       <%} else {%>
       <h2><b>Leave a Rating:</b></h2>
 
