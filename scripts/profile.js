@@ -119,11 +119,4 @@ function sliding() {
 sliding();
 // setArrowListeners();
 setCircleListeners();
-<<<<<<< HEAD
-
-function toggleAdd() {
-  $("#addButton").toggleClass("d-none");
-}
-=======
 findPill();
->>>>>>> dev

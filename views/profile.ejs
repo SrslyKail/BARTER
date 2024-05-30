@@ -15,12 +15,7 @@
     <!-- <a id = "subEditButton" href="/editProfile?name=<%#- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a> -->
   </div>
 
-<div id="container">
-
-<<<<<<< HEAD
-  <div id="cardArea">
-    <div id="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
-=======
+  <div id="container">
     <div id="cardArea">
       <div class="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
     </div>
@@ -53,7 +48,6 @@
         <%}%>
       </form>
     </div>
->>>>>>> dev
   </div>
 
   <div id="pillArea" class="pt-4 text-center">
@@ -72,9 +66,6 @@
 
 </div>
 
-<<<<<<< HEAD
-</div>
-=======
 <!-- po:
 /profile/username(UPD: IMPLEMENTED AS /profile?id=username SHOULD BE SUFFICIENT FOR MVP) should be how any user's profile is accessed. I THINK
 todo if this is the profile of said user, they should have the ability to edit whatever.
@@ -84,7 +75,6 @@ todo if this is the profile of said user, they should have the ability to edit w
 <h1 class="text-success text-center">Upload Success</h1>
 <% } %>
 
->>>>>>> dev
 <script src="/scripts/profile.js"></script>
 
 <%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>

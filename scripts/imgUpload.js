@@ -42,22 +42,23 @@ async function handleProfileChanges(req, res) {
   data = removeEmptyAttributes(data);
   data = handleGeoUpdates(data);
   if (req.file) {
-    await cloudinary.uploader.upload(req.file.path, function (err, result) {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({
-          success: false,
-          message: "Error",
-        });
-      } else {
-        //console.log("result:", res);
+    await cloudinary.uploader
+      .upload(req.file.path)
+      .then((result) => {
         let scheme = "/upload/";
         let img = result.url.split(scheme)[1];
         data["userIcon"] = img;
         // console.log("Uploaded image:", data);
         req.session.user.userIcon = formatProfileIconPath(img);
-      }
-    });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Error",
+        });
+      });
+      console.log()
   }
   //If the user submitted no valid data, we dont upload anything to Mongo
   if (Object.keys(data) > 0) {

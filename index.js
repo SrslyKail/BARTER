@@ -88,13 +88,6 @@ app.use(
   })
 );
 
-<<<<<<< HEAD
-// app.use("/addPortfolio", uploadRoute);
-// app.use("/editPortfolio", uploadRoute);
-// app.use("/editPortfolioImage", uploadRoute);
-
-=======
->>>>>>> dev
 /**
  * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
@@ -268,8 +261,7 @@ app.get("/testing", async (req, res) => {
 
   // console.log(skillCats);
   res.render("testing");
-});  
-
+});
 
 app.get("/", async (req, res) => {
   var username = getUsername(req);
@@ -450,7 +442,7 @@ app.get("/profile", async (req, res) => {
   let referrer = req.get("referrer");
 
   if (referrer == undefined) {
-    referrer = "/"
+    referrer = "/";
   }
 
   if (req.session.user && queryID == undefined) {
@@ -509,13 +501,12 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
-<<<<<<< HEAD
 app.post(
   "/editProfile/upload",
   upload.single("userIcon"),
   handleProfileChanges
 );
-=======
+
 /**
  *
  * @param {ObjectId} ratedID
@@ -523,12 +514,10 @@ app.post(
  * @param {Number} rateValue
  */
 async function addRating(ratedID, userID, rateValue) {
-
-  let ratingUser = userID
+  let ratingUser = userID;
   // console.log("1 " + ratingUser)
-  let ratedUser = ratedID
+  let ratedUser = ratedID;
   // console.log("2 " + ratedUser)
-
 
   let ratedBefore = await ratingsCollection.findOne({
     userID: ratingUser,
@@ -536,7 +525,6 @@ async function addRating(ratedID, userID, rateValue) {
   });
 
   if (ratedBefore == null) {
-
     let rate = {
       userID: userID,
       ratedID: ratedID,
@@ -547,20 +535,20 @@ async function addRating(ratedID, userID, rateValue) {
     await ratingsCollection.insertOne(rate);
 
     await userCollection.findOneAndUpdate(
-      { "_id": ratedID },
+      { _id: ratedID },
       {
         $inc: { rateCount: 1, rateValue: rateValue },
       }
     );
-    return 201
+    return 201;
   } else {
     // console.log(ratedBefore.rateValue)
 
-    let changeValue = rateValue - ratedBefore.rateValue
+    let changeValue = rateValue - ratedBefore.rateValue;
     // console.log(changeValue)
     // console.log(ratedID)
     //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
-    // if (changeValue != 0) {  
+    // if (changeValue != 0) {
 
     //   await userCollection.findOneAndUpdate(
     //     { "_id": ratedID },
@@ -579,7 +567,7 @@ async function addRating(ratedID, userID, rateValue) {
     // }
 
     // console.log("it's working");
-    return 409
+    return 409;
   }
 }
 
@@ -609,7 +597,6 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
 
 //   console.log();
 // })
->>>>>>> dev
 
 /**
  * History Page.
