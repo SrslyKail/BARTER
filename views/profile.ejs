@@ -21,7 +21,7 @@
 
   <div id="pillArea" class="pt-4 text-center">
     <h2><b>Skills</b></h2>
-    <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
+    <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
   </div>
 
   <div id="reviewArea" class="px-4 text-center mb-4">

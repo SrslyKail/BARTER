@@ -521,8 +521,6 @@ app.get("/portfolio", async (req, res) => {
     name: skill,
   });
 
-  const idthing = skillData._id.toString();
-
   let data = await userCollection.findOne({
     username: username,
   });
@@ -535,11 +533,7 @@ app.get("/portfolio", async (req, res) => {
   }
 
   // res.send({
-  //   title: skill,
-  //   images: gallery,
-  //   banner: gallery[0],
-  //   description: description,
-  //   username: username,
+  //   data: skillData,
   // });
   // return;
 
