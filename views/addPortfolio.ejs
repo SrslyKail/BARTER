@@ -1,0 +1,17 @@
+<%- include("templates/header") %>
+<div class="p-2 mt-2 text-center">
+  <form action="/addPortfolio/upload?username=<%= username %>&type=portfolio&method=add" method="post" enctype="multipart/form-data" class="">
+    <div>
+      <label for="portfolioTitle" class="form-label">Title: </label>
+      <input type="text" class="form-control" name="title" id=" portfolioTitle">
+    </div>
+
+    <div>
+      <label for="portfolioDesc" class="form-label">Description: </label>
+      <textarea class="form-control" name="description" id=" portfolioDesc" rows="10"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary mb-3">Add</button>
+  </form>
+</div>
+<%- include("templates/footer") %>

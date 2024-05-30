@@ -1,12 +1,12 @@
 <!--Instruction in card-icon-generation-->
+
+<%let cloudLink = "https://res.cloudinary.com/djdztuwwe/image/upload/c_fill,h_140,w_640,ar_32:7,c_auto/r_10/"%>
+
 <div class="pillContainer" id="pill<%=count%>">
-  <div class="pillbox">
-    <%let cloudLink = "https://res.cloudinary.com/djdztuwwe/image/upload/c_fill,h_140,w_640,ar_32:7,c_auto/r_10/"%>
-    <img src="<%=cloudLink%><%=image%>" /></a>
+  <a class="pillbox" href="/portfolio?skill=<%= text %>&username=<%= username %>">
+    <img src="<%=cloudLink%><%=image%>"/>
     <div class="pillTextDiv">
-      <span class="pillText">
-        <%=text%>
-      </span>
+      <span class="pillText"><%=text%></span>
     </div>
-  </div>
+  </a>
 </div>

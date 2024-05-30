@@ -81,6 +81,10 @@ app.use(
   })
 );
 
+app.use("/addPortfolio", uploadRoute);
+app.use("/editPortfolio", uploadRoute);
+app.use("/editPortfolioImage", uploadRoute);
+
 /**
  * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
@@ -419,6 +423,8 @@ app.get("/profile", async (req, res) => {
     // userIcon = getUserIcon(req);
   }
   user = await userCollection.findOne({ username: queryID });
+  //user = await userCollection.findOne({ username: "Paul" });
+
   //if we cant find the requested profile, get the current users profile
   if (!user) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
@@ -443,6 +449,8 @@ app.get("/profile", async (req, res) => {
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
+    portfolio: user.portfolio,
+    formatProfileIconPath: formatProfileIconPath,
     referrer: referrer,
   });
 });
@@ -515,6 +523,107 @@ app.get("/history/:filter", async (req, res) => {
 
 app.get("/history", (req, res) => {
   res.render("history", {});
+});
+
+/**
+ * Portfolio Page.
+ */
+app.get("/portfolio", async (req, res) => {
+  const skill = req.query.skill;
+  const username = req.query.username;
+  let gallery = [];
+  let description = "";
+
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  let data = await userCollection.findOne({
+    username: username,
+  });
+
+  for (let i = 0; i < data.portfolio.length; i++) {
+    if (data.portfolio[i].title === skillData._id.toString()) {
+      gallery = data.portfolio[i].images;
+      description = data.portfolio[i].description;
+    }
+  }
+
+  // res.send({
+  //   data: skillData,
+  // });
+  // return;
+
+  currentUser = await userCollection.findOne({
+    username: getUsername(req),
+  });
+
+  res.render("portfolio", {
+    title: skill,
+    images: gallery,
+    banner: gallery[0],
+    description: description,
+    username: username,
+    currentUser: currentUser.username,
+  });
+});
+
+/**
+ * Add Portfolio Page.
+ */
+app.get("/addPortfolio", async (req, res) => {
+  const username = req.query.username;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("addPortfolio", {
+    username: username,
+  });
+});
+
+/**
+ * Edit Portfolio Page.
+ */
+app.get("/editPortfolio", async (req, res) => {
+  const username = req.query.username;
+  const skill = req.query.skill;
+  let gallery = [];
+  let description = "";
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  if (!skill) {
+    res.redirect("/profile");
+    return;
+  }
+
+  const userData = await userCollection.findOne({
+    username: username,
+  });
+
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  for (let i = 0; i < userData.portfolio.length; i++) {
+    if (userData.portfolio[i].title === skillData._id.toString()) {
+      gallery = userData.portfolio[i].images;
+      description = userData.portfolio[i].description;
+    }
+  }
+
+  res.render("editPortfolio", {
+    title: skill,
+    description: description,
+    images: gallery,
+    username: username,
+  });
 });
 
 /**

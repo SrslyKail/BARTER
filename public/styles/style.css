@@ -99,7 +99,7 @@
 }
 
 .pb-1-5 {
-  padding-bottom:1.5vh;
+  padding-bottom: 1.5vh;
 }
 
 /* <a> links for login, register, forgot password */
@@ -160,7 +160,6 @@
   min-height: 2.5em;
   /*Optional: adjusts text background height*/
   width: inherit;
-
 }
 
 /* Enable below for text to only be visible on hover*/
@@ -174,7 +173,7 @@
 } */
 
 .iconText {
-  color: #FFFAEE;
+  color: #fffaee;
   /*Optional*/
   font-size: large;
   /*Optional*/
@@ -194,11 +193,11 @@
 
 .centerGrid {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   text-align: center;
   align-items: center;
   justify-content: center;
-  width:75vw;
+  width: 75vw;
   max-width: 560px;
 }
 
@@ -212,15 +211,15 @@ form.d-grid {
 
 .navbar-main {
   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3),
-              5px 5px 20px rgba(0, 0, 0, 0.15) inset, 
-              -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
+    5px 5px 20px rgba(0, 0, 0, 0.15) inset,
+    -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
 }
 
 .subNavButton {
   display: flex;
   /* mix-blend-mode: plus-darker; */
   /* mix-blend-mode:lighten; */
-  color:white;
+  color: white;
   /* background-clip: text; */
   /* color: transparent; */
   /* filter: invert(1); */
@@ -232,7 +231,7 @@ form.d-grid {
   height: 5vh;
   width: 5vh;
   align-self: center;
-  fill:white;
+  fill: white;
   mix-blend-mode: difference;
 }
 
@@ -248,6 +247,8 @@ form.d-grid {
   width: 100%;
   height: 7vh;
   align-content: center;
+  position: absolute;
+  z-index: 1000;
 }
 
 /* #endregion sub nav bar (skillCats, skills, and profile) */
@@ -314,6 +315,7 @@ form.d-grid {
   height: inherit;
   width: inherit;
   position: absolute;
+  cursor: pointer;
 }
 
 .pillTextDiv {
@@ -327,11 +329,10 @@ form.d-grid {
   min-height: 2.5em;
   /*Optional: adjusts text background height*/
   width: inherit;
-
 }
 
 .pillText {
-  color: #FFFAEE;
+  color: #fffaee;
   background-color: #17191595;
   padding-left: 0.2em;
   padding-right: 0.2em;
@@ -353,13 +354,15 @@ form.d-grid {
   width: 24px;
   height: 24px;
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .pagIcon {
   pointer-events: auto;
+  cursor: pointer;
 }
 
-.activeCircle>circle {
+.activeCircle > circle {
   fill: #676767;
 }
 
@@ -369,19 +372,20 @@ form.d-grid {
 
 #container {
   display: grid;
-  grid-template-rows: 7vh 30vh auto 30vh;
+  grid-template-rows: 7vh 30vh auto auto 30vh;
   grid-template-areas:
-      "gap"
-      "card"
-      "pills"
-      "reviews";
+    "gap"
+    "card"
+    "pills"
+    "porfolio"
+    "reviews";
   height: 100vh;
   width: 100vw;
   overflow: visible;
 }
 
 #cardArea {
-  display:grid;
+  display: grid;
   grid-template-rows: 7vh auto;
   width: inherit;
   height: 100%;
@@ -393,7 +397,7 @@ form.d-grid {
 }
 
 #profilePageCard {
-  grid-row:2;
+  grid-row: 2;
   max-width: 480px;
 }
 
@@ -402,18 +406,22 @@ form.d-grid {
   grid-row: 3;
 }
 
+#portfolioArea {
+  width: inherit;
+  grid-row: 4;
+}
+
 #reviewArea {
   width: inherit;
-  grid-area: reviews;
+  grid-row: 5;
 }
 
 #contactButton * {
-  font-weight: 700; 
-  margin-bottom:0;
+  font-weight: 700;
+  margin-bottom: 0;
 }
 
 /* #endregion Profile Container*/
-
 
 /* #region Profile Card */
 
@@ -432,10 +440,9 @@ form.d-grid {
   padding: 2%;
   margin: 2% 0 2% 0;
   min-width: 90%;
-  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 
-              0 5px 20px 0 rgba(0, 0, 0, 0.2), 
-              5px 5px 10px rgba(126, 126, 126, 0.15) inset, 
-              -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 0 5px 20px 0 rgba(0, 0, 0, 0.2),
+    5px 5px 10px rgba(126, 126, 126, 0.15) inset,
+    -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
 }
 
 .profileCardTable * {

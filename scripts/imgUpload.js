@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
+const formatProfileIconPath =
+  require("./modules/localSession").formatProfileIconPath;
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 
@@ -10,7 +13,9 @@ const {
 } = require("./modules/localSession");
 const { getPlaceName } = require("./modules/location");
 const { getCollection } = require("./modules/databaseConnection");
+
 const userCollection = getCollection("users");
+const userSkillsCollection = getCollection("skills");
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -75,21 +80,15 @@ function removeEmptyAttributes(data) {
 /**
  *
  * @param {Request} req
- * @param {Object} data This should be formatted in the same way our MongoDB user collection is. It will attempt to map all give attributes 
+ * @param {Object} data This should be formatted in the same way our MongoDB user collection is. It will attempt to map all give attributes
  */
 async function updateMongoUser(req, data) {
-
   await userCollection.updateOne(
     { username: getUsername(req) },
     {
       $set: data,
     }
   );
-  let userKeys = Object.keys(req.session.user);
-  let updateKeys = userKeys.filter((key) => dataKeys.includes(key));
-  updateKeys.forEach((key) => {
-    req.session.user[key] = data[key];
-  });
 }
 
 module.exports = { upload, processProfileChanges };
