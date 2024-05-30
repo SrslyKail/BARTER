@@ -31,7 +31,7 @@ async function testFetch() {
     },
   });
   // query = query.replaceAll(" ", "+");
-  console.log(res.data);
+  // console.log(res.data);
 }
 
 /**
@@ -51,7 +51,7 @@ async function getPlaceName(long, lat) {
       },
     })
     .catch((err) => {
-      console.warn("caught error on getPlaceName:", err);
+      console.error("caught error on getPlaceName:", err);
     });
   // console.log("getPlacename Results:", res.data.results);
   return res.data.results[0].formatted_address;

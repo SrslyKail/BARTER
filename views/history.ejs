@@ -13,10 +13,17 @@
   <a class="btn btn-dark btn-lg" href="/history/contacted">CONTACTED</a>
 </div>
 
-<% if (typeof data !== 'undefined') { %>
-<% data.forEach((profile) => { %>
-<%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
-<% }); %>
-<% } %>
+<div id="iconGridContainer">
+  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
+
+    <% if (typeof data !== 'undefined') { %>
+    <% data.forEach((profile) => { %>
+    <div class=" profilePageCard skillPageCard">
+      <%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
+    </div>
+    <% }); %>
+    <% } %>
+  </div>
+</div>
 
 <%- include("templates/footer") %>

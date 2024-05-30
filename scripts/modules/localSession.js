@@ -47,7 +47,7 @@ class User {
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
  * @param {String} email The email address of this user.
- * @param {ObjectId} userId
+ * @param {ObjectId} userId The ObjectId of the this user
  * @param {Array} history The history of the user.
  * @param {Boolean} admin If the user is an admin. Defaults to false.
  * @param {URL | String} userIcon the path to the user icon.
@@ -57,7 +57,7 @@ function createSession(
   username,
   email,
   userId,
-  history,
+  history = { visited: [], contacted: [] },
   admin = false,
   userIcon = defaultIcon
 ) {

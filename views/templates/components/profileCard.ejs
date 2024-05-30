@@ -1,4 +1,3 @@
-<div class="d-flex justify-content-center">
   <table class="profileCardTable">
     <td>
 
@@ -18,12 +17,22 @@
           <%- skills.join(", ") %>
           <%if (userCard.userSkills.length > 2) {%>. . .<%}%>
         </div>
-        <div class="truncate text-body-secondary"><% if(typeof userCard.userLocation.placeName !== undefined){ %>
+ 
+        <div class="userCardLocation truncate text-body-secondary"><% if(typeof userCard.userLocation.placeName !== undefined){ %>
           <%= userCard.userLocation.placeName %>
-          <% } %>
-
+          <% if(user.username != userCard.username) { %>
         </div>
-      </td>
-    </tr>
+        <div name="userDistance" data-position-long="<%= userCard.userLocation.geo.longitude %>" data-position-lat="<%= userCard.userLocation.geo.latitude %>">
+          <% } %>
+          <% } %>
+        </div>
+
+      </div>
+
+    </td>
   </table>
-</div>
+
+
+  <script>
+
+  </script>
