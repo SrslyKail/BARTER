@@ -164,9 +164,9 @@ class userCard {
     this.email = email;
     this.userIcon = formatProfileIconPath(userIcon);
     this.userLocation = userLocation;
-    console.log("Creating userCard class for", username);
-    console.log("passed ratevalue", rateValue);
-    console.log("passed ratecount", rateCount);
+    // console.log("Creating userCard class for", username);
+    // console.log("passed ratevalue", rateValue);
+    // console.log("passed ratecount", rateCount);
     this.rateValue = rateValue;
     this.rateCount = rateCount;
   }
@@ -549,6 +549,8 @@ async function addRating(ratedID, userID, rateValue) {
 
     await ratingsCollection.insertOne(rate);
 
+    // console.log(ratedID)
+
     await userCollection.findOneAndUpdate(
       { _id: ratedID },
       {
@@ -589,7 +591,7 @@ async function addRating(ratedID, userID, rateValue) {
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
-  console.log("referred:", refString);
+  // console.log("referred:", refString);
 
   //This is kinda gross but it works
   // console.log(refString);
