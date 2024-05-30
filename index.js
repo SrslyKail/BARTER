@@ -79,6 +79,7 @@ app.use(
 app.use("/editProfile", uploadRoute);
 app.use("/addPortfolio", uploadRoute);
 app.use("/editPortfolio", uploadRoute);
+app.use("/editPortfolioImage", uploadRoute);
 
 /**
  * sets the view engine to ejs, configures the express app,
