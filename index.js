@@ -264,9 +264,6 @@ app.get("/testing", async (req, res) => {
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
-  /* Mock database for presentation*/
-  //   var db = skillCatCollection;
-  // var db = JSON.parse(fs.readFileSync("mockCategoryDB.json"));
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
   const all = skillCatCollection.find().project({ image: 1, name: 1 });
   // console.log(all)
@@ -813,6 +810,7 @@ app.post("/submitUser", async (req, res) => {
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
   }
+
   // Check for duplicate username or email
   if (await userCollection.findOne({ username: username })) {
     errors.push(`${username} is already in use!`);

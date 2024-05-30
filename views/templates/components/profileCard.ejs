@@ -17,6 +17,10 @@
  
         <div class="userCardLocation truncate text-body-secondary"><% if(typeof userCard.userLocation.placeName !== undefined){ %>
           <%= userCard.userLocation.placeName %>
+          <% if(user.username != userCard.username) { %>
+        </div>
+        <div name="userDistance" data-position-long="<%= userCard.userLocation.geo.longitude %>" data-position-lat="<%= userCard.userLocation.geo.latitude %>">
+          <% } %>
           <% } %>
         </div>
 
@@ -24,3 +28,8 @@
 
     </td>
   </table>
+</div>
+
+<script>
+
+</script>

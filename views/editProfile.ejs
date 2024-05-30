@@ -53,14 +53,5 @@
       timeout: 10000
     });
   }
-
-  document.addEventListener("submit", (e) => {
-    if (geoUpdated) {
-      Object.keys(e).forEach(key => {
-        console.log(e[key]);
-      })
-      console.log("Submitting updated geo");
-    }
-  })
 </script>
 <%- include("templates/footer") %>

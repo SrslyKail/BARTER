@@ -4,6 +4,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 
 const {
+  createSession,
   getUsername,
   formatProfileIconPath,
 } = require("./modules/localSession");
@@ -53,8 +54,8 @@ router.post("/upload", upload.single("userIcon"), async function (req, res) {
 });
 
 async function updateMongoProfile(req, data) {
-  let keys = Object.keys(data);
-  if (keys.includes("longitude")) {
+  let dataKeys = Object.keys(data);
+  if (dataKeys.includes("longitude")) {
     data["userLocation"] = {
       geo: {
         longitude: Number(data["longitude"]),
@@ -76,6 +77,11 @@ async function updateMongoProfile(req, data) {
       $set: data,
     }
   );
+  let userKeys = Object.keys(req.session.user);
+  let updateKeys = userKeys.filter((key) => dataKeys.includes(key));
+  updateKeys.forEach((key) => {
+    req.session.user[key] = data[key];
+  });
 }
 
 module.exports = router;
