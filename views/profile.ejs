@@ -15,8 +15,7 @@
     <!-- <a id = "subEditButton" href="/editProfile?name=<%#- user.username %>" class="text-center btn fs-1 text-primary"><i class="bi bi-pencil-square"></i></a> -->
   </div>
 
-<div id="container">
-
+  <div id="container">
     <div id="cardArea">
       <div class="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
     </div>
@@ -51,6 +50,20 @@
         <%}%>
       </form>
     </div>
+  </div>
+
+  <div id="pillArea" class="pt-4 text-center">
+    <h2>
+      <b>Skills</b>
+      <button onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
+      <a href="/addPortfolio?username=<%= userCard.username %>" id="addButton" class="btn btn-secondary d-none"><i class="bi bi-plus-square"></i></a>
+    </h2>
+    <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
+  </div>
+
+  <div id="reviewArea" class="px-4 text-center mb-4">
+    <hr class="my-4 pb-1-5">
+    <h2><b>Reviews</b></h2>
   </div>
 
 </div>
