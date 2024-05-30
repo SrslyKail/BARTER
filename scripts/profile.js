@@ -117,9 +117,13 @@ function sliding() {
 // document.getElementById("pill0").scrollIntoView()
 
 sliding();
-setArrowListeners();
+// setArrowListeners();
 setCircleListeners();
+<<<<<<< HEAD
 
 function toggleAdd() {
   $("#addButton").toggleClass("d-none");
 }
+=======
+findPill();
+>>>>>>> dev

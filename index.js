@@ -34,6 +34,7 @@ const {
   defaultIcon,
   formatProfileIconPath,
   getUserId,
+  refreshCookieTime,
 } = require("./scripts/modules/localSession");
 
 const {
@@ -48,6 +49,8 @@ const userCollection = getCollection("users");
 const skillCatCollection = getCollection("skillCats");
 /** @type {Collection} */
 const userSkillsCollection = getCollection("skills");
+/** @type {Collection} */
+const ratingsCollection = getCollection("ratings");
 
 const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
@@ -85,10 +88,13 @@ app.use(
   })
 );
 
+<<<<<<< HEAD
 // app.use("/addPortfolio", uploadRoute);
 // app.use("/editPortfolio", uploadRoute);
 // app.use("/editPortfolioImage", uploadRoute);
 
+=======
+>>>>>>> dev
 /**
  * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
@@ -103,8 +109,10 @@ app.use(express.urlencoded({ extended: false }));
  */
 app.use((req, res, next) => {
   // console.log(req.session.user);
-  app.locals.user =
-    req.session.user != "undefined" ? req.session.user : undefined;
+  refreshCookieTime(req);
+  req.session.user != "undefined"
+    ? (app.locals.user = req.session.user)
+    : undefined;
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
@@ -133,6 +141,16 @@ async function validateCatParam(req, res, next) {
     res.status(404).json({ message: "Category not found." });
   } else {
     next();
+  }
+}
+
+async function checkAuth(req, res, next) {
+  if (isAuthenticated(req)) {
+    next();
+  } else {
+    res
+      .status(401)
+      .json({ message: "You are not authorized to submit ratings." });
   }
 }
 
@@ -238,9 +256,21 @@ function generateNavLinks(req) {
   return modalArray;
 }
 
+/** Sending a rating to the server */
+
 /* #endregion middleware */
 
 /* #region serverRouting */
+
+app.get("/testing", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+
+  // console.log(skillCats);
+  res.render("testing");
+});  
+
+
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
@@ -419,6 +449,10 @@ app.get("/profile", async (req, res) => {
   let queryID = req.query.id;
   let referrer = req.get("referrer");
 
+  if (referrer == undefined) {
+    referrer = "/"
+  }
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
@@ -450,12 +484,18 @@ app.get("/profile", async (req, res) => {
     }
   }
 
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: new ObjectId(getUserId(req)),
+    ratedID: user._id,
+  });
+
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
     portfolio: user.portfolio,
     formatProfileIconPath: formatProfileIconPath,
     referrer: referrer,
+    ratedBefore: ratedBefore,
   });
 });
 
@@ -469,11 +509,107 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 app.post(
   "/editProfile/upload",
   upload.single("userIcon"),
   handleProfileChanges
 );
+=======
+/**
+ *
+ * @param {ObjectId} ratedID
+ * @param {ObjectId} userID
+ * @param {Number} rateValue
+ */
+async function addRating(ratedID, userID, rateValue) {
+
+  let ratingUser = userID
+  // console.log("1 " + ratingUser)
+  let ratedUser = ratedID
+  // console.log("2 " + ratedUser)
+
+
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: ratingUser,
+    ratedID: ratedUser,
+  });
+
+  if (ratedBefore == null) {
+
+    let rate = {
+      userID: userID,
+      ratedID: ratedID,
+      rateValue: rateValue,
+      date: new Date(),
+    };
+
+    await ratingsCollection.insertOne(rate);
+
+    await userCollection.findOneAndUpdate(
+      { "_id": ratedID },
+      {
+        $inc: { rateCount: 1, rateValue: rateValue },
+      }
+    );
+    return 201
+  } else {
+    // console.log(ratedBefore.rateValue)
+
+    let changeValue = rateValue - ratedBefore.rateValue
+    // console.log(changeValue)
+    // console.log(ratedID)
+    //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
+    // if (changeValue != 0) {  
+
+    //   await userCollection.findOneAndUpdate(
+    //     { "_id": ratedID },
+    //     {
+    //       $inc: { rateValue: changeValue },
+    //     }
+    //   );
+
+    //   await ratingsCollection.findOneAndUpdate(
+    //     { "_id": ratedBefore._id },
+    //     {
+    //       rateValue: rateValue,
+    //       date: new Date(),
+    //     }
+    //   )
+    // }
+
+    // console.log("it's working");
+    return 409
+  }
+}
+
+/**Post to submit rating from profile. */
+app.post("/submit-rating", checkAuth, async (req, res) => {
+  let refString = req.get("referrer");
+
+  //This is kinda gross but it works
+  // console.log(refString);
+  let textArray = refString.split("=");
+  let profID = textArray[1];
+  let value = Number(req.body.rating);
+  let ratingUser = new ObjectId(getUserId(req));
+
+  let ratedUser = await userCollection.findOne({ username: profID });
+  let ratedObj = ratedUser._id;
+
+  Joi.number().min(1).max(5).required().validate(value);
+
+  rateStatus = await addRating(ratedObj, ratingUser, value);
+
+  res.redirect(rateStatus, "back");
+});
+
+// app.post("/editProfile/upload", (req, res) => {
+//   console.log(req);
+
+//   console.log();
+// })
+>>>>>>> dev
 
 /**
  * History Page.

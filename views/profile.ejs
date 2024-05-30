@@ -1,7 +1,9 @@
 <%- include("templates/header") %>
 <div>
   <div id="subbar" class="navbar flex-nowrap vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .6;">
-    <%- include("templates/components/backButton", {link: referrer})%>
+    <%let link = "/"%>
+    <% if (referrer.includes("/skill/")){ link = referrer} %>
+    <%- include("templates/components/backButton", {link: link})%>
     <%if (user.username == userCard.username) {%>
     <div style="flex-grow: 1;"></div>
 
@@ -15,8 +17,43 @@
 
 <div id="container">
 
+<<<<<<< HEAD
   <div id="cardArea">
     <div id="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
+=======
+    <div id="cardArea">
+      <div class="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
+    </div>
+    <div id="pillArea" class="pt-4 text-center">
+      <h2><b>Skills</b></h2>
+      <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
+    </div>
+
+    <div id="reviewArea" class="p-4 text-center mb-4">
+      <hr class="my-4 pb-1-5">
+      <%if (user.username == userCard.username) {%>
+      <h2><b>Your Rating:</b></h2>
+      <form id="rating">
+        <%#- include("templates/components/cardStars", {rateValue: rateValue, rateCount:rateCount percent: (Math.round((rateValue/(rateCount*5)) * 1000) / 10)})%>
+        <%- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
+      </form>
+      <%} else {%>
+      <h2><b>Leave a Rating:</b></h2>
+
+      <form id="rating" form action="/submit-rating" method="post" required>
+        <div class="stars">
+          <%if (user.username != userCard.username) {%>
+          <input type="radio" id="star1" name="rating" value=1 required /><input type="radio" id="star2" name="rating" value=2 /><input type="radio" id="star3" name="rating" value=3 /><input type="radio" id="star4" name="rating" value=4 /><input type="radio" id="star5" name="rating" value=5 />
+          <%}%>
+          <label for="star1" aria-label="Banana">1 star</label><label for="star2">2 stars</label><label for="star3">3 stars</label><label for="star4">4 stars</label><label for="star5">5 stars</label>
+        </div>
+        <%if (user.username != userCard.username) {%>
+          <input id="ratingSubmitButton" class="btn btn-lg btn-secondary" type="submit" value="Submit" <%if (ratedBefore != null){%>disabled<%}%>>
+        <%}%> <%if (ratedBefore != null){%><h2><b>You've already rated <%- userCard.username%></b></h2><%}%>
+        <%}%>
+      </form>
+    </div>
+>>>>>>> dev
   </div>
 
   <div id="pillArea" class="pt-4 text-center">
@@ -35,6 +72,25 @@
 
 </div>
 
+<<<<<<< HEAD
 </div>
+=======
+<!-- po:
+/profile/username(UPD: IMPLEMENTED AS /profile?id=username SHOULD BE SUFFICIENT FOR MVP) should be how any user's profile is accessed. I THINK
+todo if this is the profile of said user, they should have the ability to edit whatever.
+-->
+
+<% if (typeof uploaded !== 'undefined') { %>
+<h1 class="text-success text-center">Upload Success</h1>
+<% } %>
+
+>>>>>>> dev
 <script src="/scripts/profile.js"></script>
+
 <%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>
+<%if ((user.username != userCard.username) && (ratedBefore != null)) {%>
+<script>
+  document.getElementById("rating").childNodes[1].children['<%-ratedBefore.rateValue - 1%>'].checked = true
+  document.getElementById("rating").childNodes[1].classList.add('noClick')
+</script>
+<%}%>
