@@ -13,14 +13,14 @@
 </div>
 <div id="iconGridContainer">
   <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
-  <% db.forEach((skillUser) => { %>
-  <% if(skillUser.username != user.username){ %>
-  <div class=" profilePageCard skillPageCard">
-    <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+    <% db.forEach((skillUser) => { %>
+    <% if(typeof user === "undefined" || skillUser.username != user.username){ %>
+    <div class=" profilePageCard skillPageCard">
+      <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+    </div>
+    <%}}) %>
+    <%#- db.forEach((user) =>  %>
   </div>
-  <%}}) %>
-  <%#- db.forEach((user) =>  %>
-</div>
 </div>
 
 <!-- <script>

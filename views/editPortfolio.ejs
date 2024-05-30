@@ -1,10 +1,11 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 text-center">
   <form action="/editPortfolio/upload?type=portfolio&username=<%= username %>&skill=<%- title %>&method=edit" method="post" enctype="multipart/form-data" class="">
+    <!-- Removing this; title is attached to the banner image so we dont want to fuck with it.
     <div>
       <label for="portfolioTitle" class="form-label">Edit Title: </label>
       <input type="text" class="form-control" value="<%- title %>" name="title" id=" portfolioTitle">
-    </div>
+    </div> -->
 
     <div>
       <label for="portfolioDesc" class="form-label">Edit Description: </label>

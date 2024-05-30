@@ -372,13 +372,12 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
 
   res.render("skill", {
     authenticated: authenticated,
-    username: username,
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
     referrer: referrer,
   });
-  console.log("Serverside skill image:", skillImage);
+  // console.log("Serverside skill image:", skillImage);
   return;
 });
 
@@ -749,6 +748,22 @@ app.get("/history", (req, res) => {
  * Portfolio Page.
  */
 app.get("/portfolio", async (req, res) => {
+  data = await setupPortfolio(req, res);
+  if (data) {
+    res.render("portfolio", data);
+  }
+});
+
+app.get("/editPortfolio", async (req, res) => {
+  if (req.query.id != getUsername(req) || !req.query.skill) {
+    res.redirect("/profile");
+    return;
+  }
+  data = await setupPortfolio(req, res);
+  res.render("editPortfolio", data);
+});
+
+async function setupPortfolio(req, res) {
   const skill = req.query.skill;
   const username = req.query.id;
   let gallery = [];
@@ -764,31 +779,31 @@ app.get("/portfolio", async (req, res) => {
 
   let results = await Promise.all([skillData, userData]).catch((err) => {
     res.render("404");
-    return;
+    return null;
   });
 
   skillData = results[0];
   userData = results[1];
 
-  for (let i = 0; i < userData.portfolio.length; i++) {
-    //title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
-    if (userData.portfolio[i].title === skillData._id.toString()) {
-      gallery = userData.portfolio[i].images;
-      description = userData.portfolio[i].description;
+  if (Object.keys(userData).includes("portfolio")) {
+    for (let i = 0; i < userData.portfolio.length; i++) {
+      //title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
+      if (userData.portfolio[i].title === skillData._id.toString()) {
+        gallery = userData.portfolio[i].images;
+        description = userData.portfolio[i].description;
+      }
     }
   }
 
-  console.log("banner:", gallery[0] ? gallery[0] : skillData.image);
-
-  res.render("portfolio", {
+  return {
     title: skill,
     images: gallery,
     banner: gallery[0] ? gallery[0] : skillData.image,
     description: description,
     username: username,
     currentUser: getUsername(req),
-  });
-});
+  };
+}
 
 app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
 
