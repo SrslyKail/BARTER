@@ -1,15 +1,15 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 d-flex justify-content-center">
-  <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
+  <form action="/editProfile/Test" method="post" enctype="multipart/form-data" class="" id="editProfile">
     <fieldset>
       <legend>Edit your profile:</legend>
       <div class="mb-3">
         <label for="inputUsername" class="form-label">Edit Username</label>
-        <input type="text" class="form-control" value="<%- name %>" name="username" id="inputUsername">
+        <input type="text" class="form-control" placeholder="<%- name %>" name="username" id="inputUsername">
       </div>
       <div class="mb-3">
-        <label for="imputEmail" class="form-label">Edit Email</label>
-        <input type="email" class="form-control" value="<%- email %>" name="email" id="inputEmail">
+        <label for="inputEmail" class="form-label">Edit Email</label>
+        <input type="email" class="form-control" palceholder="<%- email %>" name="email" id="inputEmail">
       </div>
       <div class="mb-3">
         <label for="formFile" class="form-label">Edit Profile Picture:</label>
@@ -30,6 +30,8 @@
 </div>
 <script>
   let geoUpdated = false;
+
+  const form = document.getElementById("editProfile");
 
   async function captureGeo() {
     let updateGeoButton = document.getElementById("updateGeoButton");

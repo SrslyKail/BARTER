@@ -27,10 +27,17 @@ cloudinary.config({
 
 const upload = multer({ storage: storage });
 
-router.post("/upload", upload.single("userIcon"), async function (req, res) {
+/**
+ * Handles processing the income changes from editProfile.
+ * Checks if the user submitted a profile image and processes it to cloudinary if they did.
+ * @param {Request} req
+ * @param {Response} res
+ */
+async function processProfileChanges(req, res) {
   //Shinanigans required to get the body and be able to edit it.
   let data = JSON.stringify(req.body);
   data = JSON.parse(data);
+  data = removeEmptyAttributes(data);
   if (req.file) {
     await cloudinary.uploader.upload(req.file.path, function (err, result) {
       if (err) {
@@ -49,28 +56,29 @@ router.post("/upload", upload.single("userIcon"), async function (req, res) {
       }
     });
   }
-  await updateMongoProfile(req, data);
-  res.redirect("/profile");
-});
-
-async function updateMongoProfile(req, data) {
-  let dataKeys = Object.keys(data);
-  if (dataKeys.includes("longitude")) {
-    data["userLocation"] = {
-      geo: {
-        longitude: Number(data["longitude"]),
-        latitude: Number(data["latitude"]),
-      },
-    };
-    let placeName = await getPlaceName(
-      Number(data["longitude"]),
-      Number(data["latitude"])
-    );
-    data["userLocation"]["placeName"] = placeName;
-
-    delete data["longitude"];
-    delete data["latitude"];
+  //If the user submitted no valid data, we dont upload anything to Mongo
+  if (Object.keys(data) > 0) {
+    await updateMongoUser(req, data);
   }
+  res.redirect("/profile");
+}
+
+function removeEmptyAttributes(data) {
+  Object.keys(data).forEach((att) => {
+    if (!data[att]) {
+      delete data[att];
+    }
+  });
+  return data;
+}
+
+/**
+ *
+ * @param {Request} req
+ * @param {Object} data This should be formatted in the same way our MongoDB user collection is. It will attempt to map all give attributes 
+ */
+async function updateMongoUser(req, data) {
+
   await userCollection.updateOne(
     { username: getUsername(req) },
     {
@@ -84,4 +92,4 @@ async function updateMongoProfile(req, data) {
   });
 }
 
-module.exports = router;
+module.exports = { upload, processProfileChanges };

@@ -53,7 +53,7 @@ const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
-const uploadRoute = require("./scripts/imgUpload.js");
+const { upload, processProfileChanges } = require("./scripts/imgUpload.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
 const skillsCache = {};
@@ -81,8 +81,6 @@ app.use(
   })
 );
 
-app.use("/editProfile", uploadRoute);
-
 /**
  * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
@@ -108,8 +106,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.use("/editProfile", uploadRoute);
 
 /** middleware function for catching bad skill/category parameters */
 async function validateSkillParam(req, res, next) {
@@ -461,11 +457,11 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
-// app.post("/editProfile/upload", (req, res) => {
-//   console.log(req);
-
-//   console.log();
-// })
+app.post(
+  "/editProfile/upload",
+  upload.single("userIcon"),
+  processProfileChanges
+);
 
 /**
  * History Page.
