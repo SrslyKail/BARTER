@@ -34,6 +34,7 @@ const {
   defaultIcon,
   formatProfileIconPath,
   getUserId,
+  refreshCookieTime,
 } = require("./scripts/modules/localSession");
 
 const {
@@ -83,8 +84,6 @@ app.use(
   })
 );
 
-app.use("/editProfile", uploadRoute);
-
 /**
  * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
@@ -99,8 +98,10 @@ app.use(express.urlencoded({ extended: false }));
  */
 app.use((req, res, next) => {
   // console.log(req.session.user);
-  app.locals.user =
-    req.session.user != "undefined" ? req.session.user : undefined;
+  refreshCookieTime(req);
+  req.session.user != "undefined"
+    ? (app.locals.user = req.session.user)
+    : undefined;
   app.locals.authenticated = isAuthenticated(req);
   app.locals.userIcon = getUserIcon(req);
   app.locals.modalLinks = generateNavLinks(req);
