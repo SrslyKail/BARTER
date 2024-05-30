@@ -1,10 +1,10 @@
 <!--Instruction in card-icon-generation-->
 
-<%let skillCloudLink = "https://res.cloudinary.com/djdztuwwe/image/upload/c_fill,h_140,w_640,ar_32:7,c_auto/r_10/"%>
+<%let cloudLink = "https://res.cloudinary.com/djdztuwwe/image/upload/c_fill,h_140,w_640,ar_32:7,c_auto/r_10/"%>
 
 <div class="pillContainer" id="pill<%=count%>">
   <a class="pillbox" href="/portfolio?skill=<%= text %>&id=<%= username %>">
-    <img src="<%=skillCloudLink%><%=image%>" />
+    <img src="<%=cloudLink%><%=image%>" />
     <div class="pillTextDiv">
       <span class="pillText"><%=text%></span>
     </div>

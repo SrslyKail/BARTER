@@ -23,7 +23,7 @@
             loop works with grid settings in cardIconStyle.css
             needs integration testing with bootstrap-->
         <% for (let i = 0; i < db.length; i ++) {  %>
-        <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i}) %>
+        <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i, username:username}) %>
         <% } %>
         <% let pages = db.length / 3%>
         <% let currentPage= 0%>
