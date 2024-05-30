@@ -461,6 +461,7 @@ app.get("/profile", async (req, res) => {
   }
 
   if (req.session.user && queryID == undefined) {
+    res.redirect(`/profile?id=${getUsername(req)}`);
     queryID = req.session.user.username;
     // user = getUser(req);
     // username = getUsername(req);
@@ -770,28 +771,34 @@ app.get("/history", (req, res) => {
  */
 app.get("/portfolio", async (req, res) => {
   const skill = req.query.skill;
-  const username = req.query.username;
+  const username = req.query.id;
   let gallery = [];
   let description = "";
 
-  const skillData = await userSkillsCollection.findOne({
+  let skillData = userSkillsCollection.findOne({
     name: skill,
   });
 
-  let data = await userCollection.findOne({
+  let userData = userCollection.findOne({
     username: username,
   });
 
-  for (let i = 0; i < data.portfolio.length; i++) {
-    if (data.portfolio[i].title === skillData._id.toString()) {
-      gallery = data.portfolio[i].images;
-      description = data.portfolio[i].description;
+  let results = await Promise.all([skillData, userData]).catch((err) => {
+    res.render("404");
+    return;
+  });
+
+  skillData = results[0];
+  userData = results[1];
+
+  for (let i = 0; i < userData.portfolio.length; i++) {
+    //title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
+    if (userData.portfolio[i].title === skillData._id.toString()) {
+      gallery = userData.portfolio[i].images;
+      description = userData.portfolio[i].description;
     }
   }
-
-  currentUser = await userCollection.findOne({
-    username: getUsername(req),
-  });
+  console.log(gallery);
 
   res.render("portfolio", {
     title: skill,
@@ -799,7 +806,7 @@ app.get("/portfolio", async (req, res) => {
     banner: gallery[0],
     description: description,
     username: username,
-    currentUser: currentUser.username,
+    currentUser: getUsername(req),
   });
 });
 

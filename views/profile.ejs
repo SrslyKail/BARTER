@@ -20,10 +20,13 @@
       <div class="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
     </div>
     <div id="pillArea" class="pt-4 text-center">
-      <h2><b>Skills</b></h2>
-      <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
+      <h2>
+        <b>Skills</b>
+        <button onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
+        <a href="/addPortfolio?username=<%= userCard.username %>" id="addButton" class="btn btn-secondary d-none"><i class="bi bi-plus-square"></i></a>
+      </h2>
+      <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
     </div>
-
     <div id="reviewArea" class="p-4 text-center mb-4">
       <hr class="my-4 pb-1-5">
       <%if (user.username == userCard.username) {%>
@@ -51,16 +54,6 @@
       </form>
     </div>
   </div>
-
-  <div id="pillArea" class="pt-4 text-center">
-    <h2>
-      <b>Skills</b>
-      <button onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
-      <a href="/addPortfolio?username=<%= userCard.username %>" id="addButton" class="btn btn-secondary d-none"><i class="bi bi-plus-square"></i></a>
-    </h2>
-    <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
-  </div>
-
   <div id="reviewArea" class="px-4 text-center mb-4">
     <hr class="my-4 pb-1-5">
     <h2><b>Reviews</b></h2>
@@ -86,3 +79,13 @@ todo if this is the profile of said user, they should have the ability to edit w
   document.getElementById("rating").childNodes[1].classList.add('noClick')
 </script>
 <%}%>
+<!-- <script>
+  console.log(window.location);
+  var urlParams = new URLSearchParams(window.location.search);
+  var user = urlParams.get('id');
+  let skillPills = [...document.getElementsByClassName("pillbox")]
+  skillPills.forEach((node) => {
+    node.href = "/profile" + node.href + "?id=" + user;
+  })
+
+</script> -->

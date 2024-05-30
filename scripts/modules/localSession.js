@@ -86,7 +86,6 @@ function refreshCookieTime(req) {
   req.session.cookie.maxAge > expireTime
     ? (req.session.cookie.maxAge = expireTime)
     : null;
-  console.log("after:", req.session.cookie.maxAge);
 }
 
 /**
