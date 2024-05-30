@@ -102,6 +102,10 @@
   padding-bottom: 1.5vh;
 }
 
+.noClick {
+  pointer-events: none;
+}
+
 /* <a> links for login, register, forgot password */
 .link {
   color: rgb(0, 140, 255);
@@ -482,9 +486,29 @@ form.d-grid {
   background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='maroon' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
+.homeStars label {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-right: 6px;
+  height: 15vw;
+  max-height: 65px;
+  width: 15vw;
+  max-width: 65px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='transparent' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  font-size: 0;  
+}
+
 #ratingSubmitButton {
-  margin: 1.5vh 0 10vh 0;
+  margin: 1.5vh 0 1.5vh 0 ;
+  /* max-width: 360px; */
   /* background-color: maroon; */  
+}
+
+#rating{
+  display:flex;
+  flex-direction: column;
+  margin-bottom: 10vh;
+  align-items: center;
 }
 
 

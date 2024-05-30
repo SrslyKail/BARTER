@@ -432,6 +432,10 @@ app.get("/profile", async (req, res) => {
   let queryID = req.query.id;
   let referrer = req.get("referrer");
 
+  if (referrer == undefined) {
+    referrer = "/"
+  }
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
@@ -461,10 +465,18 @@ app.get("/profile", async (req, res) => {
     }
   }
 
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: new ObjectId(getUserId(req)),
+    ratedID: user._id,
+  });
+
+  console.log(ratedBefore)
+
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
     referrer: referrer,
+    ratedBefore: ratedBefore,
   });
 });
 
@@ -516,11 +528,11 @@ async function addRating(ratedID, userID, rateValue) {
     );
     return 201
   } else {
-    console.log(ratedBefore.rateValue)
+    // console.log(ratedBefore.rateValue)
 
     let changeValue = rateValue - ratedBefore.rateValue
-    console.log(changeValue)
-    console.log(ratedID)
+    // console.log(changeValue)
+    // console.log(ratedID)
     //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
     // if (changeValue != 0) {  
 
