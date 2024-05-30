@@ -258,7 +258,7 @@ app.get("/testing", async (req, res) => {
 
   // console.log(skillCats);
   res.render("testing");
-});  
+});
 
 
 app.get("/", async (req, res) => {
@@ -327,7 +327,6 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
 
   const skilldb = await userSkillsCollection.findOne({ name: skill });
 
-  //********BUG HERE ************/
   if (skilldb == null) {
     res.redirect("/404");
   } else {
@@ -353,15 +352,19 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
 
   // console.log(skilledUsersCache);
 
-  res.render("skill", {
-    authenticated: authenticated,
-    username: username,
-    db: skilledUsersCache,
-    skillName: skillName,
-    skillImage: skillImage,
-    referrer: referrer,
-  });
-  return;
+  if (getUserId(req) != null) {
+    res.render("skill", {
+      authenticated: authenticated,
+      username: username,
+      db: skilledUsersCache,
+      skillName: skillName,
+      skillImage: skillImage,
+      referrer: referrer,
+    });
+    return;
+  } else {
+    res.redirect("../login")
+  }
 });
 
 /**
@@ -477,12 +480,61 @@ app.get("/profile", async (req, res) => {
     ratedID: user._id,
   });
 
-  res.render("profile", {
-    userCard: new userCard(username, skills, email, userIcon, location),
-    uploaded: req.query.success,
-    referrer: referrer,
-    ratedBefore: ratedBefore,
-  });
+  if (getUserId(req) != null) {
+    let viewer = await userCollection.findOne(new ObjectId(getUserId(req)))
+
+    viewerHistory = viewer.history.visited
+    let viewedUser = user._id
+    let currentUser = new ObjectId(getUserId(req))
+
+    // var contains = 
+    // stringCurUser = JSON.stringify(currentUser)
+    // stringViewedUser = JSON.stringify(viewedUser)
+
+    let contains = viewerHistory.some(elem => {
+      return (JSON.stringify(viewedUser)) === (JSON.stringify(elem));
+    });
+    let index
+    // let dupFlag = false
+    let findDupe = async function () {
+      index = 0;
+      for await (const user of viewerHistory) {
+        // console.log(viewerHistory.indexOf(user))
+        if (JSON.stringify(viewedUser) === (JSON.stringify(user))) {
+          // dupFlag = true
+          // console.log(index)
+          break
+        } else {
+          index++
+        }
+      }
+    }
+    await findDupe()
+
+    viewerHistory.splice(index, 1)
+
+    if (!viewedUser.equals(currentUser)) {
+      // console.log(viewedUser)
+      viewerHistory.unshift(viewedUser)
+    }
+    if (viewerHistory.length > 8) {
+      viewerHistory.length = 8
+    }
+    // console.log(viewerHistory)
+
+    // await viewer.history.updateOne({$set: {viewed:viewerHistory}})
+    //Braindeath is engaged
+    console.log(await userCollection.findOne(new ObjectId(getUserId(req))))
+
+    res.render("profile", {
+      userCard: new userCard(username, skills, email, userIcon, location),
+      uploaded: req.query.success,
+      referrer: referrer,
+      ratedBefore: ratedBefore,
+    });
+  } else {
+    res.redirect("login")
+  }
 });
 
 /**
@@ -613,6 +665,7 @@ app.get("/history/:filter", async (req, res) => {
   const data = userCollection.find({
     _id: { $in: currentUser.history[filter] },
   });
+  console.log(typeof data)
 
   for await (const user of data) {
     skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
