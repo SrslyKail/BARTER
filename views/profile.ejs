@@ -30,8 +30,8 @@
       <%if (user.username == userCard.username) {%>
       <h2><b>Your Rating:</b></h2>
       <form id="rating">
-        <%console.log(userCard)%>
-        <% if (typeof userCard.rateCount !== "undefined") {%>
+        <% console.log(userCard) %>
+        <% if (userCard.rateCount != null) {%>
         <%console.log(rateCount)%>
         <%- include("templates/components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (Math.round(userCard.rateValue/userCard.rateCount * 10) / 10)})%>
         <% } %>

@@ -358,7 +358,9 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
         [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
         user.email,
         user.userIcon,
-        user.userLocation
+        user.userLocation,
+        typeof user.rateValue !== "undefined" ? user.rateValue : null,
+        typeof user.rateCount !== "undefined" ? user.rateCount : null
       )
     );
   }

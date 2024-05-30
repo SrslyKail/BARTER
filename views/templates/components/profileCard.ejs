@@ -7,7 +7,7 @@
         </div>
         <div class="cardUsername" style="font-weight: bold;"><%= userCard.username %></div>
         <div class="tightStars">
-          <% if (userCard.rateCount == null) { %>
+          <% if (userCard.rateCount != null) { %>
           <% console.log("User card for", userCard.username) %>
           <%# This should pass in userCard.rateValue and userCard.rateCount, then do the proper math %>
           <% console.log("RateCount:", userCard.rateCount) %>
