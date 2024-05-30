@@ -535,12 +535,17 @@ app.get("/portfolio", async (req, res) => {
   // });
   // return;
 
+  currentUser = await userCollection.findOne({
+    username: getUsername(req),
+  });
+
   res.render("portfolio", {
     title: skill,
     images: gallery,
     banner: gallery[0],
     description: description,
     username: username,
+    currentUser: currentUser.username
   });
 });
 
