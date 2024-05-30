@@ -27,6 +27,17 @@
 
     <div id="reviewArea" class="p-4 text-center mb-4">
       <hr class="my-4 pb-1-5">
+      <%if (user.username == userCard.username) {%>
+      <h2><b>Your Rating:</b></h2>
+      <form id="rating">
+        <%console.log(userCard)%>
+        <% if (typeof userCard.rateCount !== "undefined") {%>
+        <%console.log(rateCount)%>
+        <%- include("templates/components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (Math.round(userCard.rateValue/userCard.rateCount * 10) / 10)})%>
+        <% } %>
+        <%#- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
+      </form>
+      <%} else {%>
       <h2><b>Leave a Rating:</b></h2>
       <form id="rating" form action="/submit-rating" method="post" required>
         <div class="stars">

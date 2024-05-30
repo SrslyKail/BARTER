@@ -150,12 +150,22 @@ async function checkAuth(req, res, next) {
 
 /** All the arguments the userCard needs */
 class userCard {
-  constructor(username, userSkills, email, userIcon, userLocation = null) {
+  constructor(
+    username,
+    userSkills,
+    email,
+    userIcon,
+    userLocation = null,
+    rateValue = null,
+    rateCount = null
+  ) {
     this.username = username;
     this.userSkills = userSkills;
     this.email = email;
     this.userIcon = formatProfileIconPath(userIcon);
     this.userLocation = userLocation;
+    this.rateValue = rateValue;
+    this.rateCount = rateCount;
   }
 }
 
@@ -251,6 +261,15 @@ function generateNavLinks(req) {
 /* #endregion middleware */
 
 /* #region serverRouting */
+
+app.get("/testing", async (req, res) => {
+  var username = getUsername(req);
+  var authenticated = isAuthenticated(req);
+
+  // console.log(skillCats);
+  res.render("testing");
+});
+
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
@@ -432,6 +451,10 @@ app.get("/profile", async (req, res) => {
   let queryID = req.query.id;
   let referrer = req.get("referrer");
 
+  if (referrer == undefined) {
+    referrer = "/";
+  }
+
   if (req.session.user && queryID == undefined) {
     queryID = req.session.user.username;
     // user = getUser(req);
@@ -461,11 +484,30 @@ app.get("/profile", async (req, res) => {
     }
   }
 
-  res.render("profile", {
-    userCard: new userCard(username, skills, email, userIcon, location),
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: ObjectId.createFromHexString(getUserId(req)),
+    ratedID: user._id,
+  });
+  let args = {
+    userCard: new userCard(
+      username,
+      skills,
+      email,
+      userIcon,
+      location,
+      user.rateValue,
+      user.rateCount
+    ),
     uploaded: req.query.success,
     referrer: referrer,
-  });
+    ratedBefore: ratedBefore,
+  };
+  // if (user.rateCount) {
+  //   args["rateCount"] = user.rateCount;
+  //   args["rateValue"] = user.rateValue;
+  // }
+
+  res.render("profile", args);
 });
 
 /**
@@ -485,12 +527,10 @@ app.get("/editProfile", (req, res) => {
  * @param {Number} rateValue
  */
 async function addRating(ratedID, userID, rateValue) {
-
-  let ratingUser = userID
+  let ratingUser = userID;
   // console.log("1 " + ratingUser)
-  let ratedUser = ratedID
+  let ratedUser = ratedID;
   // console.log("2 " + ratedUser)
-
 
   let ratedBefore = await ratingsCollection.findOne({
     userID: ratingUser,
@@ -498,7 +538,6 @@ async function addRating(ratedID, userID, rateValue) {
   });
 
   if (ratedBefore == null) {
-
     let rate = {
       userID: userID,
       ratedID: ratedID,
@@ -509,20 +548,20 @@ async function addRating(ratedID, userID, rateValue) {
     await ratingsCollection.insertOne(rate);
 
     await userCollection.findOneAndUpdate(
-      { "_id": ratedID },
+      { _id: ratedID },
       {
         $inc: { rateCount: 1, rateValue: rateValue },
       }
     );
-    return 201
+    return 201;
   } else {
     console.log(ratedBefore.rateValue)
 
-    let changeValue = rateValue - ratedBefore.rateValue
-    console.log(changeValue)
-    console.log(ratedID)
+    let changeValue = rateValue - ratedBefore.rateValue;
+    // console.log(changeValue)
+    // console.log(ratedID)
     //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
-    // if (changeValue != 0) {  
+    // if (changeValue != 0) {
 
     //   await userCollection.findOneAndUpdate(
     //     { "_id": ratedID },
@@ -541,13 +580,14 @@ async function addRating(ratedID, userID, rateValue) {
     // }
 
     // console.log("it's working");
-    return 409
+    return 409;
   }
 }
 
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
+  console.log("referred:", refString);
 
   //This is kinda gross but it works
   // console.log(refString);
