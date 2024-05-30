@@ -385,27 +385,38 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
  */
 async function addSkill(userID, skillID) {
   let addingUser = userID;
+  skillObject = new ObjectId(skillID);
 
-  // let skillExists = await userCollection.findOne({
-  //   userID: addingUser
-  // });
 
-  // if (skillExists == null) {
-    skillObject = new ObjectId(skillID);
+  let skillExists = await userCollection.findOne({ _id: userID });
 
-    await userCollection.updateOne(
-      { _id: userID },
-      { $push: { userSkills: skillObject } }
-   )
-    return 201;
-  // } else {
-    // return 409;
-  // }
+  skillExists=skillExists.userSkills
+
+  let contains = skillExists.some(elem => {
+    return (JSON.stringify(skillObject)) === (JSON.stringify(elem));
+  });
+
+  console.log(contains)
+
+
+
+
+  if (!contains) {
+  // skillObject = new ObjectId(skillID);
+
+  await userCollection.updateOne(
+    { _id: userID },
+    { $push: { userSkills: skillObject } }
+  )
+  return 201;
+  } else {
+  return 409;
+  }
 }
 
 /**Post to add a skill. */
 app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
-  console.log("success")
+  // console.log("success")
 
   let userID = new ObjectId(getUserId(req));
 
@@ -414,16 +425,20 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   })
 
   objID = req.params.skillID;
-  console.log(objID)
+  // console.log(objID)
   const validationResult = userSchema.validate({ objID });
   //Error checking
+
+
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
     res.redirect("/");
     return;
   }
+
+
   rateStatus = await addSkill(userID, objID);
-  console.log("success")
+  // console.log("success")
   res.redirect(rateStatus, "back");
 });
 
