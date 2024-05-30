@@ -688,6 +688,7 @@ app.post("/submitUser", async (req, res) => {
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
   }
+
   // Check for duplicate username or email
   if (await userCollection.findOne({ username: username })) {
     errors.push(`${username} is already in use!`);
