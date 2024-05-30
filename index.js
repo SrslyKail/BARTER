@@ -491,9 +491,9 @@ app.get("/profile", async (req, res) => {
     // stringCurUser = JSON.stringify(currentUser)
     // stringViewedUser = JSON.stringify(viewedUser)
 
-    let contains = viewerHistory.some(elem => {
-      return (JSON.stringify(viewedUser)) === (JSON.stringify(elem));
-    });
+    // let contains = viewerHistory.some(elem => {
+    // return (JSON.stringify(viewedUser)) === (JSON.stringify(elem));
+    // });
     let index
     // let dupFlag = false
     let findDupe = async function () {
@@ -520,11 +520,19 @@ app.get("/profile", async (req, res) => {
     if (viewerHistory.length > 8) {
       viewerHistory.length = 8
     }
+    // console.log(currentUser)
+    userCollection.updateOne(
+      { _id: currentUser },
+      {
+        $set: {
+          "history.visited": viewerHistory
+        }
+      })
     // console.log(viewerHistory)
 
     // await viewer.history.updateOne({$set: {viewed:viewerHistory}})
     //Braindeath is engaged
-    console.log(await userCollection.findOne(new ObjectId(getUserId(req))))
+    // console.log(await userCollection.findOne(new ObjectId(getUserId(req))))
 
     res.render("profile", {
       userCard: new userCard(username, skills, email, userIcon, location),
@@ -665,7 +673,7 @@ app.get("/history/:filter", async (req, res) => {
   const data = userCollection.find({
     _id: { $in: currentUser.history[filter] },
   });
-  console.log(typeof data)
+  // console.log(typeof data)
 
   for await (const user of data) {
     skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
