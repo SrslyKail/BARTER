@@ -497,7 +497,7 @@ async function addRating(ratedID, userID, rateValue) {
     ratedID: ratedUser,
   });
 
-  if (ratedBefore == null ) {
+  if (ratedBefore == null) {
 
     let rate = {
       userID: userID,
@@ -514,17 +514,41 @@ async function addRating(ratedID, userID, rateValue) {
         $inc: { rateCount: 1, rateValue: rateValue },
       }
     );
-    return "Success!"
+    return 201
   } else {
+    console.log(ratedBefore.rateValue)
+
+    let changeValue = rateValue - ratedBefore.rateValue
+    console.log(changeValue)
+    console.log(ratedID)
+    //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
+    // if (changeValue != 0) {  
+
+    //   await userCollection.findOneAndUpdate(
+    //     { "_id": ratedID },
+    //     {
+    //       $inc: { rateValue: changeValue },
+    //     }
+    //   );
+
+    //   await ratingsCollection.findOneAndUpdate(
+    //     { "_id": ratedBefore._id },
+    //     {
+    //       rateValue: rateValue,
+    //       date: new Date(),
+    //     }
+    //   )
+    // }
+
     console.log("it's working");
+    return 200
   }
-  return "You've already rated this user."
 }
 
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
-  
+
   //This is kinda gross but it works
   // console.log(refString);
   let textArray = refString.split("=");
@@ -536,8 +560,8 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
   let ratedObj = ratedUser._id;
 
   Joi.number().min(1).max(5).required().validate(value);
- 
-  await addRating(ratedObj, ratingUser, value);
+
+  rateStatus = await addRating(ratedObj, ratingUser, value);
 
   res.redirect("back");
 });

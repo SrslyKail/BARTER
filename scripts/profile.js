@@ -116,6 +116,7 @@ function sliding() {
 
 // document.getElementById("pill0").scrollIntoView()
 
-sliding();
-setArrowListeners();
+// sliding();
+// setArrowListeners();
 setCircleListeners();
+findPill();
