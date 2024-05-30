@@ -540,8 +540,8 @@ async function addRating(ratedID, userID, rateValue) {
     //   )
     // }
 
-    console.log("it's working");
-    return 200
+    // console.log("it's working");
+    return 409
   }
 }
 
@@ -563,7 +563,7 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
 
   rateStatus = await addRating(ratedObj, ratingUser, value);
 
-  res.redirect("back");
+  res.redirect(rateStatus, "back");
 });
 
 // app.post("/editProfile/upload", (req, res) => {
