@@ -12,7 +12,7 @@
   <%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
 </div>
 <div id="iconGridContainer">
-  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6"">
+  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
   <% db.forEach((skillUser) => { %>
   <% if(skillUser.username != user.username){ %>
   <div class=" profilePageCard skillPageCard">

@@ -306,6 +306,9 @@ form.d-grid {
   overflow: scroll;
   scroll-snap-type: x mandatory;
 }
+.pillContainer::-webkit-scrollbar {
+  display: none;
+}
 
 .pillbox {
   position: relative;
