@@ -485,28 +485,31 @@ app.get("/editProfile", (req, res) => {
  * @param {Number} rateValue
  */
 async function addRating(ratedID, userID, rateValue) {
-  let ratedBefore = await ratingsCollection.findOne({
-    userId: userID,
-    ratedID: ratedID,
-  });
-  console.log("if statement here " + ratedBefore);
 
-  if (ratedBefore != null) {
-    let profID = ratedID; // the profile userobject goes here
-    let curID = userID; // the current user user object goes here
-    console.time("Profile ID:", profID);
-    console.log("userID:", curID);
+  let ratingUser = userID
+  // console.log("1 " + ratingUser)
+  let ratedUser = ratedID
+  // console.log("2 " + ratedUser)
+
+
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: ratingUser,
+    ratedID: ratedUser,
+  });
+
+  if (ratedBefore == null ) {
+
     let rate = {
       userID: userID,
-      ratedID: curID,
+      ratedID: ratedID,
       rateValue: rateValue,
       date: new Date(),
     };
 
-    ratingsCollection.insertOne(rate);
+    await ratingsCollection.insertOne(rate);
 
     await userCollection.findOneAndUpdate(
-      { username: profID },
+      { "_id": ratedID },
       {
         $inc: { rateCount: 1, rateValue: rateValue },
       }
@@ -520,17 +523,15 @@ async function addRating(ratedID, userID, rateValue) {
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
   //This is kinda gross but it works
-  console.log(refString);
+  // console.log(refString);
   let textArray = refString.split("=");
-  let value = Number(req.body.rating);
-  let id = getUserId(req);
   let profID = textArray[1];
+  let value = Number(req.body.rating);
+  let ratingUser = new ObjectId(getUserId(req));
 
-  console.log("Pascal?", profID);
-
-  let pascalID = await userCollection.findOne({ username: profID });
-  let pascalObj = pascalID._id;
-  let pascal = await userCollection.findOne({ _id: pascalObj });
+  let ratedUser = await userCollection.findOne({ username: profID });
+  let ratedObj = ratedUser._id;
+  // let pascal = await userCollection.findOne({ _id: pascalObj });
 
   Joi.number().min(1).max(5).required().validate(value);
 
@@ -541,10 +542,11 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
   //Rated, Rater, Number
   let ratee = ObjectId.createFromHexString(getUserId(req));
   let rateeUC = await userCollection.findOne({ _id: ratee });
+  
 
   // console.log("Current user ID:", ratee);
   // console.log("Ratee from UC:\n", rateeUC);
-  await addRating(profID, id, value);
+  await addRating(ratedObj, ratingUser, value);
 
   res.redirect("back");
 });
