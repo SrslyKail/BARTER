@@ -510,6 +510,7 @@ app.get("/history", (req, res) => {
  */
 app.get("/portfolio", async (req, res) => {
   const skill = req.query.skill;
+  const username = req.query.username;
   let gallery = [];
   let description = "";
 
@@ -517,28 +518,34 @@ app.get("/portfolio", async (req, res) => {
     name: skill,
   });
 
+  const idthing = skillData._id.toString();
+
   let data = await userCollection.findOne({
-    username: "pascal",
+    username: username,
   });
 
-  data.portfolio.forEach((item) => {
-    if (item.title === skillData._id.toString()) {
-      gallery = item.images;
-      description = item.description;
-      return;
+  for (let i = 0; i < data.portfolio.length; i++) {
+    if (data.portfolio[i].title === skillData._id.toString()) {
+      gallery = data.portfolio[i].images;
+      description = data.portfolio[i].description;
     }
-  });
+  }
 
-  res.send({
-    gallery: gallery,
-    description: description,
-  });
-  return;
+  // res.send({
+  //   title: skill,
+  //   images: gallery,
+  //   banner: gallery[0],
+  //   description: description,
+  //   username: username,
+  // });
+  // return;
 
   res.render("portfolio", {
-    name: skillData.name,
-    banner: skillData.image,
-    description: skillData.description,
+    title: skill,
+    images: gallery,
+    banner: gallery[0],
+    description: description,
+    username: username,
   });
 });
 

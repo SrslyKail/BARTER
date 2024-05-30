@@ -1,14 +1,14 @@
 <%- include("templates/header", {index: false}) %>
 
-<%- include("templates/components/searchHero", {searchHeroImage:data.images[0], searchHeroBanner: data.title}) %>
+<%- include("templates/components/searchHero", {searchHeroImage: banner, searchHeroBanner: title}) %>
 
 <div class="px-4 my-2 text-center">
   <div class="col-lg-6 mx-auto">
-    <a class="btn btn-secondary w-25" href="/editPortfolio?username=<%= username %>&id=<%= id %>">
+    <a class="btn btn-secondary w-25" href="">
     <i class="bi bi-pencil-square"></i>
     Edit Page
     </a>
-    <p class="lead mb-4"><%= data.description %></p>
+    <p class="lead mb-4"><%= description %></p>
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
     </div>
   </div>
@@ -21,5 +21,5 @@
   <%# }); %>
 <!-- </div> -->
 
-<%- include("templates/portfolio-icon-generation", {db:data.images, count:null})%>
+<%- include("templates/portfolio-icon-generation", {db:images, count:null, username: username })%>
 <%- include("templates/footer") %>
