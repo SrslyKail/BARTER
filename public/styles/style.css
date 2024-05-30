@@ -263,6 +263,7 @@ form.d-grid {
 #centering {
   display: flex;
   justify-content: center;
+  grid-area: pills;
 }
 
 #carousel {
@@ -417,6 +418,8 @@ form.d-grid {
 #reviewArea {
   width: inherit;
   grid-area: reviews;
+  height:35vh;
+  max-height: 30vw;
 }
 
 #contactButton * {
@@ -438,13 +441,13 @@ form.d-grid {
 
 .profileIconContainer {
   grid-area: icon;
-  display:flex;
+  display: flex;
   justify-content: center;
   /* align-content: center; */
 }
 
 .profileIcon {
-  display:flex;
+  display: flex;
 }
 
 .profileCardTable {
@@ -464,19 +467,19 @@ form.d-grid {
 }
 
 .profileCardTable * {
-  padding: 1pt 0 1pt 4pt;
+  /* padding: 1pt 0 1pt 4pt; */
   font-size: 15pt;
 }
 
 .profileCardDataGrid {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 45% 10% 45%;
   grid-template-rows: 25% 25% 25% 25%;
   grid-template-areas:
-    "icon name"
-    "icon rating"
-    "icon skills"
-    "icon location";
+    "icon gap name"
+    "icon gap rating"
+    "icon gap skills"
+    "icon gap location";
 
   width: 100%;
   height: 100%;
@@ -493,49 +496,50 @@ form.d-grid {
   grid-area: skills;
 }
 
+.cardUsername {
+  grid-area: name;
+}
+
 .userCardLocation {
   grid-area: location;
 }
 
+.userDistance {
+  grid-area:location;
+}
+
 .svgStar {
-  width: 12%;
+  width: 24px;
 }
 
 .cardRatingContainer {
   grid-area: rating;
 }
 
-.starRatings {
-  /* display: flex; */
-  justify-content: center;
-  position: relative;
+.tightStars {
   grid-area: rating;
-  height: 2.5em;
   width: 100%;
-  /* background-color: red; */
+  position: relative;
+  display: flex;
+  padding-bottom: 3vh;
 }
 
-.cardStarsFill {
-  width: 100%;
+.starRatings {
   position: absolute;
-  text-align: center;
+  grid-area: rating;
+  width: 18vw;
+  min-width: 145px;
 }
 
-.cardStarsEmpty {
-  width: 100%;
+.starRatings > * {
+  width: 145px;
   position: absolute;
-  /* clip-path: inset(0 20% 0 0); */
   text-align: center;
 }
 
 .cardRating {
   grid-area: info;
   display: flex;
-}
-
-.cardWords {
-  display: inline-flex;
-
 }
 
 /* #endregion Profile Card */
