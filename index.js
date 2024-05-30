@@ -77,6 +77,7 @@ app.use(
 );
 
 app.use("/editProfile", uploadRoute);
+app.use("/addPortfolio", uploadRoute);
 app.use("/editPortfolio", uploadRoute);
 
 /**
@@ -544,6 +545,22 @@ app.get("/portfolio", async (req, res) => {
 });
 
 /**
+ * Add Portfolio Page.
+ */
+app.get("/addPortfolio", async (req, res) => {
+  const username = req.query.username;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("addPortfolio", {
+    username: username,
+  });
+});
+
+/**
  * Edit Portfolio Page.
  */
 app.get("/editPortfolio", async (req, res) => {
@@ -564,16 +581,9 @@ app.get("/editPortfolio", async (req, res) => {
     username: username,
   });
 
-  // res.send({
-  //   data: data.portfolio[index].images,
-  // });
-  // return;
-
   res.render("editPortfolio", {
     title: data.portfolio[index].title,
     description: data.portfolio[index].description,
-    images: data.portfolio[index].images,
-    index: index,
     username: username,
   });
 });

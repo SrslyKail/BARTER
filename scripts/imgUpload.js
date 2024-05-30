@@ -26,6 +26,7 @@ router.post("/upload", upload.single("image"), async function (req, res) {
   //Init for both
   const type = req.query.type;
   const username = req.query.username;
+  const method = req.query.method;
 
   //For Portfolio Item Changing
   const id = req.query.id;
@@ -39,8 +40,15 @@ router.post("/upload", upload.single("image"), async function (req, res) {
     if (type === "profile") {
       await updatePFP(req, res, username, email);
     }
-    if (type === "portfolioItem") {
-      await updatePortfolioItem(req, res, username, id, title, description);
+    if (type === "portfolio") {
+      if (method === "add") {
+        res.send({
+          title: title,
+          description: description,
+        });
+      } else {
+        await updatePortfolioItem(req, res, username, id, title, description);
+      }
     }
   } catch (error) {
     console.error(error);
