@@ -366,9 +366,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
       )
     );
   }
-
   // console.log(skilledUsersCache);
-
   res.render("skill", {
     authenticated: authenticated,
     username: username,
@@ -380,6 +378,60 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   });
   return;
 });
+
+/**
+ * @param {ObjectId} skillID
+ * @param {ObjectId} userID
+ */
+async function addSkill(userID, skillID) {
+  let addingUser = userID;
+
+  // let skillExists = await userCollection.findOne({
+  //   userID: addingUser
+  // });
+
+  // if (skillExists == null) {
+    skillObject = new ObjectId(skillID);
+
+    await userCollection.updateOne(
+      { _id: userID },
+      { $push: { userSkills: skillObject } }
+   )
+    return 201;
+  // } else {
+    // return 409;
+  // }
+}
+
+/**Post to add a skill. */
+app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
+  console.log("success")
+
+  let userID = new ObjectId(getUserId(req));
+
+  const userSchema = Joi.object({
+    objID: Joi.string().hex().length(24)
+  })
+
+  objID = req.params.skillID;
+  console.log(objID)
+  const validationResult = userSchema.validate({ objID });
+  //Error checking
+  if (validationResult.error != null) {
+    errors.push(validationResult.error.details[0].message);
+    res.redirect("/");
+    return;
+  }
+  rateStatus = await addSkill(userID, objID);
+  console.log("success")
+  res.redirect(rateStatus, "back");
+});
+
+app.post("/editProfile/upload", (req, res) => {
+  console.log(req);
+
+  console.log();
+})
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs

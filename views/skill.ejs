@@ -29,4 +29,4 @@
   document.getElementById("backButton").addEventListener("click", goBack)
 </script> -->
 <% let test="test" %>
-<%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) }) %>
+<%- include("templates/footer", {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) }) %>
