@@ -545,7 +545,7 @@ app.get("/portfolio", async (req, res) => {
     banner: gallery[0],
     description: description,
     username: username,
-    currentUser: currentUser.username
+    currentUser: currentUser.username,
   });
 });
 
@@ -570,25 +570,39 @@ app.get("/addPortfolio", async (req, res) => {
  */
 app.get("/editPortfolio", async (req, res) => {
   const username = req.query.username;
-  const index = req.query.index;
+  const skill = req.query.skill;
+  let gallery = [];
+  let description = "";
 
   if (!username) {
     res.redirect("/profile");
     return;
   }
 
-  if (!index) {
+  if (!skill) {
     res.redirect("/profile");
     return;
   }
 
-  const data = await userCollection.findOne({
+  const userData = await userCollection.findOne({
     username: username,
   });
 
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  for (let i = 0; i < userData.portfolio.length; i++) {
+    if (userData.portfolio[i].title === skillData._id.toString()) {
+      gallery = userData.portfolio[i].images;
+      description = userData.portfolio[i].description;
+    }
+  }
+
   res.render("editPortfolio", {
-    title: data.portfolio[index].title,
-    description: data.portfolio[index].description,
+    title: skill,
+    description: description,
+    images: gallery,
     username: username,
   });
 });

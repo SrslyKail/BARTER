@@ -5,7 +5,7 @@
 <div class="px-4 my-2 text-center">
   <div class="col-lg-6 mx-auto">
     <%if (username == currentUser) {%>
-      <a class="btn btn-secondary" href="/editPortfolio">
+      <a class="btn btn-secondary" href="/editPortfolio?username=<%= username %>&skill=<%= title %>">
       <i class="bi bi-pencil-square"></i>
       Edit Page
       </a>

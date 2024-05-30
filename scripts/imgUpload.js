@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getCollection } = require("./modules/databaseConnection");
 const userCollection = getCollection("users");
+const userSkillsCollection = getCollection("skills");
 const formatProfileIconPath =
   require("./modules/localSession").formatProfileIconPath;
 const multer = require("multer");
@@ -29,7 +30,7 @@ router.post("/upload", upload.single("image"), async function (req, res) {
   const method = req.query.method;
 
   //For Portfolio Item Changing
-  const id = req.query.id;
+  const skill = req.query.skill;
   const title = req.body.title;
   const description = req.body.description;
 
@@ -46,8 +47,8 @@ router.post("/upload", upload.single("image"), async function (req, res) {
           title: title,
           description: description,
         });
-      } else {
-        await updatePortfolioItem(req, res, username, id, title, description);
+      } else if (method === "edit") {
+        await editPortfolioItem(req, res, username, skill, description);
       }
     }
   } catch (error) {
@@ -97,69 +98,44 @@ const UpdateProfileOnMongo = async (data, username, email) => {
 };
 /* #endregion ----------------- PROFILE PICTURE ---------------------- */
 
-// -------------------- PORTFOLIIO EDITING -----------//
-
-const updatePortfolioItem = async (
-  req,
-  res,
-  username,
-  id,
-  title,
-  description
-) => {
+/* #region ------------ PORTFOLIIO EDITING --------------------------- */
+const editPortfolioItem = async (req, res, username, skill, description) => {
   try {
-    await UpdatePortfolioOnMongo(req, username, id, title, description);
+    await editPortfolioOnMongo(req, res, username, skill, description);
+    return;
     res.redirect("/profile");
   } catch (err) {
     console.error(err);
     res.status(500).json({
       success: false,
-      message: "Error uploading the image",
+      message: "Error editing the image",
     });
   }
 };
 
-const UpdatePortfolioOnMongo = async (
-  req,
-  username,
-  id,
-  title,
-  description
-) => {
-  const index = parseInt(id, 10);
+const editPortfolioOnMongo = async (req, res, username, skill, description) => {
+  const userData = await userCollection.findOne({ username: username });
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+  let index = 0;
 
-  const user = await userCollection.findOne({ username: username });
-
-  if (!user) {
-    throw new Error("User not found");
+  for (let i = 0; i < userData.portfolio.length; i++) {
+    if (userData.portfolio[i].title === skillData._id.toString()) {
+      index = i;
+    }
   }
 
-  if (index >= 0 && index < user.portfolio.length) {
-    await userCollection.updateOne(
-      { username: username },
-      {
-        $set: {
-          [`portfolio.${index}.title`]: title,
-          [`portfolio.${index}.description`]: description,
-        },
-      }
-    );
-  } else if (index === user.portfolio.length) {
-    await userCollection.updateOne(
-      { username: username },
-      {
-        $push: {
-          portfolio: {
-            title: title,
-            description: description,
-            images: [], // Initialize images if necessary
-          },
-        },
-      }
-    );
-  } else {
-    throw new Error("Invalid index");
-  }
+  await userCollection.updateOne(
+    { username: username },
+    {
+      $set: {
+        [`portfolio.${index}.description`]: description,
+      },
+    }
+  );
+  res.redirect("/profile?id=" + username);
 };
+/* #region ------------ PORTFOLIIO EDITING --------------------------- */
 
 module.exports = router;
