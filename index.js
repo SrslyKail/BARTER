@@ -396,7 +396,7 @@ async function addSkill(userID, skillID) {
     return (JSON.stringify(skillObject)) === (JSON.stringify(elem));
   });
 
-  console.log(contains)
+  // console.log(contains)
 
 
 
@@ -443,9 +443,9 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
 });
 
 app.post("/editProfile/upload", (req, res) => {
-  console.log(req);
+  // console.log(req);
 
-  console.log();
+  // console.log();
 })
 
 /**
