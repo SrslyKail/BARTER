@@ -470,8 +470,6 @@ app.get("/profile", async (req, res) => {
     ratedID: user._id,
   });
 
-  console.log(ratedBefore)
-
   res.render("profile", {
     userCard: new userCard(username, skills, email, userIcon, location),
     uploaded: req.query.success,
