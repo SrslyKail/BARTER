@@ -53,7 +53,11 @@ const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
-const { upload, processProfileChanges } = require("./scripts/imgUpload.js");
+const {
+  upload,
+  handleProfileChanges,
+  updatePortfolio,
+} = require("./scripts/imgUpload.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
 const skillsCache = {};
@@ -81,9 +85,9 @@ app.use(
   })
 );
 
-app.use("/addPortfolio", uploadRoute);
-app.use("/editPortfolio", uploadRoute);
-app.use("/editPortfolioImage", uploadRoute);
+// app.use("/addPortfolio", uploadRoute);
+// app.use("/editPortfolio", uploadRoute);
+// app.use("/editPortfolioImage", uploadRoute);
 
 /**
  * sets the view engine to ejs, configures the express app,
@@ -468,7 +472,7 @@ app.get("/editProfile", (req, res) => {
 app.post(
   "/editProfile/upload",
   upload.single("userIcon"),
-  processProfileChanges
+  handleProfileChanges
 );
 
 /**
@@ -549,11 +553,6 @@ app.get("/portfolio", async (req, res) => {
     }
   }
 
-  // res.send({
-  //   data: skillData,
-  // });
-  // return;
-
   currentUser = await userCollection.findOne({
     username: getUsername(req),
   });
@@ -567,6 +566,8 @@ app.get("/portfolio", async (req, res) => {
     currentUser: currentUser.username,
   });
 });
+
+app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
 
 /**
  * Add Portfolio Page.
