@@ -164,6 +164,9 @@ class userCard {
     this.email = email;
     this.userIcon = formatProfileIconPath(userIcon);
     this.userLocation = userLocation;
+    console.log("Creating userCard class for", username);
+    console.log("passed ratevalue", rateValue);
+    console.log("passed ratecount", rateCount);
     this.rateValue = rateValue;
     this.rateCount = rateCount;
   }
@@ -480,11 +483,6 @@ app.get("/profile", async (req, res) => {
       skills.push(skill);
     }
   }
-
-  let ratedBefore = await ratingsCollection.findOne({
-    userID: new ObjectId(getUserId(req)),
-    ratedID: user._id,
-  });
 
   let ratedBefore = await ratingsCollection.findOne({
     userID: ObjectId.createFromHexString(getUserId(req)),
