@@ -514,14 +514,17 @@ async function addRating(ratedID, userID, rateValue) {
         $inc: { rateCount: 1, rateValue: rateValue },
       }
     );
+    return "Success!"
   } else {
     console.log("it's working");
   }
+  return "You've already rated this user."
 }
 
 /**Post to submit rating from profile. */
 app.post("/submit-rating", checkAuth, async (req, res) => {
   let refString = req.get("referrer");
+  
   //This is kinda gross but it works
   // console.log(refString);
   let textArray = refString.split("=");
@@ -531,21 +534,9 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
 
   let ratedUser = await userCollection.findOne({ username: profID });
   let ratedObj = ratedUser._id;
-  // let pascal = await userCollection.findOne({ _id: pascalObj });
 
   Joi.number().min(1).max(5).required().validate(value);
-
-  // console.log(req)
-  // console.log(id)
-  // console.log(typeof value);
-
-  //Rated, Rater, Number
-  let ratee = ObjectId.createFromHexString(getUserId(req));
-  let rateeUC = await userCollection.findOne({ _id: ratee });
-  
-
-  // console.log("Current user ID:", ratee);
-  // console.log("Ratee from UC:\n", rateeUC);
+ 
   await addRating(ratedObj, ratingUser, value);
 
   res.redirect("back");
