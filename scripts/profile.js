@@ -119,3 +119,7 @@ function sliding() {
 sliding();
 setArrowListeners();
 setCircleListeners();
+
+function toggleAdd() {
+  $("#toggleAdd").toggleClass("d-none");
+}

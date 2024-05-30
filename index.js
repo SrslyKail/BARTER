@@ -522,6 +522,52 @@ app.get("/history", (req, res) => {
 });
 
 /**
+ * Portfolio Page.
+ */
+app.get("/portfolio", async (req, res) => {
+  const skill = req.query.skill;
+  const username = req.query.username;
+  let gallery = [];
+  let description = "";
+
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  let data = await userCollection.findOne({
+    username: username,
+  });
+
+  for (let i = 0; i < data.portfolio.length; i++) {
+    if (data.portfolio[i].title === skillData._id.toString()) {
+      gallery = data.portfolio[i].images;
+      description = data.portfolio[i].description;
+    }
+  }
+
+  // res.send({
+  //   data: skillData,
+  // });
+  // return;
+
+  res.render("portfolio", {
+    title: skill,
+    images: gallery,
+    banner: gallery[0],
+    description: description,
+    username: username,
+  });
+});
+
+/**
+ * Edit Portfolio Page.
+ */
+app.get("/editPortfolio", async (req, res) => {
+  const username = req.query.username;
+  res.render("editPortfolio", {});
+});
+
+/**
  * Handles all the resetting code.
  */
 app.get("/passwordReset", (req, res) => {

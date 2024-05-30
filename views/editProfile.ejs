@@ -1,31 +1,19 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 d-flex justify-content-center">
-  <form action="/editProfile/upload?name=<%- name %>" method="post" enctype="multipart/form-data" class="">
-    <fieldset>
-      <legend>Edit your profile:</legend>
-      <div class="mb-3">
-        <label for="inputUsername" class="form-label">Edit Username</label>
-        <input type="text" class="form-control" value="<%- name %>" name="username" id="inputUsername">
-      </div>
-      <div class="mb-3">
-        <label for="imputEmail" class="form-label">Edit Email</label>
-        <input type="email" class="form-control" value="<%- email %>" name="email" id="inputEmail">
-      </div>
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Edit Profile Picture:</label>
-        <input class="form-control" type="file" name="userIcon" id="formFile">
-      </div>
-      <div id="geoUpdateParent" class="input-group mb-3">
-        <label class="input-group-text" for="long">Longitude</label>
-        <input id="long" type="text" class="form-control text-truncate" name="longitude" readonly disabled hidden>
-      </div>
-      <div class="input-group mb-3">
-        <label class="input-group-text" for="lat">Latitude</label>
-        <input id="lat" type="text" class="form-control text-truncate" name="latitude" readonly disabled hidden>
-      </div>
-      <button id="updateGeoButton" type="button" class="btn btn-primary mb-3" onclick="captureGeo()">Update Location?</button>
-      <button type="submit" class="btn btn-primary my-3">Save Edits</button>
-    </fieldset>
+  <form action="/editProfile/upload?type=profile&username=<%- name %>" method="post" enctype="multipart/form-data" class="">
+    <div class="mb-3">
+      <label for="inputUsername" class="form-label">Edit Username</label>
+      <input type="text" class="form-control" value="<%- name %>" name="username" id="inputUsername">
+    </div>
+    <div class="mb-3">
+      <label for="inputEmail" class="form-label">Edit Email</label>
+      <input type="email" class="form-control" value="<%- email %>" name="email" id="inputEmail">
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Edit Profile Picture:</label>
+      <input class="form-control" type="file" name="image" id="formFile">
+    </div>
+    <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
   </form>
 </div>
 <script>

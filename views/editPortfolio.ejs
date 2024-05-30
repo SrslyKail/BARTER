@@ -1,0 +1,19 @@
+<%- include("templates/header") %>
+<div class="p-2 mt-2 text-center">
+  <form action="/editPortfolio/upload?type=portfolio" enctype="multipart/form-data" method="post">
+    <div>
+      <label for="portfolioTitle" class="form-label">Edit Title: </label>
+      <input type="text" class="form-control" name="title" id="portfolioTitle">
+    </div>
+
+    <div>
+      <label for="portfolioDesc" class="form-label">Edit Description: </label>
+      <textarea class="form-control" name="description" row="10" id="portfolioDesc"></textarea>
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
+    </div>
+  </form>
+</div>
+<%- include("templates/footer") %>
