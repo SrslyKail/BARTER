@@ -1,18 +1,26 @@
 <%- include("templates/header", {index: false}) %>
 <div id="heroDiv">
   <div id="subbar" class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .0;">
-    <%- include("templates/components/backButton", {link: referrer})%>
+
+    <!-- This isn't ideal, if fixes the major problem and keeps most of the functionality in tact
+    Figure out how to do back buttons better some day -->
+    <%let link = "/"%>
+    <% if (referrer.includes("/category/")){ link = referrer} %>
+    <%- include("templates/components/backButton", {link: link})%>
   </div>
 
   <%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
 </div>
-<div>
+<div id="iconGridContainer">
+  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
   <% db.forEach((skillUser) => { %>
   <% if(skillUser.username != user.username){ %>
-  <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+  <div class=" profilePageCard skillPageCard">
+    <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+  </div>
   <%}}) %>
   <%#- db.forEach((user) =>  %>
-
+</div>
 </div>
 
 <!-- <script>
