@@ -11,13 +11,16 @@
 
   <%- include("templates/components/searchHero", {searchHeroImage:skillImage, searchHeroBanner: skillName}) %>
 </div>
-<div>
+<div id="iconGridContainer">
+  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6"">
   <% db.forEach((skillUser) => { %>
   <% if(skillUser.username != user.username){ %>
-  <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+  <div class=" profilePageCard skillPageCard">
+    <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+  </div>
   <%}}) %>
   <%#- db.forEach((user) =>  %>
-
+</div>
 </div>
 
 <!-- <script>

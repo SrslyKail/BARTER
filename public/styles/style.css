@@ -133,6 +133,10 @@
   align-self: center;
 }
 
+.skillPageGrid{
+  max-width: 1260px;
+}
+
 /* Mandatory CSS unless noted as optional*/
 .cardImageIcon {
   position: relative;
@@ -399,7 +403,7 @@ form.d-grid {
   background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg");
 }
 
-#profilePageCard {
+.profilePageCard {
   display: inline-flex;
   justify-content: center;
   align-content: center;
@@ -408,6 +412,21 @@ form.d-grid {
   max-width: 680px;
   width: 100%;
   height: 100%;
+}
+
+.skillPageCard {
+  max-width: 480px;
+}
+
+#skillPageGrid {
+  display:grid;
+  width:100vw;
+height:100vw;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-auto-rows: auto;
+  grid-auto-flow: row;
+  align-self: center;
+
 }
 
 #pillArea {
