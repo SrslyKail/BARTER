@@ -503,7 +503,8 @@ height:100vw;
     "icon gap name"
     "icon gap rating"
     "icon gap skills"
-    "icon gap location";
+    "icon gap location"
+    "icon gap distance";
 
   width: 100%;
   height: 100%;
@@ -528,8 +529,8 @@ height:100vw;
   grid-area: location;
 }
 
-.userDistance {
-  grid-area:location;
+div[name=userDistance] {
+  grid-area:distance;
 }
 
 .svgStar {
