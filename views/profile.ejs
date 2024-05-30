@@ -65,7 +65,7 @@ todo if this is the profile of said user, they should have the ability to edit w
 
 <script src="/scripts/profile.js"></script>
 
-<%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>
+<%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", link: "mailto:" + userCard.email}) }) %>
 <%if ((user.username != userCard.username) && (ratedBefore != null)) {%>
 <script>
   document.getElementById("rating").childNodes[1].children['<%-ratedBefore.rateValue - 1%>'].checked = true

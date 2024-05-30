@@ -348,6 +348,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   // console.log(category);
   const skillName = skilldb.name;
   const skillImage = skilldb.image;
+  const skillObjID = skilldb._id;
   const skilledUsers = userCollection.find({
     userSkills: { $in: [skilldb._id] },
   });
@@ -374,6 +375,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
+    skillObjID: skillObjID,
     referrer: referrer,
   });
   return;
@@ -453,7 +455,13 @@ app.get("/profile", async (req, res) => {
   let skills = [];
   let queryID = req.query.id;
   let referrer = req.get("referrer");
+  //Check current user.
+  //Check current user.
+  let currentUser = getUser(req);
 
+  if (!currentUser) {
+    return res.redirect("/");
+  }
   if (referrer == undefined) {
     referrer = "/";
   }

@@ -68,6 +68,9 @@
 .d-none {
   display: none;
 }
+.w-75 {
+  max-width: 560px;
+}
 
 /*  */
 .mask {
@@ -118,6 +121,7 @@
 #iconGridContainer {
   display: flex;
   justify-content: center;
+  margin-bottom:5vh;
 }
 
 /* Grid for testing (expands infinitely) */
