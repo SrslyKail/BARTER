@@ -378,6 +378,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     skillImage: skillImage,
     referrer: referrer,
   });
+  console.log("Serverside skill image:", skillImage);
   return;
 });
 
@@ -690,28 +691,6 @@ async function addRating(ratedID, userID, rateValue) {
   }
 }
 
-/**Post to submit rating from profile. */
-app.post("/submit-rating", checkAuth, async (req, res) => {
-  let refString = req.get("referrer");
-  // console.log("referred:", refString);
-
-  //This is kinda gross but it works
-  // console.log(refString);
-  let textArray = refString.split("=");
-  let profID = textArray[1];
-  let value = Number(req.body.rating);
-  let ratingUser = new ObjectId(getUserId(req));
-
-  let ratedUser = await userCollection.findOne({ username: profID });
-  let ratedObj = ratedUser._id;
-
-  Joi.number().min(1).max(5).required().validate(value);
-
-  rateStatus = await addRating(ratedObj, ratingUser, value);
-
-  res.redirect(rateStatus, "back");
-});
-
 /**
  * History Page.
  */
@@ -798,12 +777,13 @@ app.get("/portfolio", async (req, res) => {
       description = userData.portfolio[i].description;
     }
   }
-  console.log(gallery);
+
+  console.log("banner:", gallery[0] ? gallery[0] : skillData.image);
 
   res.render("portfolio", {
     title: skill,
     images: gallery,
-    banner: gallery[0],
+    banner: gallery[0] ? gallery[0] : skillData.image,
     description: description,
     username: username,
     currentUser: getUsername(req),
