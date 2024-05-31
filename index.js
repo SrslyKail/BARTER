@@ -381,7 +381,7 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
     });
     return;
   } else {
-    res.redirect("../login")
+    res.redirect("../login");
   }
 });
 
@@ -442,11 +442,6 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   res.redirect(rateStatus, "back");
 });
 
-app.post("/editProfile/upload", (req, res) => {
-  // console.log(req);
-  // console.log();
-});
-
 /**
  * @param {ObjectId} skillID
  * @param {ObjectId} userID
@@ -477,32 +472,6 @@ async function addSkill(userID, skillID) {
     return 409;
   }
 }
-
-/**Post to add a skill. */
-app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
-  // console.log("success")
-
-  let userID = new ObjectId(getUserId(req));
-
-  const userSchema = Joi.object({
-    objID: Joi.string().hex().length(24),
-  });
-
-  objID = req.params.skillID;
-  // console.log(objID)
-  const validationResult = userSchema.validate({ objID });
-  //Error checking
-
-  if (validationResult.error != null) {
-    errors.push(validationResult.error.details[0].message);
-    res.redirect("/");
-    return;
-  }
-
-  rateStatus = await addSkill(userID, objID);
-  // console.log("success")
-  res.redirect(rateStatus, "back");
-});
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs
@@ -629,54 +598,55 @@ app.get("/profile", async (req, res) => {
   });
 
   if (getUserId(req) != null) {
-    let viewer = await userCollection.findOne(new ObjectId(getUserId(req)))
+    let viewer = await userCollection.findOne(new ObjectId(getUserId(req)));
 
-    viewerHistory = viewer.history.visited
-    let viewedUser = user._id
-    let currentUser = new ObjectId(getUserId(req))
+    viewerHistory = viewer.history.visited;
+    let viewedUser = user._id;
+    let currentUser = new ObjectId(getUserId(req));
 
-    // var contains = 
+    // var contains =
     // stringCurUser = JSON.stringify(currentUser)
     // stringViewedUser = JSON.stringify(viewedUser)
 
     // let contains = viewerHistory.some(elem => {
     // return (JSON.stringify(viewedUser)) === (JSON.stringify(elem));
     // });
-    let index
+    let index;
     // let dupFlag = false
     let findDupe = async function () {
       index = 0;
       for await (const user of viewerHistory) {
         // console.log(viewerHistory.indexOf(user))
-        if (JSON.stringify(viewedUser) === (JSON.stringify(user))) {
+        if (JSON.stringify(viewedUser) === JSON.stringify(user)) {
           // dupFlag = true
           // console.log(index)
-          break
+          break;
         } else {
-          index++
+          index++;
         }
       }
-    }
-    await findDupe()
+    };
+    await findDupe();
 
-    viewerHistory.splice(index, 1)
+    viewerHistory.splice(index, 1);
 
     if (!viewedUser.equals(currentUser)) {
       // console.log(viewedUser)
       //Doesn't determine display order later, dunno why
-      viewerHistory.push(viewedUser)
+      viewerHistory.push(viewedUser);
     }
     if (viewerHistory.length > 8) {
-      viewerHistory.length = 8
+      viewerHistory.length = 8;
     }
     // console.log(currentUser)
     userCollection.updateOne(
       { _id: currentUser },
       {
         $set: {
-          "history.visited": viewerHistory
-        }
-      })
+          "history.visited": viewerHistory,
+        },
+      }
+    );
     // console.log(viewerHistory)
 
     // await viewer.history.updateOne({$set: {viewed:viewerHistory}})
@@ -690,7 +660,7 @@ app.get("/profile", async (req, res) => {
       ratedBefore: ratedBefore,
     });
   } else {
-    res.redirect("login")
+    res.redirect("login");
   }
 });
 
@@ -936,7 +906,7 @@ app.get("/editPortfolio", async (req, res) => {
     return;
   }
   data = await setupPortfolio(req, res);
-  console.log(data)
+  console.log(data);
   res.render("editPortfolio", data);
 });
 
