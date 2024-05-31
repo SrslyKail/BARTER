@@ -58,7 +58,6 @@ async function handleProfileChanges(req, res) {
           message: "Error",
         });
       });
-    console.log();
   }
   //If the user submitted no valid data, we dont upload anything to Mongo
   let dataKeys = Object.keys(data);
@@ -163,7 +162,6 @@ async function updatePortfolio(req, res) {
 
   //if the user has a portfolio, we need to find the right onw
   let userKeys = Object.keys(currentUser);
-  console.log(typeof currentUser.portfolio === "object");
   if (userKeys.includes("portfolio") && currentUser.portfolio.length) {
     currentUser.portfolio.forEach((obj, ind) => {
       if (obj.title == currentSkill._id.toString()) {
@@ -185,16 +183,15 @@ async function updatePortfolio(req, res) {
       },
     };
 
-    await userCollection
-      .updateOne(
-        {
-          username: currentUser.username,
-        },
-        updates
-      )
-      .then((results) => {
-        console.log("Initialization results:\n", results);
-      });
+    await userCollection.updateOne(
+      {
+        username: currentUser.username,
+      },
+      updates
+    );
+    // .then((results) => {
+    //   console.log("Initialization results:\n", results);
+    // });
   }
 
   //we update with the image and data
@@ -206,18 +203,17 @@ async function updatePortfolio(req, res) {
   if (image) {
     updates["$push"] = { "portfolio.$.images": image };
   }
-  await userCollection
-    .updateOne(
-      {
-        username: currentUser.username,
-        "portfolio.title": currentSkill._id.toString(),
-      },
-      updates
-    )
-    .then((result) => {
-      console.log(result);
-      console.log();
-    });
+  await userCollection.updateOne(
+    {
+      username: currentUser.username,
+      "portfolio.title": currentSkill._id.toString(),
+    },
+    updates
+  );
+  // .then((result) => {
+  //   console.log(result);
+  //   console.log();
+  // });
 
   res.redirect("/profile?id=" + currentUser.username);
 }
