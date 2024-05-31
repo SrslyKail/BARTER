@@ -385,6 +385,29 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   }
 });
 
+app.post("/remove-skill/:skillID", checkAuth, async (req, res) => {
+  let userID = new ObjectId(getUserId(req));
+
+  const userSchema = Joi.object({
+    objID: Joi.string().hex().length(24),
+  });
+
+  objID = req.params.skillID;
+  // console.log(objID)
+  const validationResult = userSchema.validate({ objID });
+
+  //Error checking
+  if (validationResult.error != null) {
+    errors.push(validationResult.error.details[0].message);
+    res.redirect("/");
+    return;
+  }
+
+  rateStatus = await removeSkill(userID, objID);
+  // console.log("success")
+  res.redirect("back");
+});
+
 /**Post to add a skill. */
 app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   let userID = new ObjectId(getUserId(req));
@@ -396,8 +419,8 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   objID = req.params.skillID;
   // console.log(objID)
   const validationResult = userSchema.validate({ objID });
-  //Error checking
 
+  //Error checking
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
     res.redirect("/");
@@ -419,6 +442,20 @@ async function addSkill(userID, skillID) {
   await userCollection.updateOne(
     { _id: userID },
     { $addToSet: { userSkills: skillObject } }
+  );
+  // .then((result) => console.log(result));
+}
+
+/**
+ * @param {ObjectId} skillID
+ * @param {ObjectId} userID
+ */
+async function removeSkill(userID, skillID) {
+  skillObject = ObjectId.createFromHexString(skillID);
+
+  await userCollection.updateOne(
+    { _id: userID },
+    { $pull: { userSkills: skillObject } }
   );
   // .then((result) => console.log(result));
 }

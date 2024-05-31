@@ -30,5 +30,5 @@
   document.getElementById("backButton").addEventListener("click", goBack)
 </script> -->
 <% let test="test" %>
-<% addButton = hasSkill ? {} : {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) } %>
+<% addButton = hasSkill ? {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Remove from Profile", link: "/remove-skill/" + skillObjID})} : {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add To Your Profile", link: "/add-skill/" + skillObjID}) } %>
 <%- include("templates/footer", addButton) %>
