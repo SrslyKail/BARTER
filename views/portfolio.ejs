@@ -2,8 +2,8 @@
 <div id="heroDiv">
   <div id="subbar" class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .0;">
     <%let link = "/"%>
-    <%#console.log(typeof referrer)%>
-    <%# if (referrer!=undefined && referrer.includes("/category/")){ link = referrer} %>
+    <% console.log(referrer)%>
+    <% if (referrer!=undefined && referrer.includes("/profile")){ link = referrer} %>
     <%- include("templates/components/backButton", {link: link})%>
   </div>
 
