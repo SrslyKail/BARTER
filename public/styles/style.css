@@ -339,6 +339,7 @@ form.d-grid {
   /* The version for chrome :c */
   clip-path: fill-box;
   aspect-ratio: 37/7;
+  color: rgba(255,250,238,0);
 }
 
 .pillbox :is(img, a) {
