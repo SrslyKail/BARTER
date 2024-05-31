@@ -666,7 +666,8 @@ app.get("/profile", async (req, res) => {
 
     if (!viewedUser.equals(currentUser)) {
       // console.log(viewedUser)
-      viewerHistory.unshift(viewedUser)
+      //Doesn't determine display order later, dunno why
+      viewerHistory.push(viewedUser)
     }
     if (viewerHistory.length > 8) {
       viewerHistory.length = 8
