@@ -402,7 +402,7 @@ form.d-grid {
   cursor: pointer;
 }
 
-.activeCircle>circle {
+.activeCircle > circle {
   fill: #676767;
 }
 
@@ -538,7 +538,7 @@ form.d-grid {
 .profileCardDataGrid {
   display: grid;
   grid-template-columns: 45% 10% 45%;
-  grid-template-rows: 25% 25% 25% 25%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
   grid-template-areas:
     "icon gap name"
     "icon gap rating"
@@ -597,7 +597,7 @@ div[name="userDistance"] {
   margin-bottom: 5vw;
 }
 
-.starRatings>* {
+.starRatings > * {
   width: 145px;
   position: absolute;
   text-align: center;
@@ -630,11 +630,11 @@ div[name="userDistance"] {
   cursor: pointer;
 }
 
-.stars input:nth-child(1):checked~label:nth-of-type(-n + 1),
-.stars input:nth-child(2):checked~label:nth-of-type(-n + 2),
-.stars input:nth-child(3):checked~label:nth-of-type(-n + 3),
-.stars input:nth-child(4):checked~label:nth-of-type(-n + 4),
-.stars input:nth-child(5):checked~label:nth-of-type(-n + 5) {
+.stars input:nth-child(1):checked ~ label:nth-of-type(-n + 1),
+.stars input:nth-child(2):checked ~ label:nth-of-type(-n + 2),
+.stars input:nth-child(3):checked ~ label:nth-of-type(-n + 3),
+.stars input:nth-child(4):checked ~ label:nth-of-type(-n + 4),
+.stars input:nth-child(5):checked ~ label:nth-of-type(-n + 5) {
   background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='maroon' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
@@ -773,7 +773,7 @@ div[name="userDistance"] {
 
 /* #region Auth pages */
 
-.authSpan>a {
+.authSpan > a {
   color: maroon;
 }
 
