@@ -22,11 +22,11 @@
                     <%- include("templates/components/passwordInput") %>
   
                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Sign in</button>
+                      <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark  btn-lg">Sign in</button>
                     </div>
                     <div class="text-center">
-                        <br><p><a class='link' href="/passwordReset">Forgot password?</a></p>
-                        <br><p>Not a member? <a class='link' href="/signup">Register</a></p>
+                        <br><p class="authSpan"><a class='link' href="/passwordReset">Forgot password?</a></p>
+                        <br><p class="authSpan">Not a member? <a class='link' href="/signup">Register</a></p>
                       </div>
                     
                     <% if (passChange) { %>
