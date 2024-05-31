@@ -438,11 +438,6 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   res.redirect(rateStatus, "back");
 });
 
-app.post("/editProfile/upload", (req, res) => {
-  // console.log(req);
-  // console.log();
-});
-
 /**
  * Post method for Try Again btn in loginInvalid.ejs
  */
