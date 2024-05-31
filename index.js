@@ -385,41 +385,8 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   }
 });
 
-/**
- * @param {ObjectId} skillID
- * @param {ObjectId} userID
- */
-async function addSkill(userID, skillID) {
-  let addingUser = userID;
-  skillObject = new ObjectId(skillID);
-
-  let skillExists = await userCollection.findOne({ _id: userID });
-
-  skillExists = skillExists.userSkills;
-
-  let contains = skillExists.some((elem) => {
-    return JSON.stringify(skillObject) === JSON.stringify(elem);
-  });
-
-  // console.log(contains)
-
-  if (!contains) {
-    // skillObject = new ObjectId(skillID);
-
-    await userCollection.updateOne(
-      { _id: userID },
-      { $push: { userSkills: skillObject } }
-    );
-    return 201;
-  } else {
-    return 409;
-  }
-}
-
 /**Post to add a skill. */
 app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
-  // console.log("success")
-
   let userID = new ObjectId(getUserId(req));
 
   const userSchema = Joi.object({
@@ -439,7 +406,7 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
 
   rateStatus = await addSkill(userID, objID);
   // console.log("success")
-  res.redirect(rateStatus, "back");
+  res.redirect("back");
 });
 
 /**
@@ -447,38 +414,14 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
  * @param {ObjectId} userID
  */
 async function addSkill(userID, skillID) {
-  let addingUser = userID;
-  skillObject = new ObjectId(skillID);
+  skillObject = ObjectId.createFromHexString(skillID);
 
-  let skillExists = await userCollection.findOne({ _id: userID });
-
-  skillExists = skillExists.userSkills;
-
-  let contains = skillExists.some((elem) => {
-    return JSON.stringify(skillObject) === JSON.stringify(elem);
-  });
-
-  // console.log(contains)
-
-  if (!contains) {
-    // skillObject = new ObjectId(skillID);
-
-    await userCollection.updateOne(
-      { _id: userID },
-      { $push: { userSkills: skillObject } }
-    );
-    return 201;
-  } else {
-    return 409;
-  }
+  await userCollection.updateOne(
+    { _id: userID },
+    { $addToSet: { userSkills: skillObject } }
+  );
+  // .then((result) => console.log(result));
 }
-
-/**
- * Post method for Try Again btn in loginInvalid.ejs
- */
-app.post("/login", (req, res) => {
-  res.redirect("/login");
-});
 
 app.get("/login", (req, res) => {
   var passChange = req.query.passChange;
