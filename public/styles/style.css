@@ -766,3 +766,39 @@ div[name="userDistance"] {
 }
 
 /* #endregion Auth pages */
+
+/* #region editProfile page */
+.editProfilePic {
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  vertical-align: middle;
+  text-align: center;
+  color: transparent;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.editProfilePic:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.editProfilePic span {
+  display: inline-block;
+  padding-top: 4.5em;
+  padding-bottom: 4.5em;
+}
+
+fieldset input[type="file"] {
+  display: none;
+}
+
+/* #endregion editProfile page */

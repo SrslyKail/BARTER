@@ -3,6 +3,17 @@
   <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile">
     <fieldset>
       <legend>Edit your profile:</legend>
+
+      <div class="mb-3 d-flex justify-content-center">
+        <label for="formFile" class="form-label">
+          <div class="editProfilePic">
+            <span><i class="bi bi-camera-fill"></i></span>
+            <span>Change Image</span>
+          </div>
+        </label>
+        <input class="form-control" type="file" name="userIcon" id="formFile">
+      </div>
+
       <div class="mb-3">
         <label for="inputUsername" class="form-label">Edit Username</label>
         <input type="text" class="form-control" placeholder="<%- name %>" name="username" id="inputUsername">
@@ -10,10 +21,6 @@
       <div class="mb-3">
         <label for="inputEmail" class="form-label">Edit Email</label>
         <input type="email" class="form-control" placeholder="<%- email %>" name="email" id="inputEmail">
-      </div>
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Edit Profile Picture:</label>
-        <input class="form-control" type="file" name="userIcon" id="formFile">
       </div>
       <div id="geoUpdateParent" class="input-group mb-3">
         <label class="input-group-text" for="long">Longitude</label>
@@ -55,5 +62,9 @@
       timeout: 10000
     });
   }
+
+$(document).ready(function () {
+  $(".editProfilePic").css("background-image", "url(<%= userIcon %>)");
+});
 </script>
 <%- include("templates/footer") %>

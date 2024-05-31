@@ -1,7 +1,8 @@
 let currentPage = 0;
 let maxPage = Math.floor(
-  (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3);
-  console.log(maxPage)
+  (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3
+);
+console.log(maxPage);
 
 const left = document.getElementById("leftPag");
 const right = document.getElementById("rightPag");
