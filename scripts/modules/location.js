@@ -10,7 +10,6 @@ const {
 } = require("@googlemaps/google-maps-services-js");
 const client = new Client();
 const GMAPS_API_KEY = process.env.GMAPS_API_KEY;
-console.log(GMAPS_API_KEY);
 
 async function testFetch() {
   // let res = await client.elevation({

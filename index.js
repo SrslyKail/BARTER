@@ -56,7 +56,11 @@ const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
 
-const uploadRoute = require("./scripts/imgUpload.js");
+const {
+  upload,
+  handleProfileChanges,
+  updatePortfolio,
+} = require("./scripts/imgUpload.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
 const skillsCache = {};
@@ -111,8 +115,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.use("/editProfile", uploadRoute);
 
 /** middleware function for catching bad skill/category parameters */
 async function validateSkillParam(req, res, next) {
@@ -369,13 +371,13 @@ app.get("/skill/:skill", validateSkillParam, async (req, res) => {
   // console.log(skilledUsersCache);
   res.render("skill", {
     authenticated: authenticated,
-    username: username,
     db: skilledUsersCache,
     skillName: skillName,
     skillImage: skillImage,
     skillObjID: skillObjID,
     referrer: referrer,
   });
+  // console.log("Serverside skill image:", skillImage);
   return;
 });
 
@@ -387,30 +389,26 @@ async function addSkill(userID, skillID) {
   let addingUser = userID;
   skillObject = new ObjectId(skillID);
 
-
   let skillExists = await userCollection.findOne({ _id: userID });
 
-  skillExists=skillExists.userSkills
+  skillExists = skillExists.userSkills;
 
-  let contains = skillExists.some(elem => {
-    return (JSON.stringify(skillObject)) === (JSON.stringify(elem));
+  let contains = skillExists.some((elem) => {
+    return JSON.stringify(skillObject) === JSON.stringify(elem);
   });
 
   // console.log(contains)
 
-
-
-
   if (!contains) {
-  // skillObject = new ObjectId(skillID);
+    // skillObject = new ObjectId(skillID);
 
-  await userCollection.updateOne(
-    { _id: userID },
-    { $push: { userSkills: skillObject } }
-  )
-  return 201;
+    await userCollection.updateOne(
+      { _id: userID },
+      { $push: { userSkills: skillObject } }
+    );
+    return 201;
   } else {
-  return 409;
+    return 409;
   }
 }
 
@@ -421,21 +419,19 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   let userID = new ObjectId(getUserId(req));
 
   const userSchema = Joi.object({
-    objID: Joi.string().hex().length(24)
-  })
+    objID: Joi.string().hex().length(24),
+  });
 
   objID = req.params.skillID;
   // console.log(objID)
   const validationResult = userSchema.validate({ objID });
   //Error checking
 
-
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
     res.redirect("/");
     return;
   }
-
 
   rateStatus = await addSkill(userID, objID);
   // console.log("success")
@@ -444,9 +440,8 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
 
 app.post("/editProfile/upload", (req, res) => {
   // console.log(req);
-
   // console.log();
-})
+});
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs
@@ -534,6 +529,7 @@ app.get("/profile", async (req, res) => {
   }
 
   if (req.session.user && queryID == undefined) {
+    res.redirect(`/profile?id=${getUsername(req)}`);
     queryID = req.session.user.username;
     // user = getUser(req);
     // username = getUsername(req);
@@ -541,6 +537,8 @@ app.get("/profile", async (req, res) => {
     // userIcon = getUserIcon(req);
   }
   user = await userCollection.findOne({ username: queryID });
+  //user = await userCollection.findOne({ username: "Paul" });
+
   //if we cant find the requested profile, get the current users profile
   if (!user) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
@@ -577,6 +575,8 @@ app.get("/profile", async (req, res) => {
       user.rateCount
     ),
     uploaded: req.query.success,
+    portfolio: user.portfolio,
+    formatProfileIconPath: formatProfileIconPath,
     referrer: referrer,
     ratedBefore: ratedBefore,
   };
@@ -597,6 +597,12 @@ app.get("/editProfile", (req, res) => {
     email: getEmail(req),
   });
 });
+
+app.post(
+  "/editProfile/upload",
+  upload.single("userIcon"),
+  handleProfileChanges
+);
 
 /**
  *
@@ -686,11 +692,71 @@ app.post("/submit-rating", checkAuth, async (req, res) => {
   res.redirect(rateStatus, "back");
 });
 
-// app.post("/editProfile/upload", (req, res) => {
-//   console.log(req);
+/**
+ *
+ * @param {ObjectId} ratedID
+ * @param {ObjectId} userID
+ * @param {Number} rateValue
+ */
+async function addRating(ratedID, userID, rateValue) {
+  let ratingUser = userID;
+  // console.log("1 " + ratingUser)
+  let ratedUser = ratedID;
+  // console.log("2 " + ratedUser)
 
-//   console.log();
-// })
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: ratingUser,
+    ratedID: ratedUser,
+  });
+
+  if (ratedBefore == null) {
+    let rate = {
+      userID: userID,
+      ratedID: ratedID,
+      rateValue: rateValue,
+      date: new Date(),
+    };
+
+    await ratingsCollection.insertOne(rate);
+
+    // console.log(ratedID)
+
+    await userCollection.findOneAndUpdate(
+      { _id: ratedID },
+      {
+        $inc: { rateCount: 1, rateValue: rateValue },
+      }
+    );
+    return 201;
+  } else {
+    // console.log(ratedBefore.rateValue)
+
+    let changeValue = rateValue - ratedBefore.rateValue;
+    // console.log(changeValue)
+    // console.log(ratedID)
+    //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
+    // if (changeValue != 0) {
+
+    //   await userCollection.findOneAndUpdate(
+    //     { "_id": ratedID },
+    //     {
+    //       $inc: { rateValue: changeValue },
+    //     }
+    //   );
+
+    //   await ratingsCollection.findOneAndUpdate(
+    //     { "_id": ratedBefore._id },
+    //     {
+    //       rateValue: rateValue,
+    //       date: new Date(),
+    //     }
+    //   )
+    // }
+
+    // console.log("it's working");
+    return 409;
+  }
+}
 
 /**
  * History Page.
@@ -744,6 +810,127 @@ app.get("/history/:filter", async (req, res) => {
 
 app.get("/history", (req, res) => {
   res.render("history", {});
+});
+
+/**
+ * Portfolio Page.
+ */
+app.get("/portfolio", async (req, res) => {
+  data = await setupPortfolio(req, res);
+  if (data) {
+    res.render("portfolio", data);
+  }
+});
+
+app.get("/editPortfolio", async (req, res) => {
+  if (req.query.id != getUsername(req) || !req.query.skill) {
+    res.redirect("/profile");
+    return;
+  }
+  data = await setupPortfolio(req, res);
+  res.render("editPortfolio", data);
+});
+
+async function setupPortfolio(req, res) {
+  const skill = req.query.skill;
+  const username = req.query.id;
+  let gallery = [];
+  let description = "";
+
+  let skillData = userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  let userData = userCollection.findOne({
+    username: username,
+  });
+
+  let results = await Promise.all([skillData, userData]).catch((err) => {
+    res.render("404");
+    return null;
+  });
+
+  skillData = results[0];
+  userData = results[1];
+
+  if (Object.keys(userData).includes("portfolio")) {
+    for (let i = 0; i < userData.portfolio.length; i++) {
+      //title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
+      if (userData.portfolio[i].title === skillData._id.toString()) {
+        gallery = userData.portfolio[i].images;
+        description = userData.portfolio[i].description;
+      }
+    }
+  }
+
+  return {
+    title: skill,
+    images: gallery,
+    banner: skillData.image,
+    description: description,
+    username: username,
+    currentUser: getUsername(req),
+  };
+}
+
+app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
+
+/**
+ * Add Portfolio Page.
+ */
+app.get("/addPortfolio", async (req, res) => {
+  const username = req.query.username;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("addPortfolio", {
+    username: username,
+  });
+});
+
+/**
+ * Edit Portfolio Page.
+ */
+app.get("/editPortfolio", async (req, res) => {
+  const username = req.query.username;
+  const skill = req.query.skill;
+  let gallery = [];
+  let description = "";
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  if (!skill) {
+    res.redirect("/profile");
+    return;
+  }
+
+  const userData = await userCollection.findOne({
+    username: username,
+  });
+
+  const skillData = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  for (let i = 0; i < userData.portfolio.length; i++) {
+    if (userData.portfolio[i].title === skillData._id.toString()) {
+      gallery = userData.portfolio[i].images;
+      description = userData.portfolio[i].description;
+    }
+  }
+
+  res.render("editPortfolio", {
+    title: skill,
+    description: description,
+    images: gallery,
+    username: username,
+  });
 });
 
 /**
@@ -808,13 +995,10 @@ app.post("/passwordResetting", async (req, res) => {
 
     // Send password reset email
     await sendPasswordResetEmail(email, token, timestamp);
-
-    // Redirect to a page indicating that the email has been sent
-    res.render("passwordResetSent", { email });
   } catch (error) {
     console.error("Error initiating password reset:", error);
     // Handle errors
-    res.redirect("/passwordReset");
+    res.redirect("/passwordReset", { result: `unexpected error:\n ${error}` });
     return;
   }
   // Redirect to a page indicating that the email has been sent
