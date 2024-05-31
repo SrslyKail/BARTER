@@ -73,9 +73,19 @@ function createSession(
  */
 function isAuthenticated(req) {
   let user = getUser(req);
+
   //ternary ensures we always get a boolean output
   //otherwise we might return null
   return user ? user.isAuthenticated : false;
+}
+
+function refreshCookieTime(req) {
+  req.session.cookie.maxAge = isAuthenticated(req)
+    ? (req.session.cookie.maxAge += expireTime - req.session.cookie.maxAge)
+    : null;
+  req.session.cookie.maxAge > expireTime
+    ? (req.session.cookie.maxAge = expireTime)
+    : null;
 }
 
 /**
@@ -177,4 +187,5 @@ module.exports = {
   getUserId,
   defaultIcon,
   formatProfileIconPath,
+  refreshCookieTime
 };

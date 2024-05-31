@@ -16,22 +16,26 @@
   </div>
 
   <div id="container">
-
     <div id="cardArea">
       <div class="profilePageCard"> <%- include("templates/components/profileCard", {userCard: userCard, userIcon: userIcon }) %> </div>
     </div>
     <div id="pillArea" class="pt-4 text-center">
-      <h2><b>Skills</b></h2>
-      <%- include("templates/skill-pill-generation", {db: userCard.userSkills})%>
+      <h2>
+        <b>Skills</b>
+        <button onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
+        <a href="/addPortfolio?username=<%= userCard.username %>" id="addButton" class="btn btn-secondary d-none"><i class="bi bi-plus-square"></i></a>
+      </h2>
+      <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
     </div>
-
     <div id="reviewArea" class="p-4 text-center mb-4">
       <hr class="my-4 pb-1-5">
       <%if (user.username == userCard.username) {%>
       <h2><b>Your Rating:</b></h2>
       <form id="rating">
-        <%#- include("templates/components/cardStars", {rateValue: rateValue, rateCount:rateCount percent: (Math.round((rateValue/(rateCount*5)) * 1000) / 10)})%>
-        <%- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
+        <% if (userCard.rateCount != null) {%>
+        <%- include("templates/components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: Math.round(100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
+        <% } %>
+        <%#- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
       </form>
       <%} else {%>
       <h2><b>Leave a Rating:</b></h2>
@@ -50,6 +54,11 @@
       </form>
     </div>
   </div>
+  <div id="reviewArea" class="px-4 text-center mb-4">
+    <hr class="my-4 pb-1-5">
+    <h2><b>Reviews</b></h2>
+  </div>
+
 </div>
 
 <!-- po:
@@ -63,10 +72,20 @@ todo if this is the profile of said user, they should have the ability to edit w
 
 <script src="/scripts/profile.js"></script>
 
-<%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", email: userCard.email}) }) %>
+<%- include("templates/footer", {footerButton: include("templates/components/footerButton", {buttonText: "CONTACT", link: "mailto:" + userCard.email}) }) %>
 <%if ((user.username != userCard.username) && (ratedBefore != null)) {%>
 <script>
   document.getElementById("rating").childNodes[1].children['<%-ratedBefore.rateValue - 1%>'].checked = true
   document.getElementById("rating").childNodes[1].classList.add('noClick')
 </script>
 <%}%>
+<!-- <script>
+  console.log(window.location);
+  var urlParams = new URLSearchParams(window.location.search);
+  var user = urlParams.get('id');
+  let skillPills = [...document.getElementsByClassName("pillbox")]
+  skillPills.forEach((node) => {
+    node.href = "/profile" + node.href + "?id=" + user;
+  })
+
+</script> -->

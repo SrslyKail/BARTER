@@ -5,7 +5,8 @@
     <!-- This isn't ideal, if fixes the major problem and keeps most of the functionality in tact
     Figure out how to do back buttons better some day -->
     <%let link = "/"%>
-    <% if (referrer.includes("/category/")){ link = referrer} %>
+    <%console.log(typeof referrer)%>
+    <% if (referrer!=undefined && referrer.includes("/category/")){ link = referrer} %>
     <%- include("templates/components/backButton", {link: link})%>
   </div>
 
@@ -13,14 +14,13 @@
 </div>
 <div id="iconGridContainer">
   <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
-  <% db.forEach((skillUser) => { %>
-  <% if(skillUser.username != user.username){ %>
-  <div class=" profilePageCard skillPageCard">
-    <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+    <% db.forEach((skillUser) => { %>
+    <% if(typeof user === "undefined" || skillUser.username != user.username){ %>
+    <div class=" profilePageCard skillPageCard">
+      <%- include('templates/components/profileCard', {userCard: skillUser}); %>
+    </div>
+    <%}}) %>
   </div>
-  <%}}) %>
-  <%#- db.forEach((user) =>  %>
-</div>
 </div>
 
 <!-- <script>
@@ -28,5 +28,5 @@
     history.back()  }
   document.getElementById("backButton").addEventListener("click", goBack)
 </script> -->
-
-<%- include("templates/footer") %>
+<% let test="test" %>
+<%- include("templates/footer", {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) }) %>
