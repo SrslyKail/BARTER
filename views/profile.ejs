@@ -28,11 +28,14 @@
       <%- include("templates/skill-pill-generation", {db: userCard.userSkills, username: userCard.username})%>
     </div>
     <div id="reviewArea" class="p-4 text-center mb-4">
+      
       <hr class="my-4 pb-1-5">
       <%if (user.username == userCard.username) {%>
       <h2><b>Your Rating:</b></h2>
       <form id="rating">
         <% if (userCard.rateCount != null) {%>
+          
+        <%-userCard.rateCount%> Ratings
         <%- include("templates/components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: Math.round(100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
         <% } %>
         <%#- include("templates/components/cardStars", {rateValue: 5, rateCount:1, percent: (Math.round(5/1 * 10) / 10)})%>
