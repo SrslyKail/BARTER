@@ -740,7 +740,9 @@ div[name="userDistance"] {
   align-items: center;
   justify-items: center;
   /* placeholder background (maybe default?) */
-  background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg");
+  background-image: url(../imgs/bigzamn.svg);
+  background-color: #353535;
+  /* background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg"); */
 }
 
 .row-2 {
