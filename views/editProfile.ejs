@@ -1,138 +1,141 @@
 <%- include("templates/header") %>
-<div class="p-2 mt-2 d-flex justify-content-center bg-secondary m-0 p-0">
-  <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile">
-    <fieldset>
-      <legend class="fw-bold fs-1 text-center bg-white">Edit Profile</legend>
+  <div class="d-grid m-0 w-100">
+    <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile"
+      class="w-100">
+      <fieldset class="d-grid w-100">
+        <legend class="fw-bold fs-1 text-center bg-white">Edit Profile</legend>
 
-      <div class="mb-3 d-flex justify-content-center">
-        <label for="formFile" class="form-label">
-          <div class="editProfilePic">
-            <span>
-            <i class="bi bi-camera-fill"></i><br>
-            Change Image
-            </span>
-          </div>
-        </label>
-        <input class="form-control" type="file" name="userIcon" onchange="pictureChanged()" id="formFile">
-        <label>
-          <i class="bi bi-check-circle d-none" id="editProfilePicSuccess"></i>
-        </label>
-      </div>
-
-      <div class="d-grid align-items-center">
-        <div class="mb-3 btn-group">
-          <label for="inputUsername" class="form-label btn btn-dark">
-            Edit Username
+        <div class="d-flex justify-content-center">
+          <label for="formFile" class="form-label">
+            <div class="editProfilePic">
+              <span>
+                <i class="bi bi-camera-fill"></i><br>
+                Change Image
+              </span>
+            </div>
           </label>
-          <input type="text" class="form-control" placeholder="<%- name %>" name="username" id="inputUsername">
+          <input class="form-control" type="file" name="userIcon" onchange="pictureChanged()" id="formFile">
+          <label>
+            <i class="bi bi-check-circle d-none" id="editProfilePicSuccess"></i>
+          </label>
         </div>
 
-        <div class="mb-3 btn-group">
-          <label for="inputEmail" class="form-label btn btn-dark">
-            Edit Email
-          </label>
-          <input type="email" class="form-control" placeholder="<%- email %>" name="email" id="inputEmail">
-        </div><br>
+        <div class="d-grid m-4">
+          <div class="mb-3 btn-group">
+            <label for="inputUsername" class="form-label btn btn-dark">
+              Edit Username
+            </label>
+            <input type="text" class="form-control border-secondary" placeholder="<%- name %>" name="username"
+              id="inputUsername">
+          </div>
 
-        <div class="btn-group">
+          <div class="mb-3 btn-group">
+            <label for="inputEmail" class="form-label btn btn-dark">
+              Edit Email
+            </label>
+            <input type="email" class="form-control border-secondary" placeholder="<%- email %>" name="email"
+              id="inputEmail">
+          </div><br>
+
           <div id="geoUpdateParent" class="input-group mb-3">
-            <label class="input-group-text btn btn-warning" for="long">
+            <label class="input-group-text btn btn-dark" for="long">
               <i class="bi bi-globe"></i>
               Longitude
             </label>
-            <input id="long" type="text" class="form-control text-truncate" name="longitude" readonly disabled hidden>
+            <input id="long" type="text" class="form-control text-truncate border-secondary" name="longitude" readonly
+              disabled hidden>
           </div>
 
           <div class="input-group mb-3">
-            <label class="input-group-text btn btn-warning" for="lat">
+            <label class="input-group-text btn btn-dark" for="lat">
               <i class="bi bi-globe"></i>
               Latitude
             </label>
-            <input id="lat" type="text" class="form-control text-truncate" name="latitude" readonly disabled hidden>
+            <input id="lat" type="text" class="form-control text-truncate border-secondary" name="latitude" readonly
+              disabled hidden>
           </div>
-        </div><br>
 
-        <button id="updateGeoButton" type="button" class="btn btn-danger" onclick="captureGeo()">
-          <i class="bi bi-geo-alt fs-1"></i><br>
-          Update<br>Location?
-        </button><br>
+          <button id="updateGeoButton" type="button" class="btn btn-dark" onclick="captureGeo()">
+            <i class="bi bi-geo-alt fs-1"></i><br>
+            Update<br>Location?
+          </button><br>
 
-        <button type="submit" class="btn btn-success my-3">
-          <i class="bi bi-floppy fs-1"></i><br>
-          Save Edits
-        </button>
-      </div>
-    </fieldset>
-  </form>
-</div>
-<script>
-  let geoUpdated = false;
-  let animationTimeout;
+          <button type="submit" class="btn btn-secondary my-3">
+            <i class="bi bi-floppy fs-1"></i><br>
+            Save Edits
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <script>
+    let geoUpdated = false;
+    let animationTimeout;
 
-  const form = document.getElementById("editProfile");
+    const form = document.getElementById("editProfile");
 
-  async function captureGeo() {
-    // Animation For Updating
-    updateGeoButton.innerHTML = `
+    async function captureGeo() {
+      // Animation For Updating
+      updateGeoButton.innerHTML = `
       <i class="bi bi-hourglass-top fs-1"></i><br>
       Updating .
     `;
-    await delay(500);
+      await delay(500);
 
-    updateGeoButton.innerHTML = `
+      updateGeoButton.innerHTML = `
       <i class="bi bi-hourglass-bottom fs-1"></i><br>
       Updating . .
     `;
-    await delay(500);
+      await delay(500);
 
-    updateGeoButton.innerHTML = `
+      updateGeoButton.innerHTML = `
       <i class="bi bi-hourglass-top fs-1"></i><br>
       Updating . . .
     `;
-    await delay(500);
+      await delay(500);
 
-    navigator.geolocation.getCurrentPosition((position) => {
+      navigator.geolocation.getCurrentPosition((position) => {
 
-      let formLong = document.getElementById("long");
-      let formLat = document.getElementById("lat");
-      formLong.value = position.coords.longitude;
-      formLat.value = position.coords.latitude;
-      formLong.hidden = false;
-      formLat.hidden = false;
-      formLong.disabled = false;
-      formLat.disabled = false;
-      stopAnimation();
-      $("#updateGeoButton").html(`
+        let formLong = document.getElementById("long");
+        let formLat = document.getElementById("lat");
+        formLong.value = position.coords.longitude;
+        formLat.value = position.coords.latitude;
+        formLong.hidden = false;
+        formLat.hidden = false;
+        formLong.disabled = false;
+        formLat.disabled = false;
+        stopAnimation();
+        $("#updateGeoButton").html(`
         <i class="bi bi-check-square fs-1"></i><br>
         Updated
       `);
-      geoUpdated = true;
-    }, (err => {
-      $("#updateGeoButton").html(`
+        geoUpdated = true;
+      }, (err => {
+        $("#updateGeoButton").html(`
         <i class="bi bi-geo-alt fs-1"></i><br>
         Try Again?.
       `);
-    }), {
-      timeout: 10000
+      }), {
+        timeout: 10000
+      });
+    }
+
+    // Function to stop the animation after a certain period of time
+    function delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    // Function to stop the animation after a certain period of time
+    function stopAnimation() {
+      clearTimeout(animationTimeout);
+    }
+
+    function pictureChanged() {
+      $("#editProfilePicSuccess").toggleClass("d-none");
+    }
+
+    $(document).ready(function () {
+      $(".editProfilePic").css("background-image", "url(<%= userIcon %>)");
     });
-}
-
-// Function to stop the animation after a certain period of time
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Function to stop the animation after a certain period of time
-function stopAnimation() {
-  clearTimeout(animationTimeout);
-}
-
-function pictureChanged() {
-  $("#editProfilePicSuccess").toggleClass("d-none");
-}
-
-$(document).ready(function () {
-  $(".editProfilePic").css("background-image", "url(<%= userIcon %>)");
-});
-</script>
-<%- include("templates/footer") %>
+  </script>
+  <%- include("templates/footer") %>
