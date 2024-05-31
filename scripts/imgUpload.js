@@ -58,7 +58,7 @@ async function handleProfileChanges(req, res) {
           message: "Error",
         });
       });
-      console.log()
+    console.log();
   }
   //If the user submitted no valid data, we dont upload anything to Mongo
   if (Object.keys(data) > 0) {
@@ -125,50 +125,70 @@ async function updateMongoUser(req, data) {
 /* #region ------------ PORTFOLIIO EDITING --------------------------- */
 
 async function updatePortfolio(req, res) {
-  //Init for both
-  const type = req.query.type;
-  const username = req.query.username; //CB: I think we can just get the current username using getUsername(); nobody should be editing portfolios that aren't their own, right?
-  const method = req.query.method;
-
-  //For Portfolio Item Changing
   const skill = req.query.skill;
-  const title = req.body.title;
-  const description = req.body.description;
+  let description = req.body.description;
+  let data = JSON.stringify(req.body);
+  let currentSkill = userSkillsCollection.findOne({ name: skill });
+  // data = JSON.parse(data);
+  // data = removeEmptyAttributes(data);
+  let currentUser = userCollection.findOne({
+    username: getUsername(req),
+  });
+  let image = null;
 
-  //For Profile Picture Changing
-  const email = req.body.email;
-
-  try {
-    if (type === "portfolio") {
-      if (method === "add") {
-        res.send({
-          title: title,
-          description: description,
+  if (req.file) {
+    await cloudinary.uploader
+      .upload(req.file.path)
+      .then((result) => {
+        let scheme = "/upload/";
+        let img = result.url.split(scheme)[1];
+        // console.log("Uploaded image:", data);
+        image = img;
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Error",
         });
-      } else if (method === "edit") {
-        await editPortfolioItem(req, res, username, skill, description);
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+      });
+    console.log();
   }
-}
 
-async function editPortfolioItem(req, res, username, skill, description) {
-  try {
-    await editPortfolioOnMongo(req, res, username, skill, description);
-    return;
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: "Error editing the image",
+  let MongoRes = await Promise.all([currentUser, currentSkill]);
+  currentUser = MongoRes[0];
+  currentSkill = MongoRes[1];
+
+  let index = 0;
+  //if the user has a portfolio, we need to find the right onw
+  if (Object.keys(currentUser).includes("portfolio")) {
+    currentUser.portfolio.forEach((obj, ind) => {
+      if (obj.title == currentSkill._id.toString()) {
+        index = ind;
+      }
     });
+
   }
+  await userCollection.updateOne(
+    { username: currentUser.username },
+    {
+      $set: {
+        [`portfolio.${index}.description`]: description,
+      },
+    }
+  );
+  if (image) {
+    await userCollection.updateOne(
+      { username: currentUser.username },
+      {
+        $push: {
+          [`portfolio.${index}.images`]: image,
+        },
+      }
+    );
+  }
+
+  res.redirect("/profile?id=" + currentUser.username);
 }
 
 async function editPortfolioOnMongo(req, res, username, skill, description) {

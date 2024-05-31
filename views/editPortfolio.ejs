@@ -1,21 +1,49 @@
 <%- include("templates/header") %>
 <div class="p-2 mt-2 text-center">
-  <form action="/editPortfolio/upload?type=portfolio&username=<%= username %>&skill=<%- title %>&method=edit" method="post" enctype="multipart/form-data" class="">
-    <!-- Removing this; title is attached to the banner image so we dont want to fuck with it.
-    <div>
-      <label for="portfolioTitle" class="form-label">Edit Title: </label>
-      <input type="text" class="form-control" value="<%- title %>" name="title" id=" portfolioTitle">
-    </div> -->
-
-    <div>
-      <label for="portfolioDesc" class="form-label">Edit Description: </label>
-      <textarea class="form-control" name="description" id=" portfolioDesc" rows="10"><%- description %></textarea>
-    </div>
-
-    <div>
-      <%- include("templates/portfolio-icon-generation", {db: images, count:null, username: username })%>
-    </div>
-    <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
-  </form>
+  <div class="col-lg-6 mx-auto">
+    <form action="/editPortfolio/upload?skill=<%- title %>" method="post" enctype="multipart/form-data" class="" id="editPortfolio">
+      <fieldset>
+        <div class="mb-3">
+          <div class="input-group">
+            <label for='description'>
+              <h3>Edit Description:</h3>
+            </label>
+            <textarea class="form-control" name="description" id="description" rows="10"><%- description %></textarea>
+          </div>
+        </div>
+        <div>
+          <%- include("templates/portfolio-icon-generation", {db: images, count:null, username: username })%>
+        </div>
+        <div class="input-group">
+          <label for='image'>Select new image: </label>
+          <input id='image' name="image" type="file">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Save Edits</button>
+      </fieldset>
+    </form>
+  </div>
 </div>
+
+<script>
+  //on change event listener for #file-select
+  document.getElementById("files").onchange = function() {
+
+    //call getFileSelected method
+    getFileSelected();
+
+  };
+
+  function getFileSelected() {
+
+    //get the value of the input file element
+    var getFileSelected = document.getElementById("files").value;
+
+    //display the results of the input file element
+    //you can append something before the getFileSelected value below
+    //like an image tag for your icon or a string saying "file selected:"
+    //for example.
+    document.getElementById("files").innerHTML = getFileSelected;
+
+  }
+</script>
 <%- include("templates/footer") %>

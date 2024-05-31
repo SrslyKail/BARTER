@@ -798,7 +798,7 @@ async function setupPortfolio(req, res) {
   return {
     title: skill,
     images: gallery,
-    banner: gallery[0] ? gallery[0] : skillData.image,
+    banner: skillData.image,
     description: description,
     username: username,
     currentUser: getUsername(req),
