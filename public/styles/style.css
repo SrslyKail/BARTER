@@ -672,13 +672,14 @@ div[name="userDistance"] {
 /* #region History */
 .histButton {
   width:25vw;
-  min-width: fit-content;
+  min-width: min-content;
   margin: 1vw;
 }
-.transp50 {
-  opacity: 50%;
+.transp33 {
+  opacity: 33%;
 }
 
 .historyHead {
   font-size: xx-large;
+  font-weight: bold;
 }
