@@ -75,6 +75,7 @@
 
 .w-75 {
   max-width: 560px;
+  align-self: center;
 }
 
 /*  */
@@ -579,7 +580,8 @@ div[name="userDistance"] {
 }
 
 .svgStar {
-  width: 24px;
+  width: 5vw;
+  max-width: 25px;
 }
 
 .cardRatingContainer {
@@ -588,7 +590,7 @@ div[name="userDistance"] {
 
 .tightStars {
   grid-area: rating;
-  width: 100%;
+  width: auto;
   position: relative;
   display: flex;
   padding-bottom: 3vh;
@@ -597,13 +599,13 @@ div[name="userDistance"] {
 .starRatings {
   position: absolute;
   grid-area: rating;
-  width: 18vw;
-  min-width: 145px;
+  width: 40vw;
+  min-width: 25vw;
   margin-bottom: 5vw;
 }
 
 .starRatings > * {
-  width: 145px;
+  width: auto;
   position: absolute;
   text-align: center;
 }
@@ -753,12 +755,12 @@ div[name="userDistance"] {
   grid-row: 2;
 }
 
-#editPortfolio {
+/* #editPortfolio {
   display: flex;
   flex-flow: column;
   width: 80vw;
   max-width: 560px;
-}
+} */
 
 .relative {
   position: relative;
@@ -829,11 +831,11 @@ fieldset input[type="file"] {
 }
 
 #editUsernameLabel {
-  padding-right: 49px;
+  align-self: left;
 }
 
 #editEmailLabel {
-  padding-right: 70px;
+  padding-right: auto;
 }
 
 #editLongLabel {
