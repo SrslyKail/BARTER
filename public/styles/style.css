@@ -668,3 +668,17 @@ div[name="userDistance"] {
 }
 
 /* #endregion Profile Rating Menu */
+
+/* #region History */
+.histButton {
+  width:25vw;
+  min-width: fit-content;
+  margin: 1vw;
+}
+.transp50 {
+  opacity: 50%;
+}
+
+.historyHead {
+  font-size: xx-large;
+}
