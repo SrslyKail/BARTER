@@ -688,7 +688,7 @@ div[name="userDistance"] {
 
 /* #region History */
 .histButton {
-  background-color: black;
+  background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity));
   text-align: center;
   text-decoration: none;
   color: white;
@@ -699,8 +699,13 @@ div[name="userDistance"] {
 }
 .historySelected {
   background-color: white;
-  color: black;
-  border-top: 0.25em solid black;
+  color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity));
+  border: 0.25em rgba(var(--bs-dark-rgb),var(--bs-bg-opacity));
+  border-style: solid solid none solid;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: -10px -1px rgba(0, 0, 0, 0.2), 10px -1px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
 .historyHead {
