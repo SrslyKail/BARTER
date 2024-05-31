@@ -1,59 +1,140 @@
 <%- include("templates/header") %>
-<div class="p-2 mt-2 d-flex justify-content-center">
-  <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile">
-    <fieldset>
-      <legend>Edit your profile:</legend>
-      <div class="mb-3">
-        <label for="inputUsername" class="form-label">Edit Username</label>
-        <input type="text" class="form-control" placeholder="<%- name %>" name="username" id="inputUsername">
+  <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile"
+    class="w-100">
+    <fieldset class="d-grid w-100">
+      <legend class="fw-bold fs-1 text-center bg-white">Edit Profile</legend>
+      <div class="d-flex justify-content-center">
+        <label for="formFile" class="form-label">
+          <div class="editProfilePic">
+            <span>
+              <i class="bi bi-camera-fill"></i><br>
+              Change Image
+            </span>
+          </div>
+        </label>
+        <input class="form-control" type="file" name="userIcon" onchange="pictureChanged()" id="formFile">
+        <label>
+          <i class="bi bi-check-circle d-none" id="editProfilePicSuccess"></i>
+        </label>
       </div>
-      <div class="mb-3">
-        <label for="inputEmail" class="form-label">Edit Email</label>
-        <input type="email" class="form-control" placeholder="<%- email %>" name="email" id="inputEmail">
+
+      <div class="d-flex flex-column row-gap-3 m-4">
+        <div class="input-group align-items-start">
+          <label for="inputUsername" class="col-5 h-100 m-0 form-label btn btn-dark" id="editUsernameLabel">
+            <i class="bi bi-person-fill"></i>
+            Username
+          </label>
+          <input type="text" class="col h-100 form-control border-secondary" placeholder="<%- name %>" name="username"
+            id="inputUsername">
+        </div>
+
+        <div class="input-group align-items-start">
+          <label for="inputEmail" class="col-5 h-100 m-0 form-label btn btn-dark" id="editEmailLabel">
+            <i class="bi bi-envelope"></i>
+            Email
+          </label>
+          <input type="email" class="col h-100 form-control border-secondary" placeholder="<%- email %>" name="email"
+            id="inputEmail">
+        </div>
+
+        <div id="geoUpdateParent" class="input-group">
+          <label class="col-5 input-group-text btn btn-dark" for="long" id="editLongLabel">
+            <i class="bi bi-globe"></i>
+            Longitude
+          </label>
+          <input id="long" type="text" class="col h-100 form-control text-truncate border-secondary" name="longitude"
+            readonly disabled hidden>
+        </div>
+
+        <div class="input-group">
+          <label class="col-5 input-group-text btn btn-dark" for="lat" id="editLatLabel">
+            <i class="bi bi-globe"></i>
+            Latitude
+          </label>
+          <input id="lat" type="text" class="col h-100 form-control text-truncate border-secondary" name="latitude"
+            readonly disabled hidden>
+        </div>
+
+        <button id="updateGeoButton" type="button" class="row btn btn-dark" onclick="captureGeo()">
+          <i class="bi bi-geo-alt fs-1"></i><br>
+          Update Location?
+        </button>
+
+        <button type="submit" class="row btn btn-secondary">
+          <i class="bi bi-floppy fs-1"></i><br>
+          Save Edits
+        </button>
       </div>
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Edit Profile Picture:</label>
-        <input class="form-control" type="file" name="userIcon" id="formFile">
-      </div>
-      <div id="geoUpdateParent" class="input-group mb-3">
-        <label class="input-group-text" for="long">Longitude</label>
-        <input id="long" type="text" class="form-control text-truncate" name="longitude" readonly disabled hidden>
-      </div>
-      <div class="input-group mb-3">
-        <label class="input-group-text" for="lat">Latitude</label>
-        <input id="lat" type="text" class="form-control text-truncate" name="latitude" readonly disabled hidden>
-      </div>
-      <button id="updateGeoButton" type="button" class="btn btn-primary" onclick="captureGeo()">Update Location?</button>
-      <button type="submit" class="btn btn-primary my-3">Save Edits</button>
     </fieldset>
   </form>
-</div>
-<script>
-  let geoUpdated = false;
+  <script>
+    let geoUpdated = false;
+    let animationTimeout;
 
-  const form = document.getElementById("editProfile");
+    const form = document.getElementById("editProfile");
 
-  async function captureGeo() {
-    let updateGeoButton = document.getElementById("updateGeoButton");
-    updateGeoButton.textContent = "Updating...";
+    async function captureGeo() {
+      // Animation For Updating
+      updateGeoButton.innerHTML = `
+      <i class="bi bi-hourglass-top fs-1"></i><br>
+      Updating .
+    `;
+      await delay(500);
 
-    navigator.geolocation.getCurrentPosition((position) => {
+      updateGeoButton.innerHTML = `
+      <i class="bi bi-hourglass-bottom fs-1"></i><br>
+      Updating . .
+    `;
+      await delay(500);
 
-      let formLong = document.getElementById("long");
-      let formLat = document.getElementById("lat");
-      formLong.value = position.coords.longitude;
-      formLat.value = position.coords.latitude;
-      formLong.hidden = false;
-      formLat.hidden = false;
-      formLong.disabled = false;
-      formLat.disabled = false;
-      updateGeoButton.textContent = "Update Location?";
-      geoUpdated = true;
-    }, (err => {
-      updateGeoButton.textContent = "Try again?";
-    }), {
-      timeout: 10000
+      updateGeoButton.innerHTML = `
+      <i class="bi bi-hourglass-top fs-1"></i><br>
+      Updating . . .
+    `;
+      await delay(500);
+
+      navigator.geolocation.getCurrentPosition((position) => {
+
+        let formLong = document.getElementById("long");
+        let formLat = document.getElementById("lat");
+        formLong.value = position.coords.longitude;
+        formLat.value = position.coords.latitude;
+        formLong.hidden = false;
+        formLat.hidden = false;
+        formLong.disabled = false;
+        formLat.disabled = false;
+        stopAnimation();
+        $("#updateGeoButton").html(`
+        <i class="bi bi-check-square fs-1"></i><br>
+        Updated
+      `);
+        geoUpdated = true;
+      }, (err => {
+        $("#updateGeoButton").html(`
+        <i class="bi bi-geo-alt fs-1"></i><br>
+        Try Again?.
+      `);
+      }), {
+        timeout: 10000
+      });
+    }
+
+    // Function to stop the animation after a certain period of time
+    function delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    // Function to stop the animation after a certain period of time
+    function stopAnimation() {
+      clearTimeout(animationTimeout);
+    }
+
+    function pictureChanged() {
+      $("#editProfilePicSuccess").toggleClass("d-none");
+    }
+
+    $(document).ready(function () {
+      $(".editProfilePic").css("background-image", "url(<%= userIcon %>)");
     });
-  }
-</script>
-<%- include("templates/footer") %>
+  </script>
+  <%- include("templates/footer") %>

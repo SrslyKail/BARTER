@@ -8,7 +8,7 @@
     <div style="flex-grow: 1;"></div>
 
     <!-- po: this feels like too easy of a solution so i left the old code in the comments below -->
-    <%- include("templates/components/editButton", {link:"/editProfile"})%> <%}%>
+    <%- include("templates/components/editButton", {link:"/editProfile?userIcon="+userIcon})%> <%}%>
     
     <%#let linkString = "/editProfile?name=" + user.username %>
     <%#- include("templates/components/editButton", {link:linkString}) }%>

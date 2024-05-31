@@ -786,6 +786,66 @@ div[name="userDistance"] {
 
 /* #endregion Auth pages */
 
+/* #region editProfile page */
+.editProfilePic {
+  border-radius: 50%;
+  border: black solid 5px;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  vertical-align: middle;
+  text-align: center;
+  color: transparent;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.editProfilePic:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.editProfilePic span {
+  display: inline-block;
+  padding-top: 4.5em;
+  padding-bottom: 4.5em;
+}
+
+#editProfilePicSuccess {
+  border-radius: 50%;
+  padding: 5px 7.5px 5px;
+  background-color: green;
+  color: white;
+}
+
+fieldset input[type="file"] {
+  display: none;
+}
+
+#editUsernameLabel {
+  padding-right: 49px;
+}
+
+#editEmailLabel {
+  padding-right: 70px;
+}
+
+#editLongLabel {
+  padding-right: 40px;
+}
+
+#editLatLabel {
+  padding-right: 53px;
+}
+
+/* #endregion editProfile page */
+
 /* #region ZAMN! */
 
 /* .zamnBackToggle {
