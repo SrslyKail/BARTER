@@ -14,12 +14,13 @@
 </div>
 <div id="iconGridContainer">
   <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
+    <% let hasSkill = false %>
     <% db.forEach((skillUser) => { %>
     <% if(typeof user === "undefined" || skillUser.username != user.username){ %>
     <div class=" profilePageCard skillPageCard">
       <%- include('templates/components/profileCard', {userCard: skillUser}); %>
     </div>
-    <%}}) %>
+    <%} else { hasSkill = true;}}) %>
   </div>
 </div>
 
@@ -29,4 +30,5 @@
   document.getElementById("backButton").addEventListener("click", goBack)
 </script> -->
 <% let test="test" %>
-<%- include("templates/footer", {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) }) %>
+<% addButton = hasSkill ? {} : {addSkillButton: include("templates/components/addSkillButton", {buttonText: "Add your Profile", link: "/add-skill/" + skillObjID}) } %>
+<%- include("templates/footer", addButton) %>
