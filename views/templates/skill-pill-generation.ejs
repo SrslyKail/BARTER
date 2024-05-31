@@ -25,7 +25,7 @@
         <% for (let i = 0; i < db.length; i ++) {  %>
         <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i, username:username}) %>
         <% } %>
-        <% let pages = Math.floor(db.length / 3)%>
+        <% let pages = Math.ceil(db.length / 3)%>
         <%#console.log(pages)%>
         <% let currentPage= 0%>
 

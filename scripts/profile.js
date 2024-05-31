@@ -1,5 +1,5 @@
 let currentPage = 0;
-let maxPage = Math.floor(
+let maxPage = Math.ceil(
   (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3);
   console.log(maxPage)
 
