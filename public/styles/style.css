@@ -12,21 +12,17 @@
 /* #region Import Logo Font */
 @font-face {
   font-family: "basquiatregular";
-  src: url("../basquiat.woff2") format("woff2"),
-    url("../basquiat.woff") format("woff"), url("../basquiat.otf") format("otf"),
-    url("../basquiat.ttf") format("ttf");
+  src: url("./fonts/basquiat.woff2") format("woff2"),
+    url("./fonts/basquiat.woff") format("woff"),
+    url("./fonts/basquiat.otf") format("otf"),
+    url("./fonts/basquiat.ttf") format("ttf");
   font-weight: normal;
   font-style: normal;
 }
 
 /* #endregion Import Logo Font */
 
-/* #region header
-#profileButton {
-  width: 40pt;
-  margin: 0 2% 0 0 !important;
-  padding: 0;
-} */
+/* #region header */
 
 #profileButton * {
   border: 1px solid black;
