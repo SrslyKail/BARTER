@@ -3,14 +3,14 @@
 
       <div class="profileCardDataGrid">
         <div class="profileIconContainer">
-          <a class="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("profileIcon", {userIcon: userCard.userIcon}) %></a>
+          <a class="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("components/profileIcon", {userIcon: userCard.userIcon}) %></a>
         </div>
         <div class="cardUsername" style="font-weight: bold;"><%= userCard.username %></div>
         <div class="tightStars">
           <%# if (userCard.rateCount != null) { %>
           <%# console.log("User card for", userCard.username) %>
           <%# This should pass in userCard.rateValue and userCard.rateCount, then do the proper math %>
-          <%- include("cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
+          <%- include("components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
           <%# } %>
 
         </div>
