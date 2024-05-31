@@ -1,61 +1,66 @@
 <%- include("templates/header") %>
-<div class="justHeadContainer">
-  <div id="subbar" class="navbar flex-nowrap vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .6;">
-    <%let link = "/"%>
+  <div class="justHeadContainer">
+    <div id="subbar" class="navbar flex-nowrap vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .6;">
+      <%let link="/" %>
 
-    <%- include("templates/components/backButton", {link: link})%>
-    <div style="flex-grow: 1;"></div>
-  </div>
-  <title><% if (typeof filter !== 'undefined') %></title>
-
-  <div class=" vh-7 d-flex justify-content-center text-center">
-    <h1><% if (typeof filter !== 'undefined') %></h1>
-  </div><br>
-  <div class="d-flex justify-content-center text-center">
-
-    <%if(filter == "visited"){ %>
-    <span class="historyHead">Recently Viewed</span>
-    <%} else {%>
-    <span class="historyHead">Recently Contacted</span>
-    <%}%>
-
-  <!-- <p>CHECK YOUR VIEW HISTORY</p> -->
-</div>
-</br>
-
-<div id="historyTabs" class="bg-dark">
-  <%if(filter == "visited"){ %>
-    <a id="visitedButton" class="historySelected histButton noClick">
-      <i class="bi bi-search-heart"></i>
-      VISITED
-    </a>
-    <a id="contactedButton" class="histButton" href="/history/contacted">
-      <i class="bi bi-telephone"></i>
-      CONTACTED
-    </a>
-    <%} else {%>
-    <a id="visitedButton" class="histButton" href="/history/visited">
-      <i class="bi bi-search-heart"></i>
-      VISITED
-    </a>
-    <a id="contactedButton" class="historySelected histButton noClick" href="/history/contacted">
-      <i class="bi bi-telephone"></i>
-      CONTACTED
-    </a>
-  <% } %>
-</div>
-
-<div id="iconGridContainer">
-  <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
-  <% if (typeof data !== 'undefined') { %>
-    <% data.forEach((profile) => { %>
-    <div class=" profilePageCard skillPageCard">
-      <%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
+        <%- include("templates/components/backButton", {link: link})%>
+          <div style="flex-grow: 1;"></div>
     </div>
-    <% }); %>
-    <% } %>
-  </div>
-</div>
-</div>
+    <title>
+      <% if (typeof filter !=='undefined' ) %>
+    </title>
 
-<%- include("templates/footer") %>
+    <div class=" vh-7 d-flex justify-content-center text-center">
+      <h1>
+        <% if (typeof filter !=='undefined' ) %>
+      </h1>
+    </div><br>
+    <div class="d-flex justify-content-center text-center">
+
+      <%if(filter=="visited" ){ %>
+        <span class="historyHead">Recently Viewed</span>
+        <%} else {%>
+          <span class="historyHead">Recently Contacted</span>
+          <%}%>
+
+            <!-- <p>CHECK YOUR VIEW HISTORY</p> -->
+    </div>
+    </br>
+
+    <div id="historyTabs" class="bg-dark">
+      <%if(filter=="visited" ){ %>
+        <a id="visitedButton" class="historySelected histButton noClick">
+          <i class="bi bi-search-heart"></i>
+          VISITED
+        </a>
+        <a id="contactedButton" class="histButton" href="/history/contacted">
+          <i class="bi bi-telephone"></i>
+          CONTACTED
+        </a>
+        <%} else {%>
+          <a id="visitedButton" class="histButton" href="/history/visited">
+            <i class="bi bi-search-heart"></i>
+            VISITED
+          </a>
+          <a id="contactedButton" class="historySelected histButton noClick" href="/history/contacted">
+            <i class="bi bi-telephone"></i>
+            CONTACTED
+          </a>
+          <% } %>
+    </div>
+
+    <div id="iconGridContainer">
+      <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
+        <% if (typeof data !=='undefined' ) { %>
+          <% data.forEach((profile)=> { %>
+            <div class=" profilePageCard skillPageCard">
+              <%- include("templates/profileCard", {userCard: profile, userIcon:
+                formatProfileIconPath(profile.userIcon)}) %>
+            </div>
+            <% }); %>
+              <% } %>
+      </div>
+    </div>
+  </div>
+
+  <%- include("templates/footer") %>
