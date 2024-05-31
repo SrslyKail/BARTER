@@ -849,7 +849,7 @@ app.get("/editPortfolio", async (req, res) => {
     return;
   }
   data = await setupPortfolio(req, res);
-  console.log(data);
+  // console.log(data);
   res.render("editPortfolio", data);
 });
 
