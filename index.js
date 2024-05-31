@@ -276,8 +276,6 @@ app.get("/testing", async (req, res) => {
   res.render("testing");
 });
 
-});
-
 app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
