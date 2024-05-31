@@ -37,7 +37,9 @@
   width: 75%;
 }
 
-*{scrollbar-width: none;}
+* {
+  scrollbar-width: none;
+}
 
 /* #region headerButtons */
 /* #endregion headerButtons */
@@ -110,7 +112,7 @@
 .noClick {
   pointer-events: none;
 }
-.my-7{
+.my-7 {
   margin-top: 7;
 }
 
@@ -126,7 +128,7 @@
 #iconGridContainer {
   display: flex;
   justify-content: center;
-  margin-bottom:10vh;
+  margin-bottom: 10vh;
 }
 
 .addSkillButton {
@@ -343,7 +345,7 @@ form.d-grid {
   /* The version for chrome :c */
   clip-path: fill-box;
   aspect-ratio: 37/7;
-  color: rgba(255,250,238,0);
+  color: rgba(255, 250, 238, 0);
 }
 
 .pillbox :is(img, a) {
@@ -470,7 +472,7 @@ form.d-grid {
 
 #profilePortfolioEditButton {
   position: absolute;
-  left:85%;
+  left: 85%;
 }
 /* 
 #reviewArea {
@@ -686,17 +688,30 @@ div[name="userDistance"] {
 
 /* #region History */
 .histButton {
-  width:25vw;
-  min-width: min-content;
-  margin: 1vw;
+  background-color: black;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  padding: 1em;
+  width: 50%;
+  font-size: large;
+  font-weight: bold;
 }
-.transp33 {
-  opacity: 33%;
+.historySelected {
+  background-color: white;
+  color: black;
+  border-top: 0.25em solid black;
 }
 
 .historyHead {
   font-size: xx-large;
   font-weight: bold;
+}
+
+#historyTabs {
+  display: flex;
+  width: 100%;
+  flex: wrap;
 }
 
 /* #endregion History */
@@ -722,7 +737,7 @@ div[name="userDistance"] {
 #editPortfolio {
   display: flex;
   flex-flow: column;
-  width:80vw;
+  width: 80vw;
   max-width: 560px;
 }
 
@@ -736,7 +751,7 @@ div[name="userDistance"] {
 }
 
 #imgSelect {
-  display:flex;
+  display: flex;
   flex-flow: column;
   row-gap: 1em;
   justify-content: center;
