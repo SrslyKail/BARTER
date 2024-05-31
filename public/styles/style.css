@@ -770,6 +770,7 @@ div[name="userDistance"] {
 /* #region editProfile page */
 .editProfilePic {
   border-radius: 50%;
+  border: white solid 5px;
   height: 150px;
   width: 150px;
   background-size: cover;
@@ -795,6 +796,13 @@ div[name="userDistance"] {
   display: inline-block;
   padding-top: 4.5em;
   padding-bottom: 4.5em;
+}
+
+#editProfilePicSuccess {
+  border-radius: 50%;
+  padding: 5px 7.5px 5px;
+  background-color: green;
+  color: white;
 }
 
 fieldset input[type="file"] {
