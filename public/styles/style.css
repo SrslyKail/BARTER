@@ -37,6 +37,8 @@
   width: 75%;
 }
 
+*{scrollbar-width: none;}
+
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
