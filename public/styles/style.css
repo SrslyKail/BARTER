@@ -741,3 +741,13 @@ div[name="userDistance"] {
   row-gap: 1em;
   justify-content: center;
 }
+
+/* #endregion Portfolio */
+
+/* #region Auth pages */
+
+.authSpan > a {
+  color: maroon;
+}
+
+/* #endregion Auth pages */
