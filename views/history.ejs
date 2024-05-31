@@ -22,15 +22,26 @@
   <!-- <p>CHECK YOUR VIEW HISTORY</p> -->
 </div>
 
-<div id="historyFilterButtons" class="d-flex container justify-content-center">
+<div id="historyTabs">
   <%if(filter == "visited"){ %>
-    <a id="visitedButton" class="transp33 histButton btn btn-secondary btn-lg noClick">VISITED</a>
-    <a id="contactedButton" class="histButton btn btn-secondary btn-lg" href="/history/contacted">CONTACTED</a>
+    <a id="visitedButton" class="historySelected histButton noClick">
+      <i class="bi bi-search-heart"></i>
+      VISITED
+    </a>
+    <a id="contactedButton" class="histButton" href="/history/contacted">
+      <i class="bi bi-telephone"></i>
+      CONTACTED
+    </a>
     <%} else {%>
-    <a id="visitedButton" class="histButton btn btn-secondary btn-lg" href="/history/visited">VISITED</a>
-    <a id="contactedButton" class="transp33 histButton btn btn-secondary btn-lg noClick" href="/history/contacted">CONTACTED</a>
-
-    <%}%>
+    <a id="visitedButton" class="histButton" href="/history/visited">
+      <i class="bi bi-search-heart"></i>
+      VISITED
+    </a>
+    <a id="contactedButton" class="historySelected histButton noClick" href="/history/contacted">
+      <i class="bi bi-telephone"></i>
+      CONTACTED
+    </a>
+  <% } %>
 </div>
 
 <div id="iconGridContainer">
