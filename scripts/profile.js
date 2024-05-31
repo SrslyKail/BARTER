@@ -1,6 +1,7 @@
 let currentPage = 0;
-let maxPage =
-  (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3;
+let maxPage = Math.floor(
+  (document.getElementsByClassName("pillGrid")[0].children.length + 1) / 3);
+  console.log(maxPage)
 
 const left = document.getElementById("leftPag");
 const right = document.getElementById("rightPag");
@@ -118,5 +119,6 @@ function sliding() {
 
 sliding();
 // setArrowListeners();
+
 setCircleListeners();
 findPill();
