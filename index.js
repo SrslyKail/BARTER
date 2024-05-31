@@ -877,7 +877,7 @@ app.get("/history/:filter", async (req, res) => {
 
   if (!currentUser) {
     res.redirect("/");
-    return; 
+    return;
   }
 
   currentUser = await userCollection.findOne({
@@ -936,6 +936,7 @@ app.get("/editPortfolio", async (req, res) => {
     return;
   }
   data = await setupPortfolio(req, res);
+  console.log(data)
   res.render("editPortfolio", data);
 });
 
@@ -970,6 +971,13 @@ async function setupPortfolio(req, res) {
       }
     }
   }
+  let referrer = req.get("referrer");
+  //Check current user.
+  //Check current user.
+  let currentUser = getUser(req);
+  if (referrer == undefined) {
+    referrer = "/";
+  }
 
   return {
     title: skill,
@@ -978,6 +986,7 @@ async function setupPortfolio(req, res) {
     description: description,
     username: username,
     currentUser: getUsername(req),
+    referrer: referrer,
   };
 }
 
@@ -1000,46 +1009,61 @@ app.get("/addPortfolio", async (req, res) => {
 });
 
 /**
- * Edit Portfolio Page.
+ * Edit Portfolio Page. Deprecated
  */
-app.get("/editPortfolio", async (req, res) => {
-  const username = req.query.username;
-  const skill = req.query.skill;
-  let gallery = [];
-  let description = "";
+// app.get("/editPortfolio", async (req, res) => {
+//   const username = req.query.username;
+//   const skill = req.query.skill;
+//   let gallery = [];
+//   let description = "";
 
-  if (!username) {
-    res.redirect("/profile");
-    return;
-  }
+//   let referrer = req.get("referrer");
+//   //Check current user.
+//   //Check current user.
+//   let currentUser = getUser(req);
 
-  if (!skill) {
-    res.redirect("/profile");
-    return;
-  }
+//   if (!currentUser) {
+//     res.redirect("/");
+//     return;
+//   }
+//   if (referrer == undefined) {
+//     referrer = "/";
+//   }
+//   console.log("AAAAAAAAAAAAAA" + referrer)
 
-  const userData = await userCollection.findOne({
-    username: username,
-  });
+//   if (!username) {
+//     res.redirect("/profile");
+//     return;
+//   }
 
-  const skillData = await userSkillsCollection.findOne({
-    name: skill,
-  });
+//   if (!skill) {
+//     res.redirect("/profile");
+//     return;
+//   }
 
-  for (let i = 0; i < userData.portfolio.length; i++) {
-    if (userData.portfolio[i].title === skillData._id.toString()) {
-      gallery = userData.portfolio[i].images;
-      description = userData.portfolio[i].description;
-    }
-  }
+//   const userData = await userCollection.findOne({
+//     username: username,
+//   });
 
-  res.render("editPortfolio", {
-    title: skill,
-    description: description,
-    images: gallery,
-    username: username,
-  });
-});
+//   const skillData = await userSkillsCollection.findOne({
+//     name: skill,
+//   });
+
+//   for (let i = 0; i < userData.portfolio.length; i++) {
+//     if (userData.portfolio[i].title === skillData._id.toString()) {
+//       gallery = userData.portfolio[i].images;
+//       description = userData.portfolio[i].description;
+//     }
+//   }
+
+//   res.render("editPortfolio", {
+//     title: skill,
+//     description: description,
+//     images: gallery,
+//     username: username,
+//     referrer: referrer,
+//   });
+// });
 
 /**
  * Handles all the resetting code.
