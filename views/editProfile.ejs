@@ -22,23 +22,25 @@
 
         <div class="d-grid m-4">
           <div class="mb-3 btn-group">
-            <label for="inputUsername" class="form-label btn btn-dark">
-              Edit Username
+            <label for="inputUsername" class="form-label btn btn-dark" id="editUsernameLabel">
+              <i class="bi bi-person-fill"></i>
+              Username
             </label>
             <input type="text" class="form-control border-secondary" placeholder="<%- name %>" name="username"
               id="inputUsername">
           </div>
 
           <div class="mb-3 btn-group">
-            <label for="inputEmail" class="form-label btn btn-dark">
-              Edit Email
+            <label for="inputEmail" class="form-label btn btn-dark" id="editEmailLabel">
+              <i class="bi bi-envelope"></i>
+              Email
             </label>
             <input type="email" class="form-control border-secondary" placeholder="<%- email %>" name="email"
               id="inputEmail">
           </div><br>
 
-          <div id="geoUpdateParent" class="input-group mb-3">
-            <label class="input-group-text btn btn-dark" for="long">
+          <div id="geoUpdateParent" class="input-group mb-3 pe-5">
+            <label class="input-group-text btn btn-dark" for="long" id="editLongLabel">
               <i class="bi bi-globe"></i>
               Longitude
             </label>
@@ -47,7 +49,7 @@
           </div>
 
           <div class="input-group mb-3">
-            <label class="input-group-text btn btn-dark" for="lat">
+            <label class="input-group-text btn btn-dark" for="lat" id="editLatLabel">
               <i class="bi bi-globe"></i>
               Latitude
             </label>
