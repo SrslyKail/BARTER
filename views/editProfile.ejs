@@ -1,75 +1,72 @@
 <%- include("templates/header") %>
-  <div class="d-grid m-0 w-100">
-    <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile"
-      class="w-100">
-      <fieldset class="d-grid w-100">
-        <legend class="fw-bold fs-1 text-center bg-white">Edit Profile</legend>
+  <form action="/editProfile/upload" method="post" enctype="multipart/form-data" class="" id="editProfile"
+    class="w-100">
+    <fieldset class="d-grid w-100">
+      <legend class="fw-bold fs-1 text-center bg-white">Edit Profile</legend>
+      <div class="d-flex justify-content-center">
+        <label for="formFile" class="form-label">
+          <div class="editProfilePic">
+            <span>
+              <i class="bi bi-camera-fill"></i><br>
+              Change Image
+            </span>
+          </div>
+        </label>
+        <input class="form-control" type="file" name="userIcon" onchange="pictureChanged()" id="formFile">
+        <label>
+          <i class="bi bi-check-circle d-none" id="editProfilePicSuccess"></i>
+        </label>
+      </div>
 
-        <div class="d-flex justify-content-center">
-          <label for="formFile" class="form-label">
-            <div class="editProfilePic">
-              <span>
-                <i class="bi bi-camera-fill"></i><br>
-                Change Image
-              </span>
-            </div>
+      <div class="d-flex flex-column row-gap-3 m-4">
+        <div class="input-group align-items-start">
+          <label for="inputUsername" class="col-5 h-100 m-0 form-label btn btn-dark" id="editUsernameLabel">
+            <i class="bi bi-person-fill"></i>
+            Username
           </label>
-          <input class="form-control" type="file" name="userIcon" onchange="pictureChanged()" id="formFile">
-          <label>
-            <i class="bi bi-check-circle d-none" id="editProfilePicSuccess"></i>
-          </label>
+          <input type="text" class="col h-100 form-control border-secondary" placeholder="<%- name %>" name="username"
+            id="inputUsername">
         </div>
 
-        <div class="d-grid m-4">
-          <div class="mb-3 btn-group">
-            <label for="inputUsername" class="form-label btn btn-dark" id="editUsernameLabel">
-              <i class="bi bi-person-fill"></i>
-              Username
-            </label>
-            <input type="text" class="form-control border-secondary" placeholder="<%- name %>" name="username"
-              id="inputUsername">
-          </div>
-
-          <div class="mb-3 btn-group">
-            <label for="inputEmail" class="form-label btn btn-dark" id="editEmailLabel">
-              <i class="bi bi-envelope"></i>
-              Email
-            </label>
-            <input type="email" class="form-control border-secondary" placeholder="<%- email %>" name="email"
-              id="inputEmail">
-          </div><br>
-
-          <div id="geoUpdateParent" class="input-group mb-3 pe-5">
-            <label class="input-group-text btn btn-dark" for="long" id="editLongLabel">
-              <i class="bi bi-globe"></i>
-              Longitude
-            </label>
-            <input id="long" type="text" class="form-control text-truncate border-secondary" name="longitude" readonly
-              disabled hidden>
-          </div>
-
-          <div class="input-group mb-3">
-            <label class="input-group-text btn btn-dark" for="lat" id="editLatLabel">
-              <i class="bi bi-globe"></i>
-              Latitude
-            </label>
-            <input id="lat" type="text" class="form-control text-truncate border-secondary" name="latitude" readonly
-              disabled hidden>
-          </div>
-
-          <button id="updateGeoButton" type="button" class="btn btn-dark" onclick="captureGeo()">
-            <i class="bi bi-geo-alt fs-1"></i><br>
-            Update<br>Location?
-          </button><br>
-
-          <button type="submit" class="btn btn-secondary my-3">
-            <i class="bi bi-floppy fs-1"></i><br>
-            Save Edits
-          </button>
+        <div class="input-group align-items-start">
+          <label for="inputEmail" class="col-5 h-100 m-0 form-label btn btn-dark" id="editEmailLabel">
+            <i class="bi bi-envelope"></i>
+            Email
+          </label>
+          <input type="email" class="col h-100 form-control border-secondary" placeholder="<%- email %>" name="email"
+            id="inputEmail">
         </div>
-      </fieldset>
-    </form>
-  </div>
+
+        <div id="geoUpdateParent" class="input-group">
+          <label class="col-5 input-group-text btn btn-dark" for="long" id="editLongLabel">
+            <i class="bi bi-globe"></i>
+            Longitude
+          </label>
+          <input id="long" type="text" class="col h-100 form-control text-truncate border-secondary" name="longitude"
+            readonly disabled hidden>
+        </div>
+
+        <div class="input-group">
+          <label class="col-5 input-group-text btn btn-dark" for="lat" id="editLatLabel">
+            <i class="bi bi-globe"></i>
+            Latitude
+          </label>
+          <input id="lat" type="text" class="col h-100 form-control text-truncate border-secondary" name="latitude"
+            readonly disabled hidden>
+        </div>
+
+        <button id="updateGeoButton" type="button" class="row btn btn-dark" onclick="captureGeo()">
+          <i class="bi bi-geo-alt fs-1"></i><br>
+          Update Location?
+        </button>
+
+        <button type="submit" class="row btn btn-secondary">
+          <i class="bi bi-floppy fs-1"></i><br>
+          Save Edits
+        </button>
+      </div>
+    </fieldset>
+  </form>
   <script>
     let geoUpdated = false;
     let animationTimeout;
