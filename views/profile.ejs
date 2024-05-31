@@ -23,7 +23,7 @@
       <h2>
         <b>Skills</b>
         <%if (user.username == userCard.username) {%>
-        <button onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
+        <button id = "profilePortfolioEditButton" onclick="toggleAdd()" class="btn btn-secondary">Edit</button>
         <%}%>
         <a href="/addPortfolio?username=<%= userCard.username %>" id="addButton" class="btn btn-secondary d-none"><i class="bi bi-plus-square"></i></a>
       </h2>

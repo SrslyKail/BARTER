@@ -456,11 +456,17 @@ form.d-grid {
 #pillArea {
   width: inherit;
   grid-row: 3;
+  position: relative;
 }
 
 #portfolioArea {
   width: inherit;
   grid-row: 4;
+}
+
+#profilePortfolioEditButton {
+  position: absolute;
+  left:85%;
 }
 /* 
 #reviewArea {
