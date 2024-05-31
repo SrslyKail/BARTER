@@ -68,6 +68,9 @@
 .d-none {
   display: none;
 }
+.w-75 {
+  max-width: 560px;
+}
 
 /*  */
 .mask {
@@ -118,6 +121,15 @@
 #iconGridContainer {
   display: flex;
   justify-content: center;
+  margin-bottom:10vh;
+}
+
+.addSkillButton {
+  font-family: basquiat;
+  font-size: 4vh;
+  color: maroon;
+  padding: 0 0.5em 0 0.5em;
+  border-radius: 5px;
 }
 
 /* Grid for testing (expands infinitely) */
