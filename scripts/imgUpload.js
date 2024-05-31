@@ -128,7 +128,6 @@ async function updateMongoUser(req, data) {
 async function updatePortfolio(req, res) {
   const skill = req.query.skill;
   let description = req.body.description;
-  let data = JSON.stringify(req.body);
   let currentSkill = userSkillsCollection.findOne({ name: skill });
   // data = JSON.parse(data);
   // data = removeEmptyAttributes(data);
@@ -153,7 +152,6 @@ async function updatePortfolio(req, res) {
           message: "Error",
         });
       });
-    console.log();
   }
 
   let MongoRes = await Promise.all([currentUser, currentSkill]);
@@ -161,58 +159,67 @@ async function updatePortfolio(req, res) {
   currentSkill = MongoRes[1];
 
   let index = 0;
+  let found = false;
+
   //if the user has a portfolio, we need to find the right onw
-  if (Object.keys(currentUser).includes("portfolio")) {
+  let userKeys = Object.keys(currentUser);
+  console.log(typeof currentUser.portfolio === "object");
+  if (userKeys.includes("portfolio") && currentUser.portfolio.length) {
     currentUser.portfolio.forEach((obj, ind) => {
       if (obj.title == currentSkill._id.toString()) {
         index = ind;
+        found = true;
       }
     });
   }
-  await userCollection.updateOne(
-    { username: currentUser.username },
-    {
-      $set: {
-        [`portfolio.${index}.description`]: description,
-      },
-    }
-  );
-  if (image) {
-    await userCollection.updateOne(
-      { username: currentUser.username },
-      {
-        $push: {
-          [`portfolio.${index}.images`]: image,
+
+  if (!found) {
+    //we push a new array
+    let updates = {
+      $push: {
+        portfolio: {
+          title: currentSkill._id.toString(),
+          images: [],
+          description: description,
         },
-      }
-    );
+      },
+    };
+
+    await userCollection
+      .updateOne(
+        {
+          username: currentUser.username,
+        },
+        updates
+      )
+      .then((results) => {
+        console.log("Initialization results:\n", results);
+      });
   }
+
+  //we update with the image and data
+  let updates = {
+    $set: {
+      [`portfolio.$.description`]: description,
+    },
+  };
+  if (image) {
+    updates["$push"] = { "portfolio.$.images": image };
+  }
+  await userCollection
+    .updateOne(
+      {
+        username: currentUser.username,
+        "portfolio.title": currentSkill._id.toString(),
+      },
+      updates
+    )
+    .then((result) => {
+      console.log(result);
+      console.log();
+    });
 
   res.redirect("/profile?id=" + currentUser.username);
-}
-
-async function editPortfolioOnMongo(req, res, username, skill, description) {
-  const userData = await userCollection.findOne({ username: username });
-  const skillData = await userSkillsCollection.findOne({
-    name: skill,
-  });
-  let index = 0;
-
-  for (let i = 0; i < userData.portfolio.length; i++) {
-    if (userData.portfolio[i].title === skillData._id.toString()) {
-      index = i;
-    }
-  }
-
-  await userCollection.updateOne(
-    { username: username },
-    {
-      $set: {
-        [`portfolio.${index}.description`]: description,
-      },
-    }
-  );
-  res.redirect("/profile?id=" + username);
 }
 /* #region ------------ PORTFOLIIO EDITING --------------------------- */
 
