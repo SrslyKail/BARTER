@@ -339,6 +339,7 @@ form.d-grid {
   /* The version for chrome :c */
   clip-path: fill-box;
   aspect-ratio: 37/7;
+  color: rgba(255,250,238,0);
 }
 
 .pillbox :is(img, a) {
@@ -455,11 +456,17 @@ form.d-grid {
 #pillArea {
   width: inherit;
   grid-row: 3;
+  position: relative;
 }
 
 #portfolioArea {
   width: inherit;
   grid-row: 4;
+}
+
+#profilePortfolioEditButton {
+  position: absolute;
+  left:85%;
 }
 /* 
 #reviewArea {
@@ -575,6 +582,7 @@ div[name="userDistance"] {
   grid-area: rating;
   width: 18vw;
   min-width: 145px;
+  margin-bottom: 5vw;
 }
 
 .starRatings > * {
@@ -685,4 +693,47 @@ div[name="userDistance"] {
 .historyHead {
   font-size: xx-large;
   font-weight: bold;
+}
+
+/* #endregion History */
+
+/* #region Portfolio */
+
+#editDescArea {
+  display: grid;
+  grid-template-rows: 7vh auto;
+  width: inherit;
+  height: 100%;
+  grid-row: 1 / span 2;
+  align-items: center;
+  justify-items: center;
+  /* placeholder background (maybe default?) */
+  background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg");
+}
+
+.row-2 {
+  grid-row: 2;
+}
+
+#editPortfolio {
+  display: flex;
+  flex-flow: column;
+  width:80vw;
+  max-width: 560px;
+}
+
+.relative {
+  position: relative;
+}
+
+#editPortSub {
+  justify-content: center;
+  font-size: x-large;
+}
+
+#imgSelect {
+  display:flex;
+  flex-flow: column;
+  row-gap: 1em;
+  justify-content: center;
 }

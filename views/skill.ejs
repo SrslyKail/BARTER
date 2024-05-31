@@ -5,7 +5,7 @@
     <!-- This isn't ideal, if fixes the major problem and keeps most of the functionality in tact
     Figure out how to do back buttons better some day -->
     <%let link = "/"%>
-    <%console.log(typeof referrer)%>
+    <%#console.log(typeof referrer)%>
     <% if (referrer!=undefined && referrer.includes("/category/")){ link = referrer} %>
     <%- include("templates/components/backButton", {link: link})%>
   </div>

@@ -25,7 +25,8 @@
         <% for (let i = 0; i < db.length; i ++) {  %>
         <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i, username:username}) %>
         <% } %>
-        <% let pages = db.length / 3%>
+        <% let pages = Math.floor(db.length / 3)%>
+        <%#console.log(pages)%>
         <% let currentPage= 0%>
 
       </div>
@@ -38,7 +39,7 @@
           <circle fill="#D0D0D0" cx="50%" cy="50%" r="12" />
         </svg>
         </svg>
-        <% for (let n = 1; n <= pages; n++) { %>
+        <% for (let n = 1; n < pages; n++) { %>
         <svg class="pagCircle" id="circle<%=n%>" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <circle fill="#D0D0D0" cx="50%" cy="50%" r="12" />
         </svg>
