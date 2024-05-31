@@ -5,25 +5,37 @@
   <h1><% if (typeof filter !== 'undefined') %></h1>
 </div><br>
 <div class="d-flex justify-content-center text-center">
-  <p>CHECK YOUR VIEW HISTORY</p>
+
+  <%if(filter == "visited"){ %>
+  <span class="historyHead">Recently Viewed</span>
+  <%} else {%>
+  <span class="historyHead">Recently Contacted</span>
+  <%}%>
+
+  <!-- <p>CHECK YOUR VIEW HISTORY</p> -->
 </div>
 
-<div class="d-flex container justify-content-center">
-  <a class="btn btn-secondary btn-lg" href="/history/visited">VISITED</a>
-  <a class="btn btn-dark btn-lg" href="/history/contacted">CONTACTED</a>
+<div id="historyFilterButtons" class="d-flex container justify-content-center">
+  <%if(filter == "visited"){ %>
+  <a id="visitedButton" class="transp33 histButton btn btn-secondary btn-lg noClick">VISITED</a>
+  <a id="contactedButton" class="histButton btn btn-secondary btn-lg" href="/history/contacted">CONTACTED</a>
+  <%} else {%>
+  <a id="visitedButton" class="histButton btn btn-secondary btn-lg" href="/history/visited">VISITED</a>
+  <a id="contactedButton" class="transp33 histButton btn btn-secondary btn-lg noClick" href="/history/contacted">CONTACTED</a>
+
+  <%}%>
 </div>
 
 <div id="iconGridContainer">
   <div class="iconGrid skillPageGrid w-100 d-inline-flex flex-wrap justify-content-center m-0 p-6">
-
-    <% if (typeof data !== 'undefined') { %>
-    <% data.forEach((profile) => { %>
-    <div class=" profilePageCard skillPageCard">
-      <%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
-    </div>
-    <% }); %>
-    <% } %>
+  <% if (typeof data !== 'undefined') { %>
+  <% data.forEach((profile) => { %>
+  <div class=" profilePageCard skillPageCard">
+    <%- include("templates/components/profileCard", {userCard: profile, userIcon: formatProfileIconPath(profile.userIcon)}) %>
   </div>
+  <% }); %>
+  <% } %>
+</div>
 </div>
 
 <%- include("templates/footer") %>
