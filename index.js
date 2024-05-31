@@ -389,30 +389,26 @@ async function addSkill(userID, skillID) {
   let addingUser = userID;
   skillObject = new ObjectId(skillID);
 
-
   let skillExists = await userCollection.findOne({ _id: userID });
 
-  skillExists=skillExists.userSkills
+  skillExists = skillExists.userSkills;
 
-  let contains = skillExists.some(elem => {
-    return (JSON.stringify(skillObject)) === (JSON.stringify(elem));
+  let contains = skillExists.some((elem) => {
+    return JSON.stringify(skillObject) === JSON.stringify(elem);
   });
 
   // console.log(contains)
 
-
-
-
   if (!contains) {
-  // skillObject = new ObjectId(skillID);
+    // skillObject = new ObjectId(skillID);
 
-  await userCollection.updateOne(
-    { _id: userID },
-    { $push: { userSkills: skillObject } }
-  )
-  return 201;
+    await userCollection.updateOne(
+      { _id: userID },
+      { $push: { userSkills: skillObject } }
+    );
+    return 201;
   } else {
-  return 409;
+    return 409;
   }
 }
 
@@ -423,21 +419,19 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
   let userID = new ObjectId(getUserId(req));
 
   const userSchema = Joi.object({
-    objID: Joi.string().hex().length(24)
-  })
+    objID: Joi.string().hex().length(24),
+  });
 
   objID = req.params.skillID;
   // console.log(objID)
   const validationResult = userSchema.validate({ objID });
   //Error checking
 
-
   if (validationResult.error != null) {
     errors.push(validationResult.error.details[0].message);
     res.redirect("/");
     return;
   }
-
 
   rateStatus = await addSkill(userID, objID);
   // console.log("success")
@@ -446,9 +440,8 @@ app.post("/add-skill/:skillID", checkAuth, async (req, res) => {
 
 app.post("/editProfile/upload", (req, res) => {
   // console.log(req);
-
   // console.log();
-})
+});
 
 /**
  * Post method for Try Again btn in loginInvalid.ejs
@@ -1002,13 +995,10 @@ app.post("/passwordResetting", async (req, res) => {
 
     // Send password reset email
     await sendPasswordResetEmail(email, token, timestamp);
-
-    // Redirect to a page indicating that the email has been sent
-    res.render("passwordResetSent", { email });
   } catch (error) {
     console.error("Error initiating password reset:", error);
     // Handle errors
-    res.redirect("/passwordReset");
+    res.redirect("/passwordReset", { result: `unexpected error:\n ${error}` });
     return;
   }
   // Redirect to a page indicating that the email has been sent
