@@ -522,7 +522,8 @@ app.get("/profile", async (req, res) => {
   let currentUser = getUser(req);
 
   if (!currentUser) {
-    return res.redirect("/");
+    res.redirect("/");
+    return;
   }
   if (referrer == undefined) {
     referrer = "/";
@@ -530,6 +531,7 @@ app.get("/profile", async (req, res) => {
 
   if (req.session.user && queryID == undefined) {
     res.redirect(`/profile?id=${getUsername(req)}`);
+    return;
     queryID = req.session.user.username;
     // user = getUser(req);
     // username = getUsername(req);
@@ -770,7 +772,8 @@ app.get("/history/:filter", async (req, res) => {
   let currentUser = getUser(req);
 
   if (!currentUser) {
-    return res.redirect("/");
+    res.redirect("/");
+    return; 
   }
 
   currentUser = await userCollection.findOne({
@@ -1038,7 +1041,8 @@ app.post("/passwordChanging", async (req, res) => {
 
   if (!user) {
     // If reset token is not valid, redirect to password change page
-    return res.redirect("/passwordChange");
+    res.redirect("/passwordChange");
+    return;
   }
 
   // If reset token is valid, hash the new password
