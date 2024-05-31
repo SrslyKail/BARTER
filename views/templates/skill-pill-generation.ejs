@@ -26,7 +26,9 @@
         <%- include('components/skill-pill-box', {image:db[i].image, text:db[i].name, count:i, username:username}) %>
         <% } %>
         <% let pages = Math.ceil(db.length / 3)%>
-        <%#console.log(pages)%>
+
+        <%#console.log(db.length)%>
+        <%#onsole.log(pages)%>
         <% let currentPage= 0%>
 
       </div>
