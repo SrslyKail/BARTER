@@ -576,6 +576,7 @@ div[name="userDistance"] {
   grid-area: rating;
   width: 18vw;
   min-width: 145px;
+  margin-bottom: 5vw;
 }
 
 .starRatings > * {
