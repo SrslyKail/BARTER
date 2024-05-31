@@ -37,6 +37,8 @@
   width: 75%;
 }
 
+*{scrollbar-width: none;}
+
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
@@ -403,8 +405,7 @@ form.d-grid {
     "gap"
     "card"
     "pills"
-    "portfolio"
-    "reviews";
+    "portfolio";
   height: 100vh;
   width: 100vw;
   overflow: visible;
@@ -458,13 +459,13 @@ form.d-grid {
   width: inherit;
   grid-row: 4;
 }
-
+/* 
 #reviewArea {
   width: inherit;
   grid-area: reviews;
   height: 35vh;
   max-height: 30vw;
-}
+} */
 
 #contactButton * {
   font-weight: 700;
