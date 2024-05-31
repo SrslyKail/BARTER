@@ -1,0 +1,24 @@
+{
+  "title": "skillCat",
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "catSkills": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "objectId"
+      }
+    },
+    "description": {
+      "bsonType": "string"
+    },
+    "image": {
+      "bsonType": "string"
+    },
+    "name": {
+      "bsonType": "string"
+    }
+  },
+  "required": ["_id"]
+}

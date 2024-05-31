@@ -1,0 +1,18 @@
+{
+  "title": "skill",
+  "properties": {
+    "_id": {
+      "bsonType": "objectId"
+    },
+    "description": {
+      "bsonType": "string"
+    },
+    "image": {
+      "bsonType": "string"
+    },
+    "name": {
+      "bsonType": "string"
+    }
+  },
+  "required": ["_id"]
+}
