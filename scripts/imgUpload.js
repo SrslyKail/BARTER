@@ -61,7 +61,8 @@ async function handleProfileChanges(req, res) {
     console.log();
   }
   //If the user submitted no valid data, we dont upload anything to Mongo
-  if (Object.keys(data) > 0) {
+  let dataKeys = Object.keys(data);
+  if (dataKeys.length > 0) {
     await updateMongoUser(req, data);
   }
 
@@ -167,7 +168,6 @@ async function updatePortfolio(req, res) {
         index = ind;
       }
     });
-
   }
   await userCollection.updateOne(
     { username: currentUser.username },

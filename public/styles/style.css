@@ -37,6 +37,8 @@
   width: 75%;
 }
 
+*{scrollbar-width: none;}
+
 /* #region headerButtons */
 /* #endregion headerButtons */
 /* #region nestedExample */
@@ -127,9 +129,11 @@
 .addSkillButton {
   font-family: basquiat;
   font-size: 4vh;
-  color: maroon;
+  background-color: #202428;
+  color: #f8f8f3;
   padding: 0 0.5em 0 0.5em;
-  border-radius: 5px;
+  /* border-radius: 5px; */
+  /* box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3), 5px 5px 20px rgba(0, 0, 0, 0.15) inset, -5px -5px 20px rgba(0, 0, 0, 0.15) inset; */
 }
 
 /* Grid for testing (expands infinitely) */
@@ -403,8 +407,7 @@ form.d-grid {
     "gap"
     "card"
     "pills"
-    "portfolio"
-    "reviews";
+    "portfolio";
   height: 100vh;
   width: 100vw;
   overflow: visible;
@@ -458,13 +461,13 @@ form.d-grid {
   width: inherit;
   grid-row: 4;
 }
-
+/* 
 #reviewArea {
   width: inherit;
   grid-area: reviews;
   height: 35vh;
   max-height: 30vw;
-}
+} */
 
 #contactButton * {
   font-weight: 700;
