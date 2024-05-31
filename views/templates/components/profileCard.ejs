@@ -7,11 +7,11 @@
         </div>
         <div class="cardUsername" style="font-weight: bold;"><%= userCard.username %></div>
         <div class="tightStars">
-          <% if (userCard.rateCount != null) { %>
+          <%# if (userCard.rateCount != null) { %>
           <%# console.log("User card for", userCard.username) %>
           <%# This should pass in userCard.rateValue and userCard.rateCount, then do the proper math %>
-          <%- include("cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: Math.round(100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
-          <% } %>
+          <%- include("cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
+          <%# } %>
 
         </div>
         <div class="userCardSkills truncate">
