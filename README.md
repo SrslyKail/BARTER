@@ -77,7 +77,6 @@ Root
 │               basquiat.woff2
 │
 ├───scripts
-│   │   calculateDistance.js
 │   │   imgUpload.js
 │   │
 │   └───modules
@@ -270,10 +269,45 @@ Root
 <details>
 <summary> <b>Scripts</b> </summary>
 
-  <details>
-  <summary> <b>Modules</b> </summary>
+- Meant to store scripts and libraries for server-side functionality. JS files in this folder can reference files within the Modules folder, but should not reference each other.
 
-  </details>
+1.  imgUpload.js
+
+    - Despite the name(Which we need to update), this handles processing input from user forms to update the users information on MongoDB.
+
+     <details>
+     <summary> <b>Modules</b> </summary>
+
+    - Modules are small chunks of code that are related to one specific task. They shouldn't reference each other (Though some currently do; we need to fix that).
+
+    1. databaseConnection.js
+
+
+         - Handles establishing connection to new Collections and setting up the MongoDB node modules.
+
+    1. gmaps.js
+
+
+         - Currently unused. Meant to push a map with live locations to the user so they can see how far they are from another user using a google map.
+
+    1. localSession.js
+
+
+         - Controls the local session and stores information about the current user via a user class. Contains logic for querying the session for that information as well.
+
+    1. location.js
+
+       - Converts a users location to a place name, and handles the GoogleAPI connection. Contains a function you can uncomment if you want to test your google API key is working.
+
+    1. logging.js
+
+
+         - Useful for quickly turning logging on and off for debug purposes. By setting the variables within it, you can set what kinds of output you get quickly. Especially useful for monitoring events.
+
+    1. mailer.js
+       - Handles sending emails using the Node-Mailer module. Can be easily expanded if we want to send different types of emails.
+
+     </details>
 
 </details>
 
