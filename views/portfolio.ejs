@@ -1,0 +1,30 @@
+<%- include("templates/header", {index: false}) %>
+  <div id="heroDiv">
+    <div id="subbar" class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark"
+      style="--bs-bg-opacity: .0;">
+      <%let link="/" %>
+        <% if (referrer!=undefined && referrer.includes("/profile")){ link=referrer} %>
+          <%- include("templates/components/backButton", {link: link})%>
+    </div>
+
+    <%# console.log("Profile title:", title) %>
+      <%- include("templates/searchHero", {searchHeroImage: banner, searchHeroBanner: title}) %>
+  </div>
+  <div class="px-4 my-2 text-center">
+    <div class="col-lg-6 mx-auto">
+      <%if (username==currentUser) {%>
+        <a class="btn btn-secondary" href="/editPortfolio?id=<%= username %>&skill=<%= title %>">
+          <i class="bi bi-pencil-square"></i>
+          Edit Page
+        </a>
+        <%}%>
+          <p class="lead mb-4">
+            <%= description %>
+          </p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          </div>
+    </div>
+  </div>
+
+  <%- include("templates/portfolio-icon-generation", {db:images, count:null, username: username })%>
+    <%- include("templates/footer") %>

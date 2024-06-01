@@ -1,0 +1,231 @@
+{
+  "bsonType": "object",
+  "default": {},
+  "title": "Root Schema",
+  "required": [
+    "username",
+    "email",
+    "password",
+    "isAdmin",
+    "userIcon",
+    "history"
+  ],
+  "properties": {
+    "username": {
+      "bsonType": "string",
+      "default": "",
+      "title": "The userName Schema",
+      "examples": ["testUser"]
+    },
+    "email": {
+      "bsonType": "string",
+      "default": "",
+      "title": "The email Schema",
+      "examples": ["test@test.ca"]
+    },
+    "password": {
+      "bsonType": "string",
+      "default": "",
+      "title": "The password Schema",
+      "examples": [
+        "$2b$12$.6iCk2sJDi4IUpY3uQldwOHUvQwMDjhxTp10NZoi37BQGR640bXii"
+      ]
+    },
+    "isAdmin": {
+      "bsonType": "boolean",
+      "default": false,
+      "title": "The isAdmin Schema",
+      "examples": [false]
+    },
+    "userLocation": {
+      "bsonType": "object",
+      "default": {},
+      "title": "The userLocation Schema",
+      "required": ["geo"],
+      "properties": {
+        "geo": {
+          "bsonType": "object",
+          "default": {},
+          "title": "The geo Schema",
+          "required": ["latitude", "longitude"],
+          "properties": {
+            "latitude": {
+              "bsonType": "number",
+              "default": 0,
+              "title": "The latitude Schema",
+              "examples": [49.045003959125594]
+            },
+            "longitude": {
+              "bsonType": "number",
+              "default": 0,
+              "title": "The longitude Schema",
+              "examples": [-122.83962962932493]
+            }
+          },
+          "examples": [
+            {
+              "latitude": 49.045003959125594,
+              "longitude": -122.83962962932493
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "geo": {
+            "latitude": 49.045003959125594,
+            "longitude": -122.83962962932493
+          }
+        }
+      ]
+    },
+    "contactInfo": {
+      "bsonType": "object",
+      "default": {},
+      "title": "The contactInfo Schema",
+      "required": ["email", "address", "phone"],
+      "properties": {
+        "email": {
+          "bsonType": "string",
+          "default": "",
+          "title": "The email Schema",
+          "examples": ["testUser@test.com"]
+        },
+        "address": {
+          "bsonType": "string",
+          "default": "",
+          "title": "The address Schema",
+          "examples": ["123 Test Street"]
+        },
+        "phone": {
+          "bsonType": "string",
+          "default": "",
+          "title": "The phone Schema",
+          "examples": ["7787787778"]
+        }
+      },
+      "examples": [
+        {
+          "email": "testUser@test.com",
+          "address": "123 Test Street",
+          "phone": "7787787778"
+        }
+      ]
+    },
+    "userIcon": {
+      "bsonType": "string",
+      "default": "",
+      "title": "The userIcon Schema",
+      "examples": ["url"]
+    },
+    "userSkills": {
+      "bsonType": "array",
+      "default": [],
+      "title": "The userSkills Schema",
+      "items": {
+        "bsonbsonType": "objectId",
+        "title": "A Schema",
+        "examples": ["ObjectID('AAAA')", "ObjectID('BBBB')", "ObjectID('CCCC')"]
+      },
+      "examples": [["ObjectID('AAAA')", "ObjectID('BBBB')", "ObjectID('CCCC')"]]
+    },
+    "reviews": {
+      "bsonType": "object",
+      "default": {},
+      "title": "The reviews Schema",
+      "required": [],
+      "properties": {},
+      "examples": [{}]
+    },
+    "history": {
+      "bsonType": "object",
+      "default": {},
+      "title": "The history Schema",
+      "required": ["visited", "contacted"],
+      "properties": {
+        "visited": {
+          "bsonType": "array",
+          "default": [],
+          "title": "The visited Schema",
+          "items": {
+            "bsonType": "objectId",
+            "title": "A Schema",
+            "examples": [
+              "ObjectID('DDDD')",
+              "ObjectID('EEEE')",
+              "ObjectID('FFFF')"
+            ]
+          },
+          "examples": [
+            ["ObjectID('DDDD')", "ObjectID('EEEE')", "ObjectID('FFFF')"]
+          ]
+        },
+        "contacted": {
+          "bsonType": "array",
+          "default": [],
+          "title": "The contacted Schema",
+          "items": {
+            "bsonType": "objectId",
+            "title": "A Schema",
+            "examples": [
+              "ObjectID('GGGG')",
+              "ObjectID('HHHH')",
+              "ObjectID('IIII')"
+            ]
+          },
+          "examples": [
+            ["ObjectID('GGGG')", "ObjectID('HHHH')", "ObjectID('IIII')"]
+          ]
+        }
+      },
+      "examples": [
+        {
+          "visited": [
+            "ObjectID('DDDD')",
+            "ObjectID('EEEE')",
+            "ObjectID('FFFF')"
+          ],
+          "contacted": [
+            "ObjectID('GGGG')",
+            "ObjectID('HHHH')",
+            "ObjectID('IIII')"
+          ]
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "userName": "testUser",
+      "email": "test@test.ca",
+      "password": "$2b$12$.6iCk2sJDi4IUpY3uQldwOHUvQwMDjhxTp10NZoi37BQGR640bXii",
+      "isAdmin": false,
+      "userLocation": {
+        "geo": {
+          "latitude": 49.045003959125594,
+          "longitude": -122.83962962932493
+        }
+      },
+      "contactInfo": {
+        "email": "testUser@test.com",
+        "address": "123 Test Street",
+        "phone": "7787787778"
+      },
+      "userIcon": "url",
+      "userSkills": [
+        "ObjectID('AAAA')",
+        "ObjectID('BBBB')",
+        "ObjectID('CCCC')"
+      ],
+      "reviews": {},
+      "history": {
+        "visited": ["ObjectID('DDDD')", "ObjectID('EEEE')", "ObjectID('FFFF')"],
+        "contacted": [
+          "ObjectID('GGGG')",
+          "ObjectID('HHHH')",
+          "ObjectID('IIII')"
+        ]
+      }
+    }
+  ]
+}

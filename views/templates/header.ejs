@@ -2,50 +2,53 @@
 <html lang="en">
 
 <head>
-  <% var isHomePage = false %>
+
+  <!-- <%# var isHomePage = false %> what is this for? -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BARTER</title>
-
-  <!-- Import our default style sheet -->
-  <link href="/styles/style.css" rel="stylesheet">
   <!-- Import Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <!-- Import Bootstrap ICONS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Import jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
   <!-- Import favicon -->
   <link rel="icon" type="image/x-icon" href="/styles/favicon.ico">
   <!-- Import our default style sheet -->
   <link href="/styles/style.css" rel="stylesheet">
-  <link href="/styles/cardIconStyle.css" rel="stylesheet">
+
 </head>
 
 <body>
   <%- include("svgs") %>
   <!-- #region navbar  -->
   <!-- Adjust colors and expand breakpoint here -->
-  <nav class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark">
+  <nav class="navbar flex-nowrap p-3 vh-7 navbar-expand-md navbar-dark bg-dark navbar-main">
     <a class="vh-4 d-inline-flex" href="/"><%- include("components/logo") %></a>
-    <!-- Search bar -->
-    <% if (!(typeof index !== 'undefined')) { %>
-    <%- include("components/searchbar", {}) %>
-    <% } else { %>
     <div style="flex-grow: 1;"></div>
-    <% } %>
-    <button id="profileButton" type="button" class="shadow-none bg-transparent  border-0 vh-5 d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#optionsOverlay">
-      <%- include("components/profileIcon.ejs", {classes: "rounded-circle"}) %> </button>
+    <button id="profileButton" type="button"
+      class="shadow-none bg-transparent  border-0 vh-5 d-inline-flex align-items-center" data-bs-toggle="modal"
+      data-bs-target="#optionsOverlay">
+      <%- include("components/profileIcon.ejs", {classes: "rounded-circle" }) %> </button>
+
   </nav>
   <!-- #endregion navbar -->
   <!-- #region modal -->
   <div class="modal" id="optionsOverlay" tabindex="-1" aria-labelledby="optionsOverlayLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl my-0 fixed-bottom">
-      <div class="modal-content rounded-top-5">
+      <div class="modal-content rounded-top-5"
+        style="box-shadow: -10px -10px 20px rgba(50, 50, 50, 0.2), 10px -10px 20px rgba(50, 50, 50, 0.2);">
         <div class="modal-body container-fluid">
           <div class="d-flex flex-column gap-1 text-start">
-            <% modalArray = modalLinks%>
-            <% modalArray.forEach((element) =>{%>
-            <a class="fs-3 text-decoration-none text-black" href=<%= element.link %>><b><%= element.name %></b></a>
-            <% }) %>
+            <% modalArray=modalLinks%>
+              <% modalArray.forEach((element)=>{%>
+                <a class="fs-3 text-decoration-none text-black" href=<%=element.link %>><b>
+                    <%= element.name %>
+                  </b></a>
+                <% }) %>
           </div>
         </div>
       </div>

@@ -1,0 +1,66 @@
+<%- include("templates/header") %>
+  <div>
+    <div id="subbar" class="navbar flex-nowrap vh-7 navbar-expand-md navbar-dark bg-dark" style="--bs-bg-opacity: .6;">
+      <%let link="/" %>
+        <% if (referrer.includes("/portfolio")){ link=referrer} %>
+          <%- include("templates/components/backButton", {link: link})%>
+            <div style="flex-grow: 1;"> <span class="subNavButton" id="editPortSub">Edit Description</span></div>
+    </div>
+  </div>
+
+  <div id="container">
+    <div id="editDescArea">
+      <form action="/editPortfolio/upload?skill=<%- title %>" method="post" enctype="multipart/form-data" class="row-2"
+        id="editPortfolio">
+        <fieldset>
+          <div class="mb-3">
+            <div class="input-group">
+              <textarea class="form-control" name="description" id="description" rows="10"><%- description %></textarea>
+            </div>
+          </div>
+          <!-- <div class="profilePageCard"> <%#- include("templates/profileCard", {userCard: user, userIcon: userIcon }) %> </div> -->
+    </div>
+    <div id="pillArea" class="p-2 mt-2 text-center">
+      <div class="col-lg-6 mx-auto">
+        <div id="imgSelect" class="input-group">
+          <label for='image'>
+            <h2>Select new image: </h2>
+          </label>
+          <input id='image' name="image" type="file">
+        </div>
+        <button type="submit" class="btn btn-dark mb-3">Save Edits</button>
+
+        <div>
+          <%- include("templates/portfolio-icon-generation", {db: images, count:null, username: username })%>
+        </div>
+
+        </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    //on change event listener for #file-select
+    document.getElementById("files").onchange = function () {
+
+      //call getFileSelected method
+      getFileSelected();
+
+    };
+
+    function getFileSelected() {
+
+      //get the value of the input file element
+      var getFileSelected = document.getElementById("files").value;
+
+      //display the results of the input file element
+      //you can append something before the getFileSelected value below
+      //like an image tag for your icon or a string saying "file selected:"
+      //for example.
+      document.getElementById("files").innerHTML = getFileSelected;
+
+    }
+  </script>
+  <%- include("templates/footer") %>

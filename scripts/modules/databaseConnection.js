@@ -46,4 +46,20 @@ function getCollection(collection) {
   return database.db(mongodb_database).collection(collection);
 }
 
+/*
+  CB: Hiding this code here; paste it into index if we ever need to bulk update stuff again for some reason.
+*/
+// app.get("/bulkUpdate", async (req, res) => {
+// //The users you want to edit
+//   const filter = { userSkills: { $eq: null } };
+//   //How you want to edit them
+//   const updateDoc = {
+//     $set: { userSkills: [] },
+//   };
+//   const found = await userCollection.find(filter).toArray();
+//   console.log(found);
+//   const result = await userCollection.updateMany(filter, updateDoc);
+//   console.log(result);
+// });
+
 module.exports = { getMongoStore, getCollection, ObjectId };

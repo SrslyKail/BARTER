@@ -1,0 +1,26 @@
+<%let cloudLink=null%>
+
+
+  <%let searchBannerText="BARTER, helping you exchange goods and services in our post-neo-capitalistic world." %>
+    <%let bannerClass=null%>
+      <% if (searchHeroBanner !=null){ %>
+        <%searchBannerText=searchHeroBanner%>
+          <% cloudLink="https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_350,w_1200/" %>
+            <%bannerClass= "heroBannerTitle" %>
+              <%}%>
+
+                <section style="background-image:url(<%=cloudLink%><%=searchHeroImage%>); background-size: cover;"
+                  class="d-flex justify-content-center text-center bg-secondary">
+
+                  <div class="py-5 centerGrid">
+                    <p class="<%=bannerClass%> p-2 lead text-white" style="font-weight: 500;">
+                      <%=searchBannerText%>
+                    </p>
+                    <form class="d-grid gap-2 ms-4 me-4" onSubmit="" method="post">
+                      <%- include("components//searchbar") %>
+                        <!-- <button class="btn btn-dark" type="submit">Search</button> -->
+                        <%- include("components/button", {buttonText: "Search" , buttonType: "submit" , disabled: true})
+                          %>
+                    </form>
+                  </div>
+                </section>

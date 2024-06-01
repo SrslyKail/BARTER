@@ -17,9 +17,12 @@
   },
   "homepage": "https://github.com/SrslyKail/2800-202410-BBY14#readme",
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@googlemaps/js-api-loader": "^1.16.6",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.2.0",
     "connect-mongo": "^5.1.0",
+    "core-js": "^3.37.1",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
@@ -29,6 +32,7 @@
     "mongodb": "^6.6.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.13",
+    "socket.io": "^4.7.5",
     "utils.js": "^1.0.1"
   }
 }

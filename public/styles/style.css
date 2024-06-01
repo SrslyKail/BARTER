@@ -12,21 +12,17 @@
 /* #region Import Logo Font */
 @font-face {
   font-family: "basquiatregular";
-  src: url("../basquiat.woff2") format("woff2"),
-    url("../basquiat.woff") format("woff"), url("../basquiat.otf") format("otf"),
-    url("../basquiat.ttf") format("ttf");
+  src: url("./fonts/basquiat.woff2") format("woff2"),
+    url("./fonts/basquiat.woff") format("woff"),
+    url("./fonts/basquiat.otf") format("otf"),
+    url("./fonts/basquiat.ttf") format("ttf");
   font-weight: normal;
   font-style: normal;
 }
 
 /* #endregion Import Logo Font */
 
-/* #region header
-#profileButton {
-  width: 40pt;
-  margin: 0 2% 0 0 !important;
-  padding: 0;
-} */
+/* #region header */
 
 #profileButton * {
   border: 1px solid black;
@@ -35,6 +31,10 @@
 
 #menuIcon * {
   width: 75%;
+}
+
+* {
+  scrollbar-width: none;
 }
 
 /* #region headerButtons */
@@ -69,6 +69,11 @@
   display: none;
 }
 
+.w-75 {
+  max-width: 560px;
+  align-self: center;
+}
+
 /*  */
 .mask {
   background-color: rgba(0, 0, 0, 0.6);
@@ -90,6 +95,10 @@
   height: 7vh;
 }
 
+.vh-93 {
+  height: 93vh;
+}
+
 .mh-inherit {
   max-height: inherit;
 }
@@ -98,9 +107,744 @@
   max-height: none;
 }
 
+.pb-1-5 {
+  padding-bottom: 1.5vh;
+}
+
+.noClick {
+  pointer-events: none;
+}
+
+.my-7 {
+  margin-top: 7;
+}
+
 /* <a> links for login, register, forgot password */
 .link {
   color: rgb(0, 140, 255);
   text-decoration: none;
 }
+
 /* #endregion generics */
+
+/* #region Icon Grid and Icons */
+#iconGridContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10vh;
+}
+
+.addSkillButton {
+  font-family: basquiat;
+  font-size: 4vh;
+  background-color: #202428;
+  color: #f8f8f3;
+  padding: 0 0.5em 0 0.5em;
+  border-radius: 10px;
+  /* border-radius: 5px; */
+  /* box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3), 5px 5px 20px rgba(0, 0, 0, 0.15) inset, -5px -5px 20px rgba(0, 0, 0, 0.15) inset; */
+}
+
+/* Grid for testing (expands infinitely) */
+.iconGrid {
+  max-width: 960px;
+  margin: 2em;
+  padding: 2em;
+  display: grid;
+  gap: 2em;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  grid-auto-rows: auto;
+  grid-auto-flow: row;
+  align-self: center;
+}
+
+.skillPageGrid {
+  max-width: 1260px;
+}
+
+/* Mandatory CSS unless noted as optional*/
+.cardImageIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  height: inherit;
+  /* The good version */
+  clip-path: rect(0px 0px 100% 100% round 7%);
+  /* The version for chrome :c */
+  clip-path: fill-box;
+  aspect-ratio: 25/22;
+}
+
+.cardImageIcon :is(img, a) {
+  height: 100%;
+  position: absolute;
+}
+
+.cardTextDiv {
+  pointer-events: none;
+  text-align: center;
+  position: relative;
+  background-color: #17191595;
+  /*Optional Hex: RRGGBBAA*/
+  align-content: center;
+  /*Optional: needed with higher text background height*/
+  height: auto;
+  min-height: 2.5em;
+  /*Optional: adjusts text background height*/
+  width: inherit;
+}
+
+/* Enable below for text to only be visible on hover*/
+/* .cardTextDiv {
+  opacity:0;
+}
+.cardImageIcon :is(img, a):hover + .cardTextDiv{
+  opacity: 100;
+  transition: opacity 0.1s linear;
+  
+} */
+
+.iconText {
+  color: #fffaee;
+  /*Optional*/
+  font-size: large;
+  /*Optional*/
+}
+
+/* #endregion Icon Grid and Icons */
+
+/* #region Hero Banner */
+
+.heroBannerTitle {
+  background-color: #17191595;
+  font-weight: bold;
+  font-size: x-large;
+  /* Change width here to change background of hero text */
+  width: 100%;
+}
+
+.centerGrid {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 75vw;
+  max-width: 560px;
+}
+
+form.d-grid {
+  width: 75vw;
+  max-width: 560px;
+}
+
+/* #endregion Hero Banner */
+
+/* #region sub nav bar (skillCats, skills, and profile)*/
+
+.navbar-main {
+  box-shadow: 0 5px 50px rgba(0, 0, 0, 0.3),
+    5px 5px 20px rgba(0, 0, 0, 0.15) inset,
+    -5px -5px 20px rgba(0, 0, 0, 0.15) inset;
+}
+
+.subNavButton {
+  display: flex;
+  /* mix-blend-mode: plus-darker; */
+  /* mix-blend-mode:lighten; */
+  color: white;
+  /* background-clip: text; */
+  /* color: transparent; */
+  /* filter: invert(1); */
+  height: inherit;
+  align-content: center;
+}
+
+#backButton {
+  height: 5vh;
+  width: 5vh;
+  align-self: center;
+  fill: white;
+  mix-blend-mode: difference;
+}
+
+#subEditButton {
+  height: 5vh;
+  width: 5vh;
+  align-self: center;
+}
+
+#subbar {
+  padding: 0 4vw 0 2vw;
+  position: absolute;
+  width: 100%;
+  height: 7vh;
+  align-content: center;
+  position: absolute;
+  z-index: 1000;
+}
+
+/* #endregion sub nav bar (skillCats, skills, and profile) */
+
+/* #region Pill Grid and Pills */
+
+#centering {
+  display: flex;
+  justify-content: center;
+  grid-area: pills;
+}
+
+#carousel {
+  width: 86vw;
+  max-width: 480px;
+  overflow: hidden;
+  height: auto;
+  margin: 3vh 6vw 0 6vw;
+}
+
+.pillGrid {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  height: inherit;
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  gap: 14px;
+  grid-template-rows: repeat(3, 1fr);
+  /* margin: 0 3vw 0 3vw; */
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.pillContainer {
+  width: inherit;
+  max-width: 480px;
+  height: 100%;
+  /* min-height: fit-content; */
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+}
+
+.pillContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.pillbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+  width: inherit;
+  height: inherit;
+  /* The good version */
+  clip-path: rect(0px 0px 100% 100% round 7%);
+  /* The version for chrome :c */
+  clip-path: fill-box;
+  aspect-ratio: 37/7;
+  color: rgba(255, 250, 238, 0);
+}
+
+.pillbox :is(img, a) {
+  height: inherit;
+  width: inherit;
+  position: absolute;
+  cursor: pointer;
+}
+
+.pillTextDiv {
+  pointer-events: none;
+  text-align: center;
+  position: relative;
+  /*Optional Hex: RRGGBBAA*/
+  align-content: center;
+  /*Optional: needed with higher text background height*/
+  height: auto;
+  min-height: 2.5em;
+  /*Optional: adjusts text background height*/
+  width: inherit;
+}
+
+.pillText {
+  color: #fffaee;
+  background-color: #17191595;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  /*Optional*/
+  font-size: large;
+  /*Optional*/
+}
+
+/* #endregion Pill Grid */
+
+/* #region Pill Pagination */
+
+#paginate {
+  margin-top: 2em;
+  pointer-events: none;
+}
+
+.pagCircle {
+  width: 24px;
+  height: 24px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.pagIcon {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.activeCircle > circle {
+  fill: #676767;
+}
+
+/* #endregion Pill Pagination */
+
+/* #region Profile Container */
+
+#container {
+  display: grid;
+  grid-template-rows: 7vh 30vh auto auto 30vh;
+  grid-template-areas:
+    "gap"
+    "card"
+    "pills"
+    "portfolio";
+  height: 100vh;
+  width: 100vw;
+  overflow: visible;
+}
+
+#cardArea {
+  display: grid;
+  grid-template-rows: 7vh auto;
+  width: inherit;
+  height: 100%;
+  grid-row: 1 / span 2;
+  align-items: center;
+  justify-items: center;
+  /* placeholder background (maybe default?) */
+  background-image: url(../imgs/bigzamn.svg);
+  background-color: #353535;
+  /* background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg"); */
+}
+
+.profilePageCard {
+  display: inline-flex;
+  justify-content: center;
+  align-content: center;
+  padding: 1vh 1.5vw 3vh 1.5vw;
+  grid-row: 2;
+  max-width: 680px;
+  width: 100%;
+  height: 100%;
+}
+
+.skillPageCard {
+  max-width: 480px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+#skillPageGrid {
+  display: grid;
+  width: 100vw;
+  height: 100vw;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-auto-rows: auto;
+  grid-auto-flow: row;
+  align-self: center;
+}
+
+#pillArea {
+  width: inherit;
+  grid-row: 3;
+  position: relative;
+}
+
+#portfolioArea {
+  width: inherit;
+  grid-row: 4;
+}
+
+#profilePortfolioEditButton {
+  position: absolute;
+  left: 85%;
+}
+
+/* 
+#reviewArea {
+  width: inherit;
+  grid-area: reviews;
+  height: 35vh;
+  max-height: 30vw;
+} */
+
+#contactButton * {
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+/* #endregion Profile Container*/
+
+/* #region Profile Card */
+
+.profileIcon * {
+  border: 1px;
+  border-radius: 20%;
+  height: 16vh !important;
+  width: auto;
+}
+
+.profileIconContainer {
+  grid-area: icon;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileIcon {
+  display: flex;
+}
+
+.profileCardTable {
+  border: 1px solid gray;
+  background-color: white;
+  border-radius: 15px;
+  border-collapse: separate;
+  padding: 2%;
+  min-width: 90%;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4), 0 5px 20px 0 rgba(0, 0, 0, 0.2),
+    5px 5px 10px rgba(126, 126, 126, 0.15) inset,
+    -5px -5px 10px rgba(126, 126, 126, 0.15) inset;
+}
+
+.profileCardTable * {
+  /* padding: 1pt 0 1pt 4pt; */
+  font-size: 15pt;
+}
+
+.profileCardDataGrid {
+  display: grid;
+  grid-template-columns: 40% 5% 55%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "icon gap name"
+    "icon gap rating"
+    "icon gap skills"
+    "icon gap location"
+    "icon gap distance";
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.userCardSkills {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  grid-area: skills;
+  margin-top: 1vh;
+}
+
+.cardUsername {
+  grid-area: name;
+}
+
+.userCardLocation {
+  grid-area: location;
+}
+
+div[name="userDistance"] {
+  grid-area: distance;
+}
+
+.svgStar {
+  width: 5vw;
+  max-width: 25px;
+}
+
+.cardRatingContainer {
+  grid-area: rating;
+}
+
+.tightStars {
+  grid-area: rating;
+  width: auto;
+  position: relative;
+  display: flex;
+  padding-bottom: 3vh;
+}
+
+.starRatings {
+  position: absolute;
+  grid-area: rating;
+  width: 40vw;
+  min-width: 25vw;
+  margin-bottom: 5vw;
+}
+
+.starRatings > * {
+  width: auto;
+  position: absolute;
+  text-align: center;
+}
+
+.cardRating {
+  grid-area: info;
+  display: flex;
+}
+
+/* #endregion Profile Card */
+
+/* #region Profile Rating Menu */
+
+.stars input {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+.stars label {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-right: 6px;
+  height: 15vw;
+  max-height: 65px;
+  width: 15vw;
+  max-width: 65px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='lightgray' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  font-size: 0;
+  cursor: pointer;
+}
+
+.stars input:nth-child(1):checked ~ label:nth-of-type(-n + 1),
+.stars input:nth-child(2):checked ~ label:nth-of-type(-n + 2),
+.stars input:nth-child(3):checked ~ label:nth-of-type(-n + 3),
+.stars input:nth-child(4):checked ~ label:nth-of-type(-n + 4),
+.stars input:nth-child(5):checked ~ label:nth-of-type(-n + 5) {
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='maroon' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.homeStars label {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-right: 6px;
+  height: 15vw;
+  max-height: 65px;
+  width: 15vw;
+  max-width: 65px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='transparent' stroke='maroon' stroke-width='38' d='M259.216 29.942L330.27 173.92l158.89 23.087L374.185 309.08l27.145 158.23-142.114-74.698-142.112 74.698 27.146-158.23L29.274 197.007l158.89-23.088z' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  font-size: 0;
+}
+
+#ratingSubmitButton {
+  margin: 1.5vh 0 1.5vh 0;
+  /* max-width: 360px; */
+  /* background-color: maroon; */
+}
+
+#rating {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10vh;
+  align-items: center;
+
+  .svgStar {
+    width: 16%;
+  }
+
+  .starRatings {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    grid-column: 2;
+    height: 2.5em;
+    width: 100%;
+    /* background-color: red; */
+  }
+
+  .cardStarsFill {
+    width: 50%;
+    position: absolute;
+    text-align: center;
+  }
+
+  .cardStarsEmpty {
+    width: 50%;
+    position: absolute;
+    /* clip-path: inset(0 20% 0 0); */
+    text-align: center;
+  }
+}
+
+/* #endregion Profile Rating Menu */
+
+/* #region History */
+.histButton {
+  background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  padding: 1em;
+  width: 50%;
+  font-size: large;
+  font-weight: bold;
+}
+
+.historySelected {
+  background-color: white;
+  color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));
+  border: 0.25em rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));
+  border-style: solid solid none solid;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: -10px -1px rgba(0, 0, 0, 0.2), 10px -1px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.historyHead {
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+#historyTabs {
+  display: flex;
+  width: 100%;
+  flex: wrap;
+}
+
+/* #endregion History */
+
+/* #region Portfolio */
+
+#editDescArea {
+  display: grid;
+  grid-template-rows: 7vh auto;
+  width: inherit;
+  height: 100%;
+  grid-row: 1 / span 2;
+  align-items: center;
+  justify-items: center;
+  /* placeholder background (maybe default?) */
+  background-image: url(../imgs/bigzamn.svg);
+  background-color: #353535;
+  /* background-image: url("https://res.cloudinary.com/djdztuwwe/image/upload/c_crop,g_auto,h_800,w_800/nay09hgg81ijl31cryum.jpg"); */
+}
+
+.row-2 {
+  grid-row: 2;
+}
+
+/* #editPortfolio {
+  display: flex;
+  flex-flow: column;
+  width: 80vw;
+  max-width: 560px;
+} */
+
+.relative {
+  position: relative;
+}
+
+#editPortSub {
+  justify-content: center;
+  font-size: x-large;
+}
+
+#imgSelect {
+  display: flex;
+  flex-flow: column;
+  row-gap: 1em;
+  justify-content: center;
+}
+
+/* #endregion Portfolio */
+
+/* #region Auth pages */
+
+.authSpan > a {
+  color: maroon;
+}
+
+/* #endregion Auth pages */
+
+/* #region editProfile page */
+.editProfilePic {
+  border-radius: 50%;
+  border: black solid 5px;
+  height: 150px;
+  width: 150px;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: multiply;
+  vertical-align: middle;
+  text-align: center;
+  color: transparent;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.editProfilePic:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.editProfilePic span {
+  display: inline-block;
+  padding-top: 4.5em;
+  padding-bottom: 4.5em;
+}
+
+#editProfilePicSuccess {
+  border-radius: 50%;
+  padding: 5px 7.5px 5px;
+  background-color: green;
+  color: white;
+}
+
+fieldset input[type="file"] {
+  display: none;
+}
+
+#editUsernameLabel {
+  align-self: left;
+}
+
+#editEmailLabel {
+  padding-right: auto;
+}
+
+#editLongLabel {
+  padding-right: 40px;
+}
+
+#editLatLabel {
+  padding-right: 53px;
+}
+
+/* #endregion editProfile page */
+
+/* #region ZAMN! */
+
+/* .zamnBackToggle {
+  background-color: #353535 !important;
+  background-image: url(../imgs/bigzamn.svg);
+} */

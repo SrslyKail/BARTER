@@ -6,21 +6,120 @@
   <% if (typeof footerButton !== 'undefined') { %>
   <%- footerButton %>
   <% } %>
+  <% if (typeof addSkillButton !== 'undefined') { %>
+  <%- addSkillButton %>
+  <% } %>
 </footer>
+
 <!-- Import Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 <!-- Scripts go here -->
 <script>
-  // I don't know why, but this is what works
-  console.log(<%=zamn%>)
   if (<%=zamn%>) {
+    // I don't know why, but this is what works
     document.addEventListener("DOMContentLoaded", () => {
       document.body.addEventListener("click", () => {
         new Audio("https://res.cloudinary.com/djdztuwwe/video/upload/v1716578719/qvw5b8ghcmlcirpo4ezq.mp3").play();
       })
     })
   }
+</script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const socket = io();
+  const id = "<%= typeof _id !== 'undefined' ? _id : " " %>";
+
+  const positionOptions = {
+    enableHighAccuracy: true,
+  };
+
+  let formLong;
+  let formLat;
+  let userDistances = [];
+
+  function startProcessGeo() {
+    document.getElementsByName("userDistance").forEach((node) => userDistances.push(node));
+    navigator.geolocation.watchPosition((position) => {
+        formLong = document.getElementById("long");
+        formLat = document.getElementById("lat");
+        if (
+          (formLong && formLat) &&
+          !(formLong.disabled && formLat.disabled)
+        ) {
+          applyGeoToForm(position);
+        }
+        userDistances.forEach((node) => {
+          let distance = calculateDistance(position.coords, {
+            longitude: node.dataset.positionLong,
+            latitude: node.dataset.positionLat
+          });
+          // console.log({
+          //   userPos: position.coords,
+          //   nodePos: {
+          //     longitude: node.dataset.positionLong,
+          //     latitude: node.dataset.positionLat
+          //   },
+          //   distance: distance
+          // });
+          node.innerHTML = distance + "km away";
+        });
+        sendGeo(position);
+      },
+      null,
+      positionOptions
+    );
+  }
+
+  function applyGeoToForm(position) {
+    // console.log("applying", position.coords);
+    formLong.value = position.coords.longitude;
+    formLat.value = position.coords.latitude;
+  }
+
+  function sendGeo(position) {
+    socket.emit("position", {
+      geo: {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      },
+      id: id,
+    })
+  }
+
+  /**
+   * Caluclates the distance between 2 geopositions
+   * Each geo passed in must contain a latitude and longitude attribute
+   * @param {Object} geo1
+   * @param {Object} geo2
+   * @return {Number} the distance in KM
+   */
+  function calculateDistance(geo1, geo2) {
+    //Make sure they're numbers
+    geo1.latitude = Number(geo1.latitude);
+    geo1.longitude = Number(geo1.longitude);
+    geo2.latitude = Number(geo2.latitude);
+    geo2.longitude = Number(geo2.longitude);
+
+    const CIRCUM_IN_KM = 6371
+    const ACOS = Math.acos;
+    const SIN = Math.sin;
+    const COS = Math.cos;
+    const RADIANS = (degrees) => {
+      return degrees * (Math.PI / 180)
+    }
+    let Lat1 = geo1.latitude;
+    let Lat2 = geo2.latitude;
+    let Lon1 = geo1.longitude;
+    let Lon2 = geo2.longitude;
+
+    let distance = ACOS((SIN(RADIANS(Lat1)) * SIN(RADIANS(Lat2))) +
+      (COS(RADIANS(Lat1)) * COS(RADIANS(Lat2))) *
+      (COS(RADIANS(Lon2) - RADIANS(Lon1)))) * CIRCUM_IN_KM;
+    return distance.toFixed(2);
+  }
+
+  document.addEventListener("DOMContentLoaded", startProcessGeo)
 </script>
 </body>
 
