@@ -11,6 +11,8 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const Collection = require("mongodb").Collection;
 
+const addRatings = require("./scripts/ratings.js").addRatingRoute;
+
 const crypto = require("crypto");
 const fs = require("fs");
 const Joi = require("joi");
@@ -660,93 +662,8 @@ app.post(
   handleProfileChanges
 );
 
-/**
- *
- * @param {ObjectId} ratedID
- * @param {ObjectId} userID
- * @param {Number} rateValue
- */
-async function addRating(ratedID, userID, rateValue) {
-  let ratingUser = userID;
-  // console.log("1 " + ratingUser)
-  let ratedUser = ratedID;
-  // console.log("2 " + ratedUser)
-
-  let ratedBefore = await ratingsCollection.findOne({
-    userID: ratingUser,
-    ratedID: ratedUser,
-  });
-
-  if (ratedBefore == null) {
-    let rate = {
-      userID: userID,
-      ratedID: ratedID,
-      rateValue: rateValue,
-      date: new Date(),
-    };
-
-    await ratingsCollection.insertOne(rate);
-
-    // console.log(ratedID)
-
-    await userCollection.findOneAndUpdate(
-      { _id: ratedID },
-      {
-        $inc: { rateCount: 1, rateValue: rateValue },
-      }
-    );
-    return 201;
-  } else {
-    // console.log(ratedBefore.rateValue)
-
-    let changeValue = rateValue - ratedBefore.rateValue;
-    // console.log(changeValue)
-    // console.log(ratedID)
-    //This should update the current rating, mongo says "Update document requires atomic operators", which I'm too tired to fix"
-    // if (changeValue != 0) {
-
-    //   await userCollection.findOneAndUpdate(
-    //     { "_id": ratedID },
-    //     {
-    //       $inc: { rateValue: changeValue },
-    //     }
-    //   );
-
-    //   await ratingsCollection.findOneAndUpdate(
-    //     { "_id": ratedBefore._id },
-    //     {
-    //       rateValue: rateValue,
-    //       date: new Date(),
-    //     }
-    //   )
-    // }
-
-    // console.log("it's working");
-    return 409;
-  }
-}
-
 /**Post to submit rating from profile. */
-app.post("/submit-rating", checkAuth, async (req, res) => {
-  let refString = req.get("referrer");
-  // console.log("referred:", refString);
-
-  //This is kinda gross but it works
-  // console.log(refString);
-  let textArray = refString.split("=");
-  let profID = textArray[1];
-  let value = Number(req.body.rating);
-  let ratingUser = new ObjectId(getUserId(req));
-
-  let ratedUser = await userCollection.findOne({ username: profID });
-  let ratedObj = ratedUser._id;
-
-  Joi.number().min(1).max(5).required().validate(value);
-
-  rateStatus = await addRating(ratedObj, ratingUser, value);
-
-  res.redirect(rateStatus, "back");
-});
+app.post("/submit-rating", checkAuth, addRatings);
 
 /**
  * History Page.
