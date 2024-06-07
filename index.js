@@ -525,14 +525,14 @@ app.get("/loginInvalid", async (req, res) => {
 app.get("/profile", async (req, res) => {
   //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
 
-  let username, email, userIcon, user;
-  let skills = [];
+  let queriedUser;
+  let quieriedUserSkills = [];
   let queryID = req.query.id;
   let referrer = req.get("referrer");
   //Check current user.
-  //Check current user.
   let currentUser = getUser(req);
 
+  //TODO: CB: We shouldnt need to redirect to use if the user isn't logged in.
   if (!currentUser) {
     res.redirect("/");
     return;
@@ -541,60 +541,47 @@ app.get("/profile", async (req, res) => {
     referrer = "/";
   }
 
+  //If the user is trying to access the default /profile, redirect to their own profile
   if (req.session.user && queryID == undefined) {
     res.redirect(`/profile?id=${getUsername(req)}`);
     return;
-    queryID = req.session.user.username;
-    // user = getUser(req);
-    // username = getUsername(req);
-    // email = getEmail(req);
-    // userIcon = getUserIcon(req);
   }
-  user = await userCollection.findOne({ username: queryID });
-  //user = await userCollection.findOne({ username: "Paul" });
+  queriedUser = await userCollection.findOne({ username: queryID });
 
-  //if we cant find the requested profile, get the current users profile
-  if (!user) {
+  if (!queriedUser) {
     // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
     console.error(`Could not find profile page for ${queryID}!`);
     res.redirect("/noUser");
     return;
   }
-  username = user.username;
-  email = user.email;
-  userIcon = user.userIcon;
-  location = user.userLocation;
 
-  if (user.userSkills != undefined && user.userSkills.length > 0) {
+  if (
+    queriedUser.userSkills != undefined &&
+    queriedUser.userSkills.length > 0
+  ) {
     let userSkills = userSkillsCollection.find({
-      _id: { $in: user.userSkills },
+      _id: { $in: queriedUser.userSkills },
     });
     for await (const skill of userSkills) {
-      skills.push(skill);
+      quieriedUserSkills.push(skill);
     }
   }
 
   let ratedBefore = await ratingsCollection.findOne({
     userID: ObjectId.createFromHexString(getUserId(req)),
-    ratedID: user._id,
+    ratedID: queriedUser._id,
   });
 
   if (getUserId(req) != null) {
     let viewer = await userCollection.findOne(new ObjectId(getUserId(req)));
 
     viewerHistory = viewer.history.visited;
-    let viewedUser = user._id;
+    let viewedUser = queriedUser._id;
     let currentUser = new ObjectId(getUserId(req));
 
-    // var contains =
-    // stringCurUser = JSON.stringify(currentUser)
-    // stringViewedUser = JSON.stringify(viewedUser)
-
-    // let contains = viewerHistory.some(elem => {
-    // return (JSON.stringify(viewedUser)) === (JSON.stringify(elem));
-    // });
     let index;
-    // let dupFlag = false
+
+    //TODO: CB: Remove this and make it external. We shouldn't have functions within functions
     let findDupe = async function () {
       index = 0;
       for await (const user of viewerHistory) {
@@ -629,14 +616,16 @@ app.get("/profile", async (req, res) => {
         },
       }
     );
-    // console.log(viewerHistory)
-
-    // await viewer.history.updateOne({$set: {viewed:viewerHistory}})
-    //Braindeath is engaged
-    // console.log(await userCollection.findOne(new ObjectId(getUserId(req))))
+    console.log(queriedUser);
 
     res.render("profile", {
-      userCard: new userCard(username, skills, email, userIcon, location),
+      userCard: new userCard(
+        queriedUser.username,
+        quieriedUserSkills,
+        queriedUser.email,
+        queriedUser.userIcon,
+        queriedUser.location
+      ),
       uploaded: req.query.success,
       referrer: referrer,
       ratedBefore: ratedBefore,
