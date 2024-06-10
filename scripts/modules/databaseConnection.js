@@ -12,9 +12,12 @@ const { Collection, ObjectId } = require("mongodb");
 
 const database = getMongoClient();
 
-//TODO CB: This should be exported as mongoStore, not the getMongoStore function
-// Otherwise this isn't used in here, and we dont need to declare it.
-const mongoStore = getMongoStore();
+const databases = {
+  userCollection: getCollection("users"),
+  skillCatCollection: getCollection("skillCats"),
+  userSkillsCollection: getCollection("skills"),
+  ratingsCollection: getCollection("ratings"),
+};
 
 /**
  * Creates a mongoclient based on the information in the .env file
@@ -62,4 +65,4 @@ function getCollection(collection) {
 //   console.log(result);
 // });
 
-module.exports = { getMongoStore, getCollection, ObjectId };
+module.exports = { getMongoStore, getCollection, ObjectId, databases };

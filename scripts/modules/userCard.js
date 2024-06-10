@@ -1,3 +1,5 @@
+const { formatProfileIconPath } = require("./localSession");
+
 /** All the arguments the userCard needs */
 class userCard {
   constructor(
@@ -19,7 +21,8 @@ class userCard {
   }
 }
 
-function createUserCard(mongoDocument) {
-}
+function createUserCard(mongoDocument) {}
 
 function createUserCard([...mongoDocuments]) {}
+
+module.exports = { userCard };

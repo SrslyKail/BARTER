@@ -1,8 +1,10 @@
-const { valid } = require("joi");
-
 const objIdSchema = require("./modules/validationSchemas").objectIdSchema;
 const ObjectId = require("./modules/databaseConnection").ObjectId;
-const getUserId = require("./modules/localSession").getUserId;
+const { getUsername, getUserId } = require("./modules/localSession");
+const userCard = require("./modules/userCard").userCard;
+const { skillCatCollection, userSkillsCollection, userCollection } =
+  require("./modules/databaseConnection").databases;
+
 /**
  * Removes a skill from the users profile in Mongo
  * @param {Request} req
@@ -89,4 +91,89 @@ async function addSkillToUser(userID, skillID) {
   );
 }
 
-module.exports = { removeSkill, addSkill };
+async function loadSkillPage(req, res) {
+  if (getUserId(req) != null) {
+    var username = getUsername(req);
+    // console.log(req);
+    let skill = req.params.skill;
+    // console.log(skillCat);
+    if (skill == "Chronoscope Repair") {
+      app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
+    }
+
+    const skilldb = await userSkillsCollection.findOne({ name: skill });
+
+    if (skilldb == null) {
+      res.redirect("/404");
+    } else {
+      skilledUsers = getSkilledUsers();
+    }
+    let skilledUsersCache = await getSkilledUsers(skilldb._id);
+
+    res.render("skill", {
+      username: username,
+      db: skilledUsersCache,
+      skillName: skilldb.name,
+      skillImage: skilldb.image,
+      skillObjID: skilldb._id,
+      referrer: req.get("referrer"),
+    });
+  } else {
+    //CB: Currently we need to redirect to login because an un-logged-in user wont have a username, so it would crash some of the logic on the skills page.
+    // We should try to refactor that out at some point.
+    res.redirect("../login");
+  }
+}
+
+async function getSkilledUsers(skillId) {
+  const skilledUsers = userCollection.find({
+    userSkills: { $in: [skillId] },
+  });
+  let skilledUsersCache = [];
+  for await (const user of skilledUsers) {
+    skilledUsersCache.push(
+      new userCard(
+        user.username,
+        [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
+        user.email,
+        user.userIcon,
+        user.userLocation,
+        typeof user.rateValue !== "undefined" ? user.rateValue : null,
+        typeof user.rateCount !== "undefined" ? user.rateCount : null
+      )
+    );
+  }
+  return skilledUsersCache;
+}
+
+async function loadSkillCat(req, res) {
+  var username = getUsername(req);
+  const category = await skillCatCollection.findOne({
+    name: req.params.skillCat,
+  });
+  /* 
+    CB: the await here is the secret sauce!
+    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
+    */
+  let skills = await getSkillsInCat(category.catSkills);
+  res.render("category", {
+    username: username,
+    db: skills,
+    parentPage: "/skill",
+    catName: category.name,
+    catImage: category.image,
+  });
+  return;
+}
+
+async function getSkillsInCat(skillObjectArray) {
+  let skills = [];
+
+  for await (const skillID of skillObjectArray) {
+    let curSkill = await userSkillsCollection.findOne({ _id: skillID });
+    skills.push(curSkill);
+  }
+  return skills;
+}
+
+module.exports = { removeSkill, addSkill, loadSkillPage, loadSkillCat };

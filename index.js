@@ -83,6 +83,7 @@ app.use("/audio", express.static("./audio"));
 /* #endregion expressPathing */
 
 /* #region middleware */
+//! CB:I'm not even sure this does anything. We don't actually use it anywhere.
 app.use(
   session({
     secret: node_session_secret,
@@ -121,6 +122,8 @@ app.use((req, res, next) => {
 });
 
 /** middleware function for catching bad skill/category parameters */
+
+//TODO: CB: Test is we can move these into the skills.js script, or, alternatively, into a middleware script file.
 async function validateSkillParam(req, res, next) {
   const param = req.params;
   const test = await userSkillsCollection.findOne({ name: param.skill });
@@ -304,90 +307,9 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/category/:skillCat", validateCatParam, async (req, res) => {
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  let skillCat = req.params.skillCat;
-  const category = await skillCatCollection.findOne({ name: skillCat });
-  const skillObjectArray = category.catSkills;
-  const catName = category.name;
-  const catImage = category.image;
-  /* 
-    CB: the await here is the secret sauce!
-    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-    */
-  let skills = [];
+app.get("/category/:skillCat", validateCatParam, skills.loadSkillCat);
 
-  for await (const skillID of skillObjectArray) {
-    let curSkill = await userSkillsCollection.findOne({ _id: skillID });
-    skills.push(curSkill);
-  }
-  res.render("category", {
-    authenticated: authenticated,
-    username: username,
-    db: skills,
-    parentPage: "/skill",
-    catName: catName,
-    catImage: catImage,
-  });
-  return;
-});
-
-app.get("/skill/:skill", validateSkillParam, async (req, res) => {
-  var username = getUsername(req);
-  var authenticated = isAuthenticated(req);
-  // console.log(req);
-  let skill = req.params.skill;
-  let referrer = req.get("referrer");
-  // console.log(skillCat);
-  if (skill == "Chronoscope Repair") {
-    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
-  }
-
-  const skilldb = await userSkillsCollection.findOne({ name: skill });
-
-  if (skilldb == null) {
-    res.redirect("/404");
-  } else {
-  }
-  // console.log(category);
-  const skillName = skilldb.name;
-  const skillImage = skilldb.image;
-  const skillObjID = skilldb._id;
-  const skilledUsers = userCollection.find({
-    userSkills: { $in: [skilldb._id] },
-  });
-  let skilledUsersCache = [];
-  for await (const user of skilledUsers) {
-    skilledUsersCache.push(
-      new userCard(
-        user.username,
-        [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
-        user.email,
-        user.userIcon,
-        user.userLocation,
-        typeof user.rateValue !== "undefined" ? user.rateValue : null,
-        typeof user.rateCount !== "undefined" ? user.rateCount : null
-      )
-    );
-  }
-  // console.log(skilledUsersCache);
-
-  if (getUserId(req) != null) {
-    res.render("skill", {
-      authenticated: authenticated,
-      username: username,
-      db: skilledUsersCache,
-      skillName: skillName,
-      skillImage: skillImage,
-      skillObjID: skillObjID,
-      referrer: referrer,
-    });
-    return;
-  } else {
-    res.redirect("../login");
-  }
-});
+app.get("/skill/:skill", validateSkillParam, skills.loadSkillPage);
 
 app.post("/remove-skill/:skillID", checkAuth, skills.removeSkill);
 
@@ -413,10 +335,7 @@ app.post("/loggingin", async (req, res) => {
   var password = req.body.password;
 
   const emailSchema = Joi.string().email().required();
-  const emailValidationResult = emailSchema
-    .validate(email)
-    //abortEarly:False lets us do all the validation at once.
-    .options({ abortEarly: false });
+  const emailValidationResult = emailSchema.validate(email);
 
   if (emailValidationResult.error != null) {
     console.error(emailValidationResult.error);
@@ -732,63 +651,6 @@ app.get("/addPortfolio", async (req, res) => {
     username: username,
   });
 });
-
-/**
- * Edit Portfolio Page. Deprecated
- */
-// app.get("/editPortfolio", async (req, res) => {
-//   const username = req.query.username;
-//   const skill = req.query.skill;
-//   let gallery = [];
-//   let description = "";
-
-//   let referrer = req.get("referrer");
-//   //Check current user.
-//   //Check current user.
-//   let currentUser = getUser(req);
-
-//   if (!currentUser) {
-//     res.redirect("/");
-//     return;
-//   }
-//   if (referrer == undefined) {
-//     referrer = "/";
-//   }
-//   console.log("AAAAAAAAAAAAAA" + referrer)
-
-//   if (!username) {
-//     res.redirect("/profile");
-//     return;
-//   }
-
-//   if (!skill) {
-//     res.redirect("/profile");
-//     return;
-//   }
-
-//   const userData = await userCollection.findOne({
-//     username: username,
-//   });
-
-//   const skillData = await userSkillsCollection.findOne({
-//     name: skill,
-//   });
-
-//   for (let i = 0; i < userData.portfolio.length; i++) {
-//     if (userData.portfolio[i].title === skillData._id.toString()) {
-//       gallery = userData.portfolio[i].images;
-//       description = userData.portfolio[i].description;
-//     }
-//   }
-
-//   res.render("editPortfolio", {
-//     title: skill,
-//     description: description,
-//     images: gallery,
-//     username: username,
-//     referrer: referrer,
-//   });
-// });
 
 /**
  * Handles all the resetting code.

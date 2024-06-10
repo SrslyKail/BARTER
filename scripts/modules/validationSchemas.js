@@ -21,9 +21,4 @@ const objectIdSchema = Joi.object({
   objID: Joi.string().hex().length(24),
 });
 
-userSchema.password.module.exports(
-  ratingSchema,
-  userSchema,
-  passwordSchema,
-  objectIdSchema
-);
+module.exports = { ratingSchema, userSchema, passwordSchema, objectIdSchema };
