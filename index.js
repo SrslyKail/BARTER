@@ -321,11 +321,10 @@ app.post("/loggingin", async (req, res) => {
   }
 
   const result = await userCollection.find({ email: email }).toArray();
-  if (result.length != 1) {
-    res.redirect("/loginInvalid");
-    return;
-  }
-  if (await bcrypt.compare(password, result[0].password)) {
+  if (
+    result.length == 1 &&
+    (await bcrypt.compare(password, result[0].password))
+  ) {
     const user = result[0];
     createSession(
       req,
@@ -339,13 +338,9 @@ app.post("/loggingin", async (req, res) => {
     res.redirect("/");
     return;
   } else {
-    res.redirect("/loginInvalid");
+    res.render("/loginInvalid");
     return;
   }
-});
-
-app.get("/loginInvalid", async (req, res) => {
-  res.render("loginInvalid");
 });
 
 /**
