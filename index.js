@@ -214,14 +214,8 @@ function setupDBSkillCache() {
  * @returns {Array}
  */
 function generateNavLinks(req) {
-  const links = [{ name: "Home", link: "/" }];
   const modalArray = [];
-
   if (isAuthenticated(req)) {
-    links.push(
-      { name: "Members", link: "/members" },
-      { name: "Log out", link: "/logout" }
-    );
     modalArray.push(
       { name: "View Profile", link: "/profile" },
       { name: "History", link: "/history/visited" },
@@ -231,13 +225,9 @@ function generateNavLinks(req) {
     );
     // CB: We can uncomment this if we add an admin page
     // if (isAdmin(req)) {
-    //   links.push({ name: "Admin", link: "/admin" });
+    //   modalArray.push({ name: "Admin", link: "/admin" });
     // }
   } else {
-    links.push(
-      { name: "Log in", link: "/login" },
-      { name: "Sign up", link: "/signup" }
-    );
     modalArray.push(
       { name: "Log in", link: "/login" },
       { name: "Sign up", link: "/signup" }
@@ -835,13 +825,6 @@ app.post("/submitUser", async (req, res) => {
     errors: errors,
   });
   return;
-});
-
-/**
- * Post method for logout buttons.
- */
-app.post("/logout", async (req, res) => {
-  res.redirect("/logout");
 });
 
 app.get("/logout", (req, res) => {
