@@ -54,6 +54,7 @@ const userSkillsCollection = getCollection("skills");
 /** @type {Collection} */
 const ratingsCollection = getCollection("ratings");
 
+const { userCard } = require("./scripts/modules/userCard.js");
 const log = require("./scripts/modules/logging").log;
 const sendPasswordResetEmail =
   require("./scripts/modules/mailer").sendPasswordResetEmail;
@@ -157,30 +158,6 @@ async function checkAuth(req, res, next) {
 /* #endregion middleware */
 
 /* #region helperFunctions */
-
-/** All the arguments the userCard needs */
-class userCard {
-  constructor(
-    username,
-    userSkills,
-    email,
-    userIcon,
-    userLocation = null,
-    rateValue = null,
-    rateCount = null
-  ) {
-    this.username = username;
-    this.userSkills = userSkills;
-    this.email = email;
-    this.userIcon = formatProfileIconPath(userIcon);
-    this.userLocation = userLocation;
-    // console.log("Creating userCard class for", username);
-    // console.log("passed ratevalue", rateValue);
-    // console.log("passed ratecount", rateCount);
-    this.rateValue = rateValue;
-    this.rateCount = rateCount;
-  }
-}
 
 /**
  * Puts all the items from a collection into a cache.
@@ -470,7 +447,7 @@ app.get("/profile", async (req, res) => {
         },
       }
     );
-    console.log(queriedUser);
+    //console.log(queriedUser);
 
     res.render("profile", {
       userCard: new userCard(
@@ -478,7 +455,7 @@ app.get("/profile", async (req, res) => {
         quieriedUserSkills,
         queriedUser.email,
         queriedUser.userIcon,
-        queriedUser.location
+        queriedUser.userLocation
       ),
       uploaded: req.query.success,
       referrer: referrer,

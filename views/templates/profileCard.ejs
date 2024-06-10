@@ -1,35 +1,41 @@
-  <table class="profileCardTable">
-    <td>
+<table class="profileCardTable">
+  <td>
 
-      <div class="profileCardDataGrid">
-        <div class="profileIconContainer">
-          <a class="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("components/profileIcon", {userIcon: userCard.userIcon}) %></a>
-        </div>
-        <div class="cardUsername" style="font-weight: bold;"><%= userCard.username %></div>
-        <div class="tightStars">
-          <%# if (userCard.rateCount != null) { %>
+    <div class="profileCardDataGrid">
+      <div class="profileIconContainer">
+        <a class="profileIcon" href="/profile?id=<%= userCard.username %>"><%- include("components/profileIcon",
+            {userIcon: userCard.userIcon}) %></a>
+      </div>
+      <div class="cardUsername" style="font-weight: bold;">
+        <%= userCard.username %>
+      </div>
+      <div class="tightStars">
+        <%# if (userCard.rateCount !=null) { %>
           <%# console.log("User card for", userCard.username) %>
-          <%# This should pass in userCard.rateValue and userCard.rateCount, then do the proper math %>
-          <%- include("components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent: (100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
-          <%# } %>
+            <%# This should pass in userCard.rateValue and userCard.rateCount, then do the proper math %>
+              <%- include("components/cardStars", {rateValue: userCard.rateValue, rateCount:userCard.rateCount, percent:
+                (100-((userCard.rateValue/(userCard.rateCount * 5)) * 100))})%>
+                <%# } %>
 
-        </div>
-        <div class="userCardSkills truncate">
-          <% let skills = userCard.userSkills.slice(0, 2).map((skill) => skill.name) %>
+      </div>
+      <div class="userCardSkills truncate">
+        <% let skills=userCard.userSkills.slice(0, 2).map((skill)=> skill.name) %>
           <%- skills.join(", ") %>
           <%if (userCard.userSkills.length > 2) {%>. . .<%}%>
         </div>
  
-        <div class="userCardLocation truncate text-body-secondary"><% if(typeof userCard.userLocation.placeName !== undefined){ %>
-          <%= userCard.userLocation.placeName %>
-          <% if(typeof user === "undefined" || user.username != userCard.username) { %>
-        </div>
-        <div name="userDistance" data-position-long="<%= userCard.userLocation.geo.longitude %>" data-position-lat="<%= userCard.userLocation.geo.latitude %>">
+        <div class=" userCardLocation truncate text-body-secondary">
+            <% if( Object.keys(userCard.userLocation).includes("placeName")){ %>
+              <%= userCard.userLocation.placeName %>
+                <% if(typeof user==="undefined" || user.username !=userCard.username) { %>
+      </div>
+      <div name="userDistance" data-position-long="<%= userCard.userLocation.geo.longitude %>"
+        data-position-lat="<%= userCard.userLocation.geo.latitude %>">
+        <% } %>
           <% } %>
-          <% } %>
-        </div>
-
       </div>
 
-    </td>
-  </table>
+    </div>
+
+  </td>
+</table>
