@@ -57,6 +57,7 @@ const {
   upload,
   handleProfileChanges,
   updatePortfolio,
+  loadProfile,
 } = require("./scripts/profile.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
@@ -332,118 +333,7 @@ app.post("/loggingin", async (req, res) => {
  * that usernames are unique, and that a document in the profile collection is created upon registration
  * (this either needs to be changed or implemented)
  */
-app.get("/profile", async (req, res) => {
-  //TODO: Add JOI validation for the request.query.id; a user could manually enter this into the nav bar so its possible for it to be a database attack.
-
-  let queriedUser;
-  let quieriedUserSkills = [];
-  let queryID = req.query.id;
-  let referrer = req.get("referrer");
-  //Check current user.
-  let currentUser = getUser(req);
-
-  //TODO: CB: We shouldnt need to redirect to use if the user isn't logged in.
-  if (!currentUser) {
-    res.redirect("/");
-    return;
-  }
-  if (referrer == undefined) {
-    referrer = "/";
-  }
-
-  //If the user is trying to access the default /profile, redirect to their own profile
-  if (req.session.user && queryID == undefined) {
-    res.redirect(`/profile?id=${getUsername(req)}`);
-    return;
-  }
-  queriedUser = await userCollection.findOne({ username: queryID });
-
-  if (!queriedUser) {
-    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
-    console.error(`Could not find profile page for ${queryID}!`);
-    res.redirect("/noUser");
-    return;
-  }
-
-  if (
-    queriedUser.userSkills != undefined &&
-    queriedUser.userSkills.length > 0
-  ) {
-    let userSkills = userSkillsCollection.find({
-      _id: { $in: queriedUser.userSkills },
-    });
-    for await (const skill of userSkills) {
-      quieriedUserSkills.push(skill);
-    }
-  }
-
-  let ratedBefore = await ratingsCollection.findOne({
-    userID: ObjectId.createFromHexString(getUserId(req)),
-    ratedID: queriedUser._id,
-  });
-
-  if (getUserId(req) != null) {
-    let viewer = await userCollection.findOne(new ObjectId(getUserId(req)));
-
-    viewerHistory = viewer.history.visited;
-    let viewedUser = queriedUser._id;
-    let currentUser = new ObjectId(getUserId(req));
-
-    let index;
-
-    //TODO: CB: Remove this and make it external. We shouldn't have functions within functions
-    let findDupe = async function () {
-      index = 0;
-      for await (const user of viewerHistory) {
-        // console.log(viewerHistory.indexOf(user))
-        if (JSON.stringify(viewedUser) === JSON.stringify(user)) {
-          // dupFlag = true
-          // console.log(index)
-          break;
-        } else {
-          index++;
-        }
-      }
-    };
-    await findDupe();
-
-    viewerHistory.splice(index, 1);
-
-    if (!viewedUser.equals(currentUser)) {
-      // console.log(viewedUser)
-      //Doesn't determine display order later, dunno why
-      viewerHistory.push(viewedUser);
-    }
-    if (viewerHistory.length > 8) {
-      viewerHistory.length = 8;
-    }
-    // console.log(currentUser)
-    userCollection.updateOne(
-      { _id: currentUser },
-      {
-        $set: {
-          "history.visited": viewerHistory,
-        },
-      }
-    );
-    //console.log(queriedUser);
-
-    res.render("profile", {
-      userCard: new userCard(
-        queriedUser.username,
-        quieriedUserSkills,
-        queriedUser.email,
-        queriedUser.userIcon,
-        queriedUser.userLocation
-      ),
-      uploaded: req.query.success,
-      referrer: referrer,
-      ratedBefore: ratedBefore,
-    });
-  } else {
-    res.redirect("login");
-  }
-});
+app.get("/profile", loadProfile);
 
 /**
  * Edit Profile Page.

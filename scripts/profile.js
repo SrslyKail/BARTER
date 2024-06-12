@@ -4,11 +4,14 @@ const {
   getUsername,
   formatProfileIconPath,
   updateSession,
+  getUserId,
 } = require("./modules/localSession");
-const { getPlaceName } = require("./modules/location");
-const { userCollection, userSkillsCollection } =
-  require("./modules/databaseConnection").databases;
 
+const { userCard } = require("./modules/userCard");
+const { getPlaceName } = require("./modules/location");
+const { databases, ObjectId } = require("./modules/databaseConnection");
+const { userCollection, userSkillsCollection, ratingsCollection } = databases;
+const { usernameSchema } = require("./modules/validationSchemas");
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -94,6 +97,118 @@ function removeEmptyAttributes(data) {
     }
   });
   return data;
+}
+
+async function loadProfile(req, res) {
+  let currentUser;
+  let currentUsername = getUsername(req);
+  let currentUserId = getUserId(req);
+  let queriedUser;
+  let quieriedUserSkills = [];
+  let queryUsername = req.query.id;
+  let referrer = req.get("referrer");
+
+  //If the user is not logged in
+  if (!currentUserId) {
+    res.redirect("/login");
+    return;
+  } else if (req.session.user && queryUsername == undefined) {
+    //If the user is trying to access the default /profile, redirect to their own profile
+    res.redirect(`/profile?id=${currentUsername}`);
+    return;
+  } else if (referrer == undefined) {
+    referrer = "/";
+  }
+
+  //validate the queryID is not some sort of an attack, and is a valid username
+  let result = usernameSchema.validate(queryUsername);
+  if (result.error) {
+    console.warn(
+      "JOI Validation failed when loading profile: \n",
+      result.error
+    );
+    res.redirect("/");
+    return;
+  }
+
+  // Check if logged in user and viewer are the same
+  if (queryUsername != currentUsername) {
+    let results = await userCollection
+      .find({
+        username: { $in: [queryUsername, currentUsername] },
+      })
+      .toArray();
+    results.forEach((user) => {
+      if (user.username == currentUsername) {
+        currentUser = user;
+      } else {
+        queriedUser = user;
+      }
+    });
+  } else {
+    //If they are the same, we can assign currentUser to queriedUser
+    currentUser = await userCollection.findOne({
+      username: currentUsername,
+    });
+    queriedUser = currentUser;
+  }
+  if (!queriedUser) {
+    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
+    res.redirect("/noUser");
+    return;
+  } else if (
+    queriedUser.userSkills != undefined &&
+    queriedUser.userSkills.length > 0
+  ) {
+    quieriedUserSkills = await userSkillsCollection
+      .find({
+        _id: { $in: queriedUser.userSkills },
+      })
+      .toArray();
+  }
+
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: currentUser._id,
+    ratedID: queriedUser._id,
+  });
+
+  let currentUserHistory = currentUser.history.visited;
+
+  //If the current user has been viewed before, remove them from the history so we can readd them at the front
+  currentUserHistory.forEach((user, index) => {
+    if (user.equals(queriedUser._id)) {
+      currentUserHistory.splice(index, 1);
+    }
+  });
+
+  // We dont need to update history if viewing your own profile
+  if (!queriedUser._id.equals(currentUser._id)) {
+    currentUserHistory.splice(0, 0, queriedUser._id);
+    if (currentUserHistory.length > 8) {
+      currentUserHistory.length = 8;
+    }
+    userCollection.updateOne(
+      { _id: currentUser._id },
+      {
+        $set: {
+          "history.visited": currentUserHistory,
+        },
+      }
+    );
+  }
+
+  res.render("profile", {
+    userCard: new userCard(
+      queriedUser.username,
+      quieriedUserSkills,
+      queriedUser.email,
+      queriedUser.userIcon,
+      queriedUser.userLocation
+    ),
+    uploaded: req.query.success,
+    referrer: referrer,
+    ratedBefore: ratedBefore,
+  });
 }
 
 /**
@@ -205,4 +320,4 @@ async function updatePortfolio(req, res) {
 }
 /* #region ------------ PORTFOLIIO EDITING --------------------------- */
 
-module.exports = { upload, handleProfileChanges, updatePortfolio };
+module.exports = { upload, loadProfile, handleProfileChanges, updatePortfolio };
