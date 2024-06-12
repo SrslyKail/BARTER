@@ -89,6 +89,22 @@ function refreshCookieTime(req) {
 }
 
 /**
+ * Updates the local session with the given key/value pairs. Will filter out any excess key-value pairs to ensure we don't
+ * @param {Object} newKeyValues An object containing the keys and values you want to update.
+ */
+function updateSession(req, newKeyValues) {
+  let user = getUser(req);
+  if (user != null) {
+    let inputKeys = Object.keys(newKeyValues);
+    let userKeys = Object.keys(user);
+    let updateKeys = userKeys.filter((key) => inputKeys.includes(key));
+    updateKeys.forEach((key) => {
+      req.session.user[key] = inputKeys[key];
+    });
+  }
+}
+
+/**
  *
  * @param {Request} req
  * @returns {Boolean}
@@ -144,15 +160,14 @@ function getHistory(req) {
 /**
  *
  * @param {Request} req
- * @returns {URL | String}
+ * @returns {User | null}
  */
 function getUser(req) {
-  let user = req.session.user;
-  return user ? user : null;
+  return req.session.user ? req.session.user : null;
 }
 
 function getEmail(req) {
-  let user = req.session.user;
+  let user = getUser(req);
   return user ? user.email : null;
 }
 
@@ -187,5 +202,6 @@ module.exports = {
   getUserId,
   defaultIcon,
   formatProfileIconPath,
-  refreshCookieTime
+  refreshCookieTime,
+  updateSession,
 };
