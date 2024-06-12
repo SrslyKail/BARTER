@@ -274,62 +274,6 @@ app.post("/remove-skill/:skillID", checkAuth, skills.removeSkill);
 
 app.post("/add-skill/:skillID", checkAuth, skills.addSkill);
 
-app.get("/login", (req, res) => {
-  var passChange = req.query.passChange;
-  res.render("login", {
-    passChange: passChange,
-  });
-});
-
-/**
- * Post method for login form in login.ejs
- *
- * Uses Joi to validate authentication.
- * Compares the entered password with the bcrypted password in database for authentication.
- *
- * Once successfully logged in, redirects to the main.ejs page.
- */
-app.post("/loggingin", async (req, res) => {
-  var email = req.body.email;
-  var password = req.body.password;
-
-  const emailSchema = Joi.string().email().required();
-  const emailValidationResult = emailSchema.validate(email);
-
-  if (emailValidationResult.error != null) {
-    console.error(emailValidationResult.error);
-    res.redirect("/login");
-    return;
-  }
-
-  const result = await userCollection.find({ email: email }).toArray();
-  if (
-    result.length == 1 &&
-    (await bcrypt.compare(password, result[0].password))
-  ) {
-    const user = result[0];
-    createSession(
-      req,
-      user.username,
-      user.email,
-      user._id,
-      user.history,
-      user.isAdmin,
-      user.userIcon
-    );
-    res.redirect("/");
-    return;
-  } else {
-    res.render("/loginInvalid");
-    return;
-  }
-});
-
-/**
- * this works under the assumption that profiles are stored in a separate collection,
- * that usernames are unique, and that a document in the profile collection is created upon registration
- * (this either needs to be changed or implemented)
- */
 app.get("/profile", loadProfile);
 
 /**
@@ -342,14 +286,99 @@ app.get("/editProfile", (req, res) => {
   });
 });
 
+/**
+ * Portfolio Page.
+ */
+app.get("/portfolio", async (req, res) => {
+  data = await setupPortfolio(req, res);
+  if (data) {
+    res.render("portfolio", data);
+  }
+});
+
+app.get("/editPortfolio", async (req, res) => {
+  if (req.query.id != getUsername(req) || !req.query.skill) {
+    res.redirect("/profile");
+    return;
+  }
+  data = await setupPortfolio(req, res);
+  // console.log(data);
+  res.render("editPortfolio", data);
+});
+
+async function setupPortfolio(req, res) {
+  const skill = req.query.skill;
+  const username = req.query.id;
+  let gallery = [];
+  let description = "";
+
+  let skillData = userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  let userData = userCollection.findOne({
+    username: username,
+  });
+
+  let results = await Promise.all([skillData, userData]).catch((err) => {
+    res.render("404");
+    return null;
+  });
+
+  skillData = results[0];
+  userData = results[1];
+
+  if (Object.keys(userData).includes("portfolio")) {
+    for (let i = 0; i < userData.portfolio.length; i++) {
+      //CB :title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
+      if (userData.portfolio[i].title === skillData._id.toString()) {
+        gallery = userData.portfolio[i].images;
+        description = userData.portfolio[i].description;
+      }
+    }
+  }
+
+  let referrer = req.get("referrer");
+  //Check current user.
+  let currentUser = getUser(req);
+  if (referrer == undefined) {
+    referrer = "/";
+  }
+
+  return {
+    title: skill,
+    images: gallery,
+    banner: skillData.image,
+    description: description,
+    username: username,
+    currentUser: getUsername(req),
+    referrer: referrer,
+  };
+}
+
+app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
+
+/**
+ * Add Portfolio Page.
+ */
+app.get("/addPortfolio", async (req, res) => {
+  const username = req.query.username;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("addPortfolio", {
+    username: username,
+  });
+});
+
 app.post(
   "/editProfile/upload",
   upload.single("userIcon"),
   handleProfileChanges
 );
-
-/**Post to submit rating from profile. */
-app.post("/submit-rating", checkAuth, addRatings);
 
 /**
  * History Page.
@@ -405,94 +434,6 @@ app.get("/history/:filter", async (req, res) => {
 
 app.get("/history", (req, res) => {
   res.render("history", {});
-});
-
-/**
- * Portfolio Page.
- */
-app.get("/portfolio", async (req, res) => {
-  data = await setupPortfolio(req, res);
-  if (data) {
-    res.render("portfolio", data);
-  }
-});
-
-app.get("/editPortfolio", async (req, res) => {
-  if (req.query.id != getUsername(req) || !req.query.skill) {
-    res.redirect("/profile");
-    return;
-  }
-  data = await setupPortfolio(req, res);
-  // console.log(data);
-  res.render("editPortfolio", data);
-});
-
-async function setupPortfolio(req, res) {
-  const skill = req.query.skill;
-  const username = req.query.id;
-  let gallery = [];
-  let description = "";
-
-  let skillData = userSkillsCollection.findOne({
-    name: skill,
-  });
-
-  let userData = userCollection.findOne({
-    username: username,
-  });
-
-  let results = await Promise.all([skillData, userData]).catch((err) => {
-    res.render("404");
-    return null;
-  });
-
-  skillData = results[0];
-  userData = results[1];
-
-  if (Object.keys(userData).includes("portfolio")) {
-    for (let i = 0; i < userData.portfolio.length; i++) {
-      //title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
-      if (userData.portfolio[i].title === skillData._id.toString()) {
-        gallery = userData.portfolio[i].images;
-        description = userData.portfolio[i].description;
-      }
-    }
-  }
-  let referrer = req.get("referrer");
-  //Check current user.
-  //Check current user.
-  let currentUser = getUser(req);
-  if (referrer == undefined) {
-    referrer = "/";
-  }
-
-  return {
-    title: skill,
-    images: gallery,
-    banner: skillData.image,
-    description: description,
-    username: username,
-    currentUser: getUsername(req),
-    referrer: referrer,
-  };
-}
-
-app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
-
-/**
- * Add Portfolio Page.
- */
-app.get("/addPortfolio", async (req, res) => {
-  const username = req.query.username;
-
-  if (!username) {
-    res.redirect("/profile");
-    return;
-  }
-
-  res.render("addPortfolio", {
-    username: username,
-  });
 });
 
 /**
@@ -621,18 +562,6 @@ app.post("/passwordChanging", async (req, res) => {
   res.redirect("/login?passChange=true");
 });
 
-/**
- * Post method for submitting a user from signup
- * Validates fields and checks for duplicate email/username
- * Then inserts a user, creates a session, and redirects to root.
- */
-//Added signup route back.
-app.get("/signup", (req, res) => {
-  res.render("signup", {
-    errors: [],
-  });
-});
-
 app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
   var password = req.body.password;
@@ -708,6 +637,71 @@ app.post("/submitUser", async (req, res) => {
   return;
 });
 
+/**Post to submit rating from profile. */
+app.post("/submit-rating", checkAuth, addRatings);
+
+app.get("/login", (req, res) => {
+  var passChange = req.query.passChange;
+  res.render("login", {
+    passChange: passChange,
+  });
+});
+
+/**
+ * Post method for login form in login.ejs
+ *
+ * Uses Joi to validate authentication.
+ * Compares the entered password with the bcrypted password in database for authentication.
+ *
+ * Once successfully logged in, redirects to the main.ejs page.
+ */
+app.post("/loggingin", async (req, res) => {
+  var email = req.body.email;
+  var password = req.body.password;
+
+  const emailSchema = Joi.string().email().required();
+  const emailValidationResult = emailSchema.validate(email);
+
+  if (emailValidationResult.error != null) {
+    console.error(emailValidationResult.error);
+    res.redirect("/login");
+    return;
+  }
+
+  const result = await userCollection.find({ email: email }).toArray();
+  if (
+    result.length == 1 &&
+    (await bcrypt.compare(password, result[0].password))
+  ) {
+    const user = result[0];
+    createSession(
+      req,
+      user.username,
+      user.email,
+      user._id,
+      user.history,
+      user.isAdmin,
+      user.userIcon
+    );
+    res.redirect("/");
+    return;
+  } else {
+    res.render("/loginInvalid");
+    return;
+  }
+});
+
+/**
+ * Post method for submitting a user from signup
+ * Validates fields and checks for duplicate email/username
+ * Then inserts a user, creates a session, and redirects to root.
+ */
+app.get("/signup", (req, res) => {
+  res.render("signup", {
+    errors: [],
+  });
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy(); // Deletes the session
   res.redirect("/"); // Sends back to the homepage
@@ -730,6 +724,7 @@ app.get("/settings", (req, res) => {
 app.get("/legal", (req, res) => {
   res.render("legal");
 });
+
 /**
  * handles all routes that are not matched by any other route.
  * renders a 404 page and sets the response status to 404.
