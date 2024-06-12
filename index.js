@@ -43,16 +43,14 @@ const {
   getMongoStore,
   getCollection,
   ObjectId,
+  databases
 } = require("./scripts/modules/databaseConnection");
-
-/** @type {Collection} */
-const userCollection = getCollection("users");
-/** @type {Collection} */
-const skillCatCollection = getCollection("skillCats");
-/** @type {Collection} */
-const userSkillsCollection = getCollection("skills");
-/** @type {Collection} */
-const ratingsCollection = getCollection("ratings");
+const {
+  userCollection,
+  skillCatCollection,
+  userSkillsCollection,
+  ratingsCollection
+} = databases;
 
 const { userCard } = require("./scripts/modules/userCard.js");
 const log = require("./scripts/modules/logging").log;

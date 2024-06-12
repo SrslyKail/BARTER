@@ -2,8 +2,8 @@ const objIdSchema = require("./modules/validationSchemas").objectIdSchema;
 const ObjectId = require("./modules/databaseConnection").ObjectId;
 const { getUsername, getUserId } = require("./modules/localSession");
 const userCard = require("./modules/userCard").userCard;
-const { skillCatCollection, userSkillsCollection, userCollection } =
-  require("./modules/databaseConnection").databases;
+const databases = require("./modules/databaseConnection").databases;
+const { skillCatCollection, userSkillsCollection, userCollection } = databases;
 
 /**
  * Removes a skill from the users profile in Mongo
@@ -16,16 +16,16 @@ async function removeSkill(req, res) {
   let validationResults = validateUserAndSkillIds(userId, skillId);
 
   if (validationResults.length != 0) {
+    //! CB: Unsure why this reroutes to /
+    //! also unsure what errors is meant to do be doing here, or where its initialized.
     validationResults.forEach((result) => {
       errors.push(result);
     });
-    //! CB: Unsure why this reroutes to /
-    // also unsure what errors is meant to do be doing here, or where its initialized.
     res.redirect("/");
   } else {
-    rateStatus = await removeSkillFromUser(
-      ObjectId.createFromHexString(userId),
-      ObjectId.createFromHexString(skillId)
+    await userCollection.updateOne(
+      { _id: ObjectId.createFromHexString(userId) },
+      { $pull: { userSkills: ObjectId.createFromHexString(skillId) } }
     );
     res.redirect("back");
   }
@@ -61,9 +61,9 @@ async function addSkill(req, res) {
     });
     res.redirect("/");
   } else {
-    rateStatus = await addSkillToUser(
-      ObjectId.createFromHexString(userId),
-      ObjectId.createFromHexString(skillId)
+    await userCollection.updateOne(
+      { _id: ObjectId.createFromHexString(userId) },
+      { $addToSet: { userSkills: ObjectId.createFromHexString(skillId) } }
     );
     res.redirect("back");
   }
@@ -92,49 +92,49 @@ async function addSkillToUser(userID, skillID) {
 }
 
 async function loadSkillPage(req, res) {
-  if (getUserId(req) != null) {
-    var username = getUsername(req);
-    // console.log(req);
-    let skill = req.params.skill;
-    // console.log(skillCat);
-    if (skill == "Chronoscope Repair") {
-      app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
-    }
-
-    const skilldb = await userSkillsCollection.findOne({ name: skill });
-
-    if (skilldb == null) {
-      res.redirect("/404");
-    } else {
-      skilledUsers = getSkilledUsers();
-    }
-    let skilledUsersCache = await getSkilledUsers(skilldb._id);
-
-    res.render("skill", {
-      username: username,
-      db: skilledUsersCache,
-      skillName: skilldb.name,
-      skillImage: skilldb.image,
-      skillObjID: skilldb._id,
-      referrer: req.get("referrer"),
-    });
-  } else {
+  if (getUserId(req) == null) {
     //CB: Currently we need to redirect to login because an un-logged-in user wont have a username, so it would crash some of the logic on the skills page.
     // We should try to refactor that out at some point.
     res.redirect("../login");
+    return;
   }
+  let skill = req.params.skill;
+
+  const skillDb = await userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  if (skillDb == null) {
+    res.redirect("/404");
+    return;
+  } else if (skillDb.name == "Chronoscope Repair") {
+    app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
+  }
+  var username = getUsername(req);
+  let skilledUsers = await databases.getUsersWithSkill(skillDb._id);
+  let skilledUsersCache = generateUserCards(skilledUsers);
+  res.render("skill", {
+    username: username,
+    db: skilledUsersCache,
+    skillName: skillDb.name,
+    skillImage: skillDb.image,
+    skillObjID: skillDb._id,
+    referrer: req.get("referrer"),
+  });
 }
 
-async function getSkilledUsers(skillId) {
-  const skilledUsers = userCollection.find({
-    userSkills: { $in: [skillId] },
-  });
-  let skilledUsersCache = [];
-  for await (const user of skilledUsers) {
-    skilledUsersCache.push(
+/**
+ * Generates an array of userCards for skilled users.
+ * @param {Document[]} skilledUsers
+ * @returns {userCard[]} userCards
+ */
+function generateUserCards(skilledUsers) {
+  let userCards = [];
+  for (const user of skilledUsers) {
+    userCards.push(
       new userCard(
         user.username,
-        [], // CB: Dont pass skills in; the user already knows the displayed person has the skills they need //huhh?? // CB: If we're on the "Baking" page, I know the user has baking. We could display more skills, but it'd require another round of fetching and parsing :')
+        [],
         user.email,
         user.userIcon,
         user.userLocation,
@@ -143,7 +143,7 @@ async function getSkilledUsers(skillId) {
       )
     );
   }
-  return skilledUsersCache;
+  return userCards;
 }
 
 async function loadSkillCat(req, res) {
@@ -155,7 +155,7 @@ async function loadSkillCat(req, res) {
     CB: the await here is the secret sauce!
     https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
     */
-  let skills = await getSkillsInCat(category.catSkills);
+  let skills = await databases.getSkillsInCat(category.catSkills);
   res.render("category", {
     username: username,
     db: skills,
@@ -164,16 +164,6 @@ async function loadSkillCat(req, res) {
     catImage: category.image,
   });
   return;
-}
-
-async function getSkillsInCat(skillObjectArray) {
-  let skills = [];
-
-  for await (const skillID of skillObjectArray) {
-    let curSkill = await userSkillsCollection.findOne({ _id: skillID });
-    skills.push(curSkill);
-  }
-  return skills;
 }
 
 module.exports = { removeSkill, addSkill, loadSkillPage, loadSkillCat };

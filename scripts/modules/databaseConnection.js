@@ -17,6 +17,30 @@ const databases = {
   skillCatCollection: getCollection("skillCats"),
   userSkillsCollection: getCollection("skills"),
   ratingsCollection: getCollection("ratings"),
+  /**
+   * Gets all users with the requested skill from the userCollection
+   * @param {ObjectId} skillId The ObjectId of the skill you want to find
+   * @returns {Document[] | null} An array fo documents for each user found with the requested skill, or null if no users were found.
+   */
+  getUsersWithSkill: async (skillId) => {
+    const skilledUsers = await databases.userCollection
+      .find({
+        userSkills: { $in: [skillId] },
+      })
+      .toArray();
+    return skilledUsers;
+  },
+  /**
+   * Gets all skills within a category
+   * @param {ObjectId[]} skillIds an array of all the skillIds you want to find
+   * @returns {Document[] | null} an array of documents for each found skill, if any, or null if none were found.
+   */
+  getSkillsInCat: async (skillIds) => {
+    let skills = await databases.userSkillsCollection
+      .find({ _id: { $in: skillIds } })
+      .toArray();
+    return skills;
+  },
 };
 
 /**
@@ -50,19 +74,16 @@ function getCollection(collection) {
 }
 
 /*
-  CB: Hiding this code here; paste it into index if we ever need to bulk update stuff again for some reason.
+  CB: Hiding this code here so we can use it when/if we need to bulk update stuff again for some reason. Uncomment the last line if you need to run it.
 */
-// app.get("/bulkUpdate", async (req, res) => {
-// //The users you want to edit
-//   const filter = { userSkills: { $eq: null } };
-//   //How you want to edit them
-//   const updateDoc = {
-//     $set: { userSkills: [] },
-//   };
-//   const found = await userCollection.find(filter).toArray();
-//   console.log(found);
-//   const result = await userCollection.updateMany(filter, updateDoc);
-//   console.log(result);
-// });
+async function bulkUpdate(req, res) {
+  //The users you want to edit
+  const filter = { userSkills: { $eq: null } };
+  //How you want to edit them
+  const updateDoc = {
+    $set: { userSkills: [] },
+  };
+  //await userCollection.updateMany(filter, updateDoc);
+}
 
 module.exports = { getMongoStore, getCollection, ObjectId, databases };
