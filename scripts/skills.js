@@ -31,10 +31,10 @@ async function removeSkill(req, res) {
 }
 
 /**
- *
- * @param {String} userId a hex string
- * @param {String} skillId a hex string
- * @returns {Array} errors An array containing all found errors; empty if none were found
+ * Validates that the User and Skill IDs passed in are proper hex values via JOI
+ * @param {String} userId a hex string representing the ObjectId of the users _id in MongoDb
+ * @param {String} skillId  hex string representing the ObjectId of the skills _id in MongoDb
+ * @returns {String[]} An array containing all found errors; empty if none were found
  */
 function validateUserAndSkillIds(userId, skillId) {
   let userValidation = objIdSchema.validate({ userId });
@@ -49,6 +49,11 @@ function validateUserAndSkillIds(userId, skillId) {
   return errors;
 }
 
+/**
+ * Adds a skill to the users profile.
+ * @param {Request} req
+ * @param {Response} res
+ */
 async function addSkill(req, res) {
   let userId = getUserId(req);
   let skillId = req.params.skillID;
@@ -69,8 +74,9 @@ async function addSkill(req, res) {
 }
 
 /**
- * @param {ObjectId} skillID
+ * Human readable version of the mongo command to remove a skill from a user
  * @param {ObjectId} userID
+ * @param {ObjectId} skillID
  */
 async function removeSkillFromUser(userID, skillID) {
   await userCollection.updateOne(
@@ -80,8 +86,9 @@ async function removeSkillFromUser(userID, skillID) {
 }
 
 /**
- * @param {ObjectId} skillID
+ * Human readable version of the mongo command to add a skill to a user
  * @param {ObjectId} userID
+ * @param {ObjectId} skillID
  */
 async function addSkillToUser(userID, skillID) {
   await userCollection.updateOne(
@@ -90,6 +97,12 @@ async function addSkillToUser(userID, skillID) {
   );
 }
 
+/**
+ * Loads a skill page
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
 async function loadSkillPage(req, res) {
   if (getUserId(req) == null) {
     //CB: Currently we need to redirect to login because an un-logged-in user wont have a username, so it would crash some of the logic on the skills page.
@@ -109,6 +122,7 @@ async function loadSkillPage(req, res) {
   } else if (skillDb.name == "Chronoscope Repair") {
     app.locals.modalLinks.push({ name: "Zamn!", link: "/zamn" });
   }
+
   var username = getUsername(req);
   let skilledUsers = await databases.getUsersWithSkill(skillDb._id);
   let skilledUsersCache = generateUserCards(skilledUsers);
@@ -124,12 +138,12 @@ async function loadSkillPage(req, res) {
 
 /**
  * Generates an array of userCards for skilled users.
- * @param {Document[]} skilledUsers
- * @returns {userCard[]} userCards
+ * @param {Document[]} skilledUsers All the users you want cards generated for
+ * @returns {userCard[]} An array of userCards for each skilled user passed in
  */
 function generateUserCards(skilledUsers) {
   let userCards = [];
-  for (const user of skilledUsers) {
+  skilledUsers.forEach((user) => {
     userCards.push(
       new userCard(
         user.username,
@@ -141,10 +155,16 @@ function generateUserCards(skilledUsers) {
         typeof user.rateCount !== "undefined" ? user.rateCount : null
       )
     );
-  }
+  });
   return userCards;
 }
 
+/**
+ * Loads the skill category page
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
 async function loadSkillCat(req, res) {
   var username = getUsername(req);
   const category = await skillCatCollection.findOne({
