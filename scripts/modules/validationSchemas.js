@@ -18,7 +18,7 @@ const userSchema = Joi.object({
 });
 
 const objectIdSchema = Joi.object({
-  objID: Joi.string().hex().length(24),
+  objId: Joi.string().hex({ prefix: false }).length(24).required(),
 });
 
 module.exports = { ratingSchema, userSchema, passwordSchema, objectIdSchema };

@@ -37,12 +37,13 @@ async function removeSkill(req, res) {
  * @returns {String[]} An array containing all found errors; empty if none were found
  */
 function validateUserAndSkillIds(userId, skillId) {
-  let userValidation = objIdSchema.validate({ userId });
-  let skillValidation = objIdSchema.validate({ skillId });
+  let userValidation = objIdSchema.validate({ objId: userId });
+  let skillValidation = objIdSchema.validate({ objId: skillId });
 
-  let errors = [][(userValidation, skillValidation)].forEach((result) => {
-    if (result != null) {
-      errors.push(validationResult.error.details[0].message);
+  let errors = [];
+  [(userValidation, skillValidation)].forEach((result) => {
+    if (result.error != null) {
+      errors.push(result.error.details[0].message);
     }
   });
 
@@ -55,12 +56,14 @@ function validateUserAndSkillIds(userId, skillId) {
  * @param {Response} res
  */
 async function addSkill(req, res) {
+  let errors = [];
   let userId = getUserId(req);
   let skillId = req.params.skillID;
   let validationResults = validateUserAndSkillIds(userId, skillId);
 
   if (validationResults.length != 0) {
     validationResults.forEach((result) => {
+      //! CB: We don't actually do anything with this errors here. Did we plan to originall?
       errors.push(result);
     });
     res.redirect("/");
