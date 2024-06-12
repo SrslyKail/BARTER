@@ -1,18 +1,13 @@
-const express = require("express");
-const router = express.Router();
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-
 const {
-  createSession,
   getUsername,
   formatProfileIconPath,
+  updateSession,
 } = require("./modules/localSession");
 const { getPlaceName } = require("./modules/location");
-const { getCollection } = require("./modules/databaseConnection");
-
-const userCollection = getCollection("users");
-const userSkillsCollection = getCollection("skills");
+const { userCollection, userSkillsCollection } =
+  require("./modules/databaseConnection").databases;
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -40,7 +35,7 @@ async function handleProfileChanges(req, res) {
   let data = JSON.stringify(req.body);
   data = JSON.parse(data);
   data = removeEmptyAttributes(data);
-  data = handleGeoUpdates(data);
+  data = await handleGeoUpdates(data);
   if (req.file) {
     await cloudinary.uploader
       .upload(req.file.path)
@@ -48,7 +43,6 @@ async function handleProfileChanges(req, res) {
         let scheme = "/upload/";
         let img = result.url.split(scheme)[1];
         data["userIcon"] = img;
-        // console.log("Uploaded image:", data);
         req.session.user.userIcon = formatProfileIconPath(img);
       })
       .catch((err) => {
@@ -62,14 +56,8 @@ async function handleProfileChanges(req, res) {
   //If the user submitted no valid data, we dont upload anything to Mongo
   let dataKeys = Object.keys(data);
   if (dataKeys.length > 0) {
-    await updateMongoUser(req, data);
+    await updateUserInformation(req, data);
   }
-
-  let userKeys = Object.keys(req.session.user);
-  let updateKeys = userKeys.filter((key) => dataKeys.includes(key));
-  updateKeys.forEach((key) => {
-    req.session.user[key] = data[key];
-  });
   res.redirect("/profile");
 }
 
@@ -92,6 +80,11 @@ async function handleGeoUpdates(data) {
     delete data["latitude"];
   }
   return data;
+}
+
+async function updateUserInformation(req, data) {
+  await updateMongoUser(req, data);
+  updateSession(req, data);
 }
 
 function removeEmptyAttributes(data) {
@@ -134,26 +127,26 @@ async function updatePortfolio(req, res) {
     username: getUsername(req),
   });
   let image = null;
+  let imgPromise = null;
 
   if (req.file) {
-    await cloudinary.uploader
+    imgPromise = cloudinary.uploader
       .upload(req.file.path)
       .then((result) => {
         let scheme = "/upload/";
         let img = result.url.split(scheme)[1];
-        // console.log("Uploaded image:", data);
         image = img;
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Countered error when uploading to cloudinary:\n", err);
         return res.status(500).json({
           success: false,
-          message: "Error",
+          message: `Error: ${err}`,
         });
       });
   }
 
-  let MongoRes = await Promise.all([currentUser, currentSkill]);
+  let MongoRes = await Promise.all([currentUser, currentSkill, imgPromise]);
   currentUser = MongoRes[0];
   currentSkill = MongoRes[1];
 
@@ -189,9 +182,6 @@ async function updatePortfolio(req, res) {
       },
       updates
     );
-    // .then((results) => {
-    //   console.log("Initialization results:\n", results);
-    // });
   }
 
   //we update with the image and data
@@ -210,10 +200,6 @@ async function updatePortfolio(req, res) {
     },
     updates
   );
-  // .then((result) => {
-  //   console.log(result);
-  //   console.log();
-  // });
 
   res.redirect("/profile?id=" + currentUser.username);
 }

@@ -9,12 +9,10 @@ const app = express();
 
 const session = require("express-session");
 const bcrypt = require("bcrypt");
-const Collection = require("mongodb").Collection;
 
 const addRatings = require("./scripts/ratings.js").addRatingRoute;
 
 const crypto = require("crypto");
-const fs = require("fs");
 const Joi = require("joi");
 
 /* #endregion requiredModules */
@@ -41,27 +39,25 @@ const {
 
 const {
   getMongoStore,
-  getCollection,
   ObjectId,
-  databases
+  databases,
 } = require("./scripts/modules/databaseConnection");
 const {
   userCollection,
   skillCatCollection,
   userSkillsCollection,
-  ratingsCollection
+  ratingsCollection,
 } = databases;
 
 const { userCard } = require("./scripts/modules/userCard.js");
 const log = require("./scripts/modules/logging").log;
-const sendPasswordResetEmail =
-  require("./scripts/modules/mailer").sendPasswordResetEmail;
+const { sendPasswordResetEmail } = require("./scripts/modules/mailer");
 
 const {
   upload,
   handleProfileChanges,
   updatePortfolio,
-} = require("./scripts/imgUpload.js");
+} = require("./scripts/profile.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
 const skills = require("./scripts/skills");
