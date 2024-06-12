@@ -1,7 +1,6 @@
 const objIdSchema = require("./modules/validationSchemas").objectIdSchema;
 const { ObjectId, databases } = require("./modules/databaseConnection");
-const { getUsername, getUserId } = require("./modules/localSession");
-const { userCard } = require("./modules/userCard");
+const { getUsername, getUserId, userCard } = require("./modules/localSession");
 const { skillCatCollection, userSkillsCollection, userCollection } = databases;
 
 /**

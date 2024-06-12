@@ -5,9 +5,9 @@ const {
   formatProfileIconPath,
   updateSession,
   getUserId,
+  userCard,
 } = require("./modules/localSession");
 
-const { userCard } = require("./modules/userCard");
 const { getPlaceName } = require("./modules/location");
 const { databases, ObjectId } = require("./modules/databaseConnection");
 const { userCollection, userSkillsCollection, ratingsCollection } = databases;

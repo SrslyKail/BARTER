@@ -22,19 +22,17 @@ const saltRounds = 12;
 const port = process.env.PORT || 4000;
 
 const {
-  User,
   isAuthenticated,
-  isAdmin,
   createSession,
   getUser,
   getUsername,
   getUserIcon,
   getEmail,
-  getHistory,
   defaultIcon,
   formatProfileIconPath,
   getUserId,
   refreshCookieTime,
+  userCard,
 } = require("./scripts/modules/localSession");
 
 const {
@@ -49,7 +47,6 @@ const {
   ratingsCollection,
 } = databases;
 
-const { userCard } = require("./scripts/modules/userCard.js");
 const log = require("./scripts/modules/logging").log;
 const { sendPasswordResetEmail } = require("./scripts/modules/mailer");
 

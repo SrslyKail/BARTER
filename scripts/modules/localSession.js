@@ -43,6 +43,43 @@ class User {
 }
 
 /**
+ * A class for holding all the information that a userCard needs to be displayed
+ */
+class userCard {
+  /**
+   *
+   * @param {String} username - the users username
+   * @param {Object[]} userSkills - An array of skill objects from MongoDb
+   * @param {String} email - The users email address
+   * @param {String} userIcon - the cloudinary string for the user profile icon
+   * @param {Object} userLocation - the userLocation object from MongoDb
+   * @param {Number} rateValue - the average value of the users ratings
+   * @param {Number} rateCount - the amount of ratings the user has recieved
+   */
+  constructor(
+    username,
+    userSkills,
+    email,
+    userIcon,
+    userLocation = null,
+    rateValue = null,
+    rateCount = null
+  ) {
+    this.username = username;
+    this.userSkills = userSkills;
+    this.email = email;
+    this.userIcon = formatProfileIconPath(userIcon);
+    this.userLocation = userLocation;
+    this.rateValue = rateValue;
+    this.rateCount = rateCount;
+  }
+}
+
+// Placeholder functions; will fill these out later
+function createUserCard(mongoDocument) {}
+function createUserCard([...mongoDocuments]) {}
+
+/**
  * Sets the privileges, username, and expiration date for the session
  * @param {Request} req The request to attach the session to
  * @param {String} username The username of this user.
@@ -204,4 +241,5 @@ module.exports = {
   formatProfileIconPath,
   refreshCookieTime,
   updateSession,
+  userCard,
 };
