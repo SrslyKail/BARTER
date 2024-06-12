@@ -116,7 +116,9 @@ async function loadProfile(req, res) {
     //If the user is trying to access the default /profile, redirect to their own profile
     res.redirect(`/profile?id=${currentUsername}`);
     return;
-  } else if (referrer == undefined) {
+  }
+
+  if (referrer == undefined) {
     referrer = "/";
   }
 
@@ -130,6 +132,62 @@ async function loadProfile(req, res) {
     res.redirect("/");
     return;
   }
+
+  [currentUser, queriedUser] = await getUserProfiles(
+    queryUsername,
+    currentUsername
+  );
+
+  if (!queriedUser) {
+    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
+    res.redirect("/noUser");
+    return;
+  }
+
+  if (
+    queriedUser.userSkills != undefined &&
+    queriedUser.userSkills.length > 0
+  ) {
+    quieriedUserSkills = await userSkillsCollection
+      .find({
+        _id: { $in: queriedUser.userSkills },
+      })
+      .toArray();
+  }
+
+  let ratedBefore = await ratingsCollection.findOne({
+    userID: currentUser._id,
+    ratedID: queriedUser._id,
+  });
+
+  let currentUserHistory = currentUser.history.visited;
+
+  //If the current user has been viewed before, remove them from the history so we can readd them at the front
+  updateUserHistory(currentUserHistory, queriedUser, currentUser);
+
+  res.render("profile", {
+    userCard: new userCard(
+      queriedUser.username,
+      quieriedUserSkills,
+      queriedUser.email,
+      queriedUser.userIcon,
+      queriedUser.userLocation
+    ),
+    uploaded: req.query.success,
+    referrer: referrer,
+    ratedBefore: ratedBefore,
+  });
+}
+
+/**
+ *
+ * @param {String} queryUsername
+ * @param {String} currentUsername
+ * @returns {Document[]} the currentUser and queriedUser profiles, in that order.
+ */
+async function getUserProfiles(queryUsername, currentUsername) {
+  let currentUser;
+  let queriedUser;
 
   // Check if logged in user and viewer are the same
   if (queryUsername != currentUsername) {
@@ -152,29 +210,16 @@ async function loadProfile(req, res) {
     });
     queriedUser = currentUser;
   }
-  if (!queriedUser) {
-    // Should never occur, since we have to validate the session first, but just in case this does happen, redirect to 404 :)
-    res.redirect("/noUser");
-    return;
-  } else if (
-    queriedUser.userSkills != undefined &&
-    queriedUser.userSkills.length > 0
-  ) {
-    quieriedUserSkills = await userSkillsCollection
-      .find({
-        _id: { $in: queriedUser.userSkills },
-      })
-      .toArray();
-  }
+  return { currentUser, queriedUser };
+}
 
-  let ratedBefore = await ratingsCollection.findOne({
-    userID: currentUser._id,
-    ratedID: queriedUser._id,
-  });
-
-  let currentUserHistory = currentUser.history.visited;
-
-  //If the current user has been viewed before, remove them from the history so we can readd them at the front
+/**
+ * Updates the current users history, if the current user is not the queried user
+ * @param {ObjectId[]} currentUserHistory
+ * @param {Document} queriedUser
+ * @param {Document} currentUser
+ */
+function updateUserHistory(currentUserHistory, queriedUser, currentUser) {
   currentUserHistory.forEach((user, index) => {
     if (user.equals(queriedUser._id)) {
       currentUserHistory.splice(index, 1);
@@ -196,19 +241,6 @@ async function loadProfile(req, res) {
       }
     );
   }
-
-  res.render("profile", {
-    userCard: new userCard(
-      queriedUser.username,
-      quieriedUserSkills,
-      queriedUser.email,
-      queriedUser.userIcon,
-      queriedUser.userLocation
-    ),
-    uploaded: req.query.success,
-    referrer: referrer,
-    ratedBefore: ratedBefore,
-  });
 }
 
 /**
