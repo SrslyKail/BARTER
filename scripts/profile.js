@@ -1,4 +1,3 @@
-const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const {
   getUsername,
@@ -12,11 +11,6 @@ const { getPlaceName } = require("./modules/location");
 const { databases, ObjectId } = require("./modules/databaseConnection");
 const { userCollection, userSkillsCollection, ratingsCollection } = databases;
 const { usernameSchema } = require("./modules/validationSchemas");
-const storage = multer.diskStorage({
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -24,8 +18,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
   secure: true,
 });
-
-const upload = multer({ storage: storage });
 
 /**
  * Handles processing the income changes from editProfile.
