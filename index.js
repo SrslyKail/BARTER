@@ -35,7 +35,6 @@ const {
   getUser,
   getUsername,
   getUserIcon,
-  getEmail,
   defaultIcon,
   formatProfileIconPath,
   getUserId,
@@ -45,25 +44,14 @@ const {
 
 const {
   getMongoStore,
-  ObjectId,
   databases,
 } = require("./scripts/modules/databaseConnection");
-const {
-  userCollection,
-  skillCatCollection,
-  userSkillsCollection,
-  ratingsCollection,
-} = databases;
+const { userCollection, skillCatCollection, userSkillsCollection } = databases;
 
 const log = require("./scripts/modules/logging").log;
 const { sendPasswordResetEmail } = require("./scripts/modules/mailer");
 
-const {
-  upload,
-  handleProfileChanges,
-  updatePortfolio,
-  loadProfile,
-} = require("./scripts/profile.js");
+const { profile, portfolio } = require("./scripts/profile.js");
 const { FindCursor, ChangeStream } = require("mongodb");
 
 const skills = require("./scripts/skills");
@@ -254,18 +242,18 @@ app.get("/", async (req, res) => {
   var username = getUsername(req);
   var authenticated = isAuthenticated(req);
   // CB: This will make it so we only show the names; if you want the id, make _id: 1
-  const all = skillCatCollection.find().project({ image: 1, name: 1 });
-  // console.log(all)
+  const skillCats = await skillCatCollection
+    .find()
+    .project({ image: 1, name: 1 })
+    .toArray();
   /* 
     CB: the await here is the secret sauce!
     https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
     */
-  let skillCats = [];
-  for await (const skillCat of all) {
-    // console.log("All:", skill);
-    skillCats.push(skillCat);
-  }
-  // console.log(skillCats);
+  // let skillCats = [];
+  // for await (const skillCat of all) {
+  //   skillCats.push(skillCat);
+  // }
   res.render("index", {
     authenticated: authenticated,
     username: username,
@@ -282,17 +270,15 @@ app.post("/remove-skill/:skillID", checkAuth, skills.removeSkill);
 
 app.post("/add-skill/:skillID", checkAuth, skills.addSkill);
 
-app.get("/profile", loadProfile);
+/* #region profileRoutes */
 
-/**
- * Edit Profile Page.
- */
-app.get("/editProfile", (req, res) => {
-  res.render("editProfile", {
-    name: getUsername(req),
-    email: getEmail(req),
-  });
-});
+app.get("/profile", profile.load);
+
+app.get("/editProfile", profile.edit);
+
+app.post("/editProfile/upload", upload.single("userIcon"), profile.update);
+
+/* #endregion profileRoutes */
 
 /**
  * Portfolio Page.
@@ -304,67 +290,9 @@ app.get("/portfolio", async (req, res) => {
   }
 });
 
-app.get("/editPortfolio", async (req, res) => {
-  if (req.query.id != getUsername(req) || !req.query.skill) {
-    res.redirect("/profile");
-    return;
-  }
-  data = await setupPortfolio(req, res);
-  // console.log(data);
-  res.render("editPortfolio", data);
-});
+app.get("/editPortfolio", portfolio.edit)
 
-async function setupPortfolio(req, res) {
-  const skill = req.query.skill;
-  const username = req.query.id;
-  let gallery = [];
-  let description = "";
-
-  let skillData = userSkillsCollection.findOne({
-    name: skill,
-  });
-
-  let userData = userCollection.findOne({
-    username: username,
-  });
-
-  let results = await Promise.all([skillData, userData]).catch((err) => {
-    res.render("404");
-    return null;
-  });
-
-  skillData = results[0];
-  userData = results[1];
-
-  if (Object.keys(userData).includes("portfolio")) {
-    for (let i = 0; i < userData.portfolio.length; i++) {
-      //CB :title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
-      if (userData.portfolio[i].title === skillData._id.toString()) {
-        gallery = userData.portfolio[i].images;
-        description = userData.portfolio[i].description;
-      }
-    }
-  }
-
-  let referrer = req.get("referrer");
-  //Check current user.
-  let currentUser = getUser(req);
-  if (referrer == undefined) {
-    referrer = "/";
-  }
-
-  return {
-    title: skill,
-    images: gallery,
-    banner: skillData.image,
-    description: description,
-    username: username,
-    currentUser: getUsername(req),
-    referrer: referrer,
-  };
-}
-
-app.post("/editPortfolio/upload", upload.single("image"), updatePortfolio);
+app.post("/editPortfolio/upload", upload.single("image"), portfolio.update);
 
 /**
  * Add Portfolio Page.
@@ -381,12 +309,6 @@ app.get("/addPortfolio", async (req, res) => {
     username: username,
   });
 });
-
-app.post(
-  "/editProfile/upload",
-  upload.single("userIcon"),
-  handleProfileChanges
-);
 
 /**
  * History Page.

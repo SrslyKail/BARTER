@@ -25,7 +25,7 @@ cloudinary.config({
  * @param {Request} req
  * @param {Response} res
  */
-async function handleProfileChanges(req, res) {
+async function updateProfile(req, res) {
   //Shinanigans required to get the body and be able to edit it.
   let data = JSON.stringify(req.body);
   data = JSON.parse(data);
@@ -92,10 +92,8 @@ function removeEmptyAttributes(data) {
 }
 
 async function loadProfile(req, res) {
-  let currentUser;
   let currentUsername = getUsername(req);
   let currentUserId = getUserId(req);
-  let queriedUser;
   let quieriedUserSkills = [];
   let queryUsername = req.query.id;
   let referrer = req.get("referrer");
@@ -125,7 +123,7 @@ async function loadProfile(req, res) {
     return;
   }
 
-  [currentUser, queriedUser] = await getUserProfiles(
+  let { currentUser, queriedUser } = await getUserProfiles(
     queryUsername,
     currentUsername
   );
@@ -172,7 +170,7 @@ async function loadProfile(req, res) {
 }
 
 /**
- *
+ * Gets the profile of the currently logged in user and the user whos profile we are trying to view.
  * @param {String} queryUsername
  * @param {String} currentUsername
  * @returns {Document[]} the currentUser and queriedUser profiles, in that order.
@@ -235,6 +233,13 @@ function updateUserHistory(currentUserHistory, queriedUser, currentUser) {
   }
 }
 
+function editProfile(req, res) {
+  res.render("editProfile", {
+    name: getUsername(req),
+    email: getEmail(req),
+  });
+}
+
 /**
  * Updates the user on MongoDB with the given data object.
  * IT HAS SOME CONSEQUENCES IF YOU USE IT WRONG. PLEASE UNDERSTAND THE FUNCTION BEFORE ATTEMPTING TO USE IT.
@@ -273,8 +278,7 @@ async function updatePortfolio(req, res) {
       .upload(req.file.path)
       .then((result) => {
         let scheme = "/upload/";
-        let img = result.url.split(scheme)[1];
-        image = img;
+        image = result.url.split(scheme)[1];
       })
       .catch((err) => {
         console.error("Countered error when uploading to cloudinary:\n", err);
@@ -285,17 +289,20 @@ async function updatePortfolio(req, res) {
       });
   }
 
-  let MongoRes = await Promise.all([currentUser, currentSkill, imgPromise]);
-  currentUser = MongoRes[0];
-  currentSkill = MongoRes[1];
+  [currentUser, currentSkill] = await Promise.all([
+    currentUser,
+    currentSkill,
+    imgPromise,
+  ]);
 
   let index = 0;
   let found = false;
 
-  //if the user has a portfolio, we need to find the right onw
+  //if the user has a portfolio, we need to find the right one
   let userKeys = Object.keys(currentUser);
   if (userKeys.includes("portfolio") && currentUser.portfolio.length) {
     currentUser.portfolio.forEach((obj, ind) => {
+      //TODO: CB: Fix the fact that title is a string. This shit will drive me nuts.
       if (obj.title == currentSkill._id.toString()) {
         index = ind;
         found = true;
@@ -342,6 +349,78 @@ async function updatePortfolio(req, res) {
 
   res.redirect("/profile?id=" + currentUser.username);
 }
+
+async function editPortfolio(req, res) {
+  if (req.query.id != getUsername(req) || !req.query.skill) {
+    res.redirect("/profile");
+  } else {
+    data = await setupPortfolio(req, res);
+    // console.log(data);
+    res.render("editPortfolio", data);
+  }
+}
+
+async function setupPortfolio(req, res) {
+  const skill = req.query.skill;
+  const username = req.query.id;
+  let referrer = req.get("referrer");
+  if (referrer == undefined) {
+    referrer = "/";
+  }
+
+  let gallery = [];
+  let description = "";
+
+  let skillData = userSkillsCollection.findOne({
+    name: skill,
+  });
+
+  let userData = userCollection.findOne({
+    username: username,
+  });
+
+  [skillData, userData] = await Promise.all([skillData, userData]).catch(
+    (err) => {
+      res.render("404");
+      return null;
+    }
+  );
+
+  if (Object.keys(userData).includes("portfolio")) {
+    userData.portfolio.forEach((item, i) => {
+      //TODO: CB: item.title is a string thats the _id of a related skill; we should update it to just be an ObjectId at some point.
+      if (item.title === skill._id.toString()) {
+        gallery = userData.portfolio[i].images;
+        description = userData.portfolio[i].description;
+      }
+    });
+  }
+
+  return {
+    title: skill,
+    images: gallery,
+    banner: skillData.image,
+    description: description,
+    username: username,
+    currentUser: getUsername(req),
+    referrer: referrer,
+  };
+}
+
 /* #region ------------ PORTFOLIIO EDITING --------------------------- */
 
-module.exports = { upload, loadProfile, handleProfileChanges, updatePortfolio };
+const profile = {
+  edit: editProfile,
+  load: loadProfile,
+  update: updateProfile,
+};
+
+const portfolio = {
+  edit: editPortfolio,
+  update: updatePortfolio,
+};
+
+module.exports = {
+  profile,
+  portfolio,
+};
