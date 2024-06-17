@@ -4,7 +4,6 @@ const {
   getUser,
   getUsername,
   userCard,
-  formatProfileIconPath,
 } = require("./modules/localSession");
 
 async function filterHistory(req, res) {
@@ -53,7 +52,6 @@ async function filterHistory(req, res) {
   res.render("history", {
     data: users,
     filter: filter,
-    formatProfileIconPath: formatProfileIconPath,
   });
 }
 

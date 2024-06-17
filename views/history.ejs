@@ -54,8 +54,7 @@
         <% if (typeof data !=='undefined' ) { %>
           <% data.forEach((profile)=> { %>
             <div class=" profilePageCard skillPageCard">
-              <%- include("templates/profileCard", {userCard: profile, userIcon:
-                formatProfileIconPath(profile.userIcon)}) %>
+              <%- include("templates/profileCard", {userCard: profile, userIcon: profile.userIcon}) %>
             </div>
             <% }); %>
               <% } %>
