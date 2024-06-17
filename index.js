@@ -12,7 +12,6 @@ const bcrypt = require("bcrypt");
 
 const addRatings = require("./scripts/ratings.js").addRatingRoute;
 
-const crypto = require("crypto");
 const Joi = require("joi");
 
 const multer = require("multer");
@@ -32,14 +31,11 @@ const port = process.env.PORT || 4000;
 const {
   isAuthenticated,
   createSession,
-  getUser,
   getUsername,
   getUserIcon,
   defaultIcon,
-  formatProfileIconPath,
   getUserId,
   refreshCookieTime,
-  userCard,
 } = require("./scripts/modules/localSession");
 
 const {
@@ -49,17 +45,13 @@ const {
 const { userCollection, skillCatCollection, userSkillsCollection } = databases;
 
 const log = require("./scripts/modules/logging").log;
-const { sendPasswordResetEmail } = require("./scripts/modules/mailer");
 
 const { profile, portfolio } = require("./scripts/profile.js");
-const { FindCursor, ChangeStream } = require("mongodb");
 
 const skills = require("./scripts/skills");
 
-const skillsCache = {};
-const skillCatCache = {};
-
 const history = require("./scripts/history");
+const password = require("./scripts/password.js");
 /* #endRegion userImports */
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -85,7 +77,6 @@ app.use(
 );
 
 /**
- * sets the view engine to ejs, configures the express app,
  * sets the view engine to ejs, configures the express app,
  * and sets up the middleware for parsing url-encoded data.
  */
@@ -148,54 +139,6 @@ async function checkAuth(req, res, next) {
 /* #endregion middleware */
 
 /* #region helperFunctions */
-
-/**
- * Puts all the items from a collection into a cache.
- * Assumes your collection has a _id attribute at the top level
- * @param {FindCursor} coll
- * @param {Object} cache
- */
-async function cacheCollection(coll, cache) {
-  /* 
-    CB: the await here is the secret sauce!
-    https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/read-operations/project/#std-label-node-fundamentals-project
-  */
-  for await (const item of coll) {
-    cache[item._id] = item;
-    // console.log(item.name);
-  }
-}
-
-/**
- *
- * @param {ChangeStream} coll
- */
-async function watchForChanges(coll) {
-  for await (const change of coll) {
-    // console.log(change);
-  }
-}
-
-async function cacheUserSkills() {
-  changeStream = userSkillsCollection.watch();
-  watchForChanges(changeStream);
-  let allSkills = userSkillsCollection.find({});
-  allSkills, skillsCache;
-}
-
-async function cacheSkillCats() {
-  changeStream = skillCatCollection.watch();
-  let allCategories = skillCatCollection.find({});
-  cacheCollection(allCategories, skillCatCache);
-}
-
-function setupDBSkillCache() {
-  // console.log("Setting up cache");
-  cacheSkillCats();
-  cacheUserSkills();
-}
-
-// setupDBSkillCache();
 
 /**
  * Generates the navlinks we want a user to access based on permissions
@@ -322,128 +265,19 @@ app.get("/history", history.show);
 /**
  * Handles all the resetting code.
  */
-app.get("/passwordReset", (req, res) => {
-  res.render("passwordReset", {});
-});
+app.get("/passwordReset", password.requestReset);
 
-app.get("/passwordReset/:token", async (req, res) => {
-  const token = req.params.token;
-
-  // Check if token exists in the database
-  const user = await userCollection.findOne({ resetToken: token });
-
-  if (!user) {
-    // Token not found or expired
-    return res.status(400).send("Invalid or expired token");
-  }
-
-  // Check if token has expired (more than 5 minutes)
-  const timestamp = user.resetTokenTimestamp;
-  const currentTimestamp = new Date().getTime();
-  const timeDifference = currentTimestamp - timestamp;
-  const fiveMinutes = 5 * 60 * 1000;
-
-  if (timeDifference > fiveMinutes) {
-    // Token has expired, invalidate it
-    await userCollection.updateOne(
-      { resetToken: token },
-      { $unset: { resetToken: "", resetTokenTimestamp: "" } }
-    );
-    return res.status(400).send("Token expired");
-  }
-
-  // Render the password reset page
-  res.render("passwordChange", { token });
-});
+app.get("/passwordReset/:token", password.reset);
 
 //searches for the user in the database with the provided email.
-app.post("/passwordResetting", async (req, res) => {
-  var email = req.body.email;
-  // Generate a unique token
-  const token = crypto.randomBytes(20).toString("hex");
-  const timestamp = new Date().getTime();
-
-  let result;
-
-  try {
-    // Associate token with user's email in the database
-    await userCollection.updateOne(
-      { email: email },
-      {
-        $set: {
-          resetToken: token,
-          resetTokenTimestamp: timestamp,
-        },
-      }
-    );
-
-    req.session.resetEmail = email;
-
-    // Send password reset email
-    await sendPasswordResetEmail(email, token, timestamp);
-  } catch (error) {
-    console.error("Error initiating password reset:", error);
-    // Handle errors
-    res.redirect("/passwordReset", { result: `unexpected error:\n ${error}` });
-    return;
-  }
-  // Redirect to a page indicating that the email has been sent
-  result = `A password reset link has been sent to your email.<br><br> Please follow the instructions in the email to change your password.`;
-
-  res.render("passwordReset", { result: result });
-});
+app.post("/sendResetEmail", password.sendResetEmail);
 
 //user has been found, so lets change the email now.
-app.get("/passwordChange", (req, res) => {
-  res.render("passwordChange", {});
-});
+app.get("/passwordChange", password.change);
 
+// ? CB: I don't think passwordUpdate is used at the moment.
 //changing password code
-app.post("/passwordChanging", async (req, res) => {
-  var password = req.body.password;
-  var confirmPassword = req.body.confirmPassword;
-
-  const passwordSchema = Joi.string().max(20).required();
-  const passwordValidationResult = passwordSchema.validate(password);
-
-  if (passwordValidationResult.error != null) {
-    console.error(passwordValidationResult.error);
-    res.redirect("/passwordChange");
-    return;
-  }
-
-  // Check if both password fields match
-  if (password !== confirmPassword) {
-    res.redirect("/passwordChange");
-    return;
-  }
-
-  // Check if reset token is valid
-  const resetToken = req.body.resetToken; // Assuming resetToken is submitted along with the password change request
-  const user = await userCollection.findOne({ resetToken: resetToken });
-
-  if (!user) {
-    // If reset token is not valid, redirect to password change page
-    res.redirect("/passwordChange");
-    return;
-  }
-
-  // If reset token is valid, hash the new password
-  var newPassword = await bcrypt.hash(password, saltRounds);
-
-  await userCollection.findOneAndUpdate(
-    { email: req.session.resetEmail },
-    {
-      $set: { password: newPassword },
-      $unset: {
-        resetToken: "",
-        resetTokenTimestamp: "",
-      },
-    }
-  );
-
-  res.redirect("/login?passChange=true");
-});
+app.post("/passwordUpdate", password.update);
 
 app.post("/submitUser", async (req, res) => {
   var username = req.body.username;
