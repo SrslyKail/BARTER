@@ -46,7 +46,8 @@ const { userCollection, skillCatCollection, userSkillsCollection } = databases;
 
 const log = require("./scripts/modules/logging").log;
 
-const { profile, portfolio } = require("./scripts/profile.js");
+const profile = require("./scripts/profile.js");
+const portfolio = require("./scripts/portfolio");
 
 const skills = require("./scripts/skills");
 
