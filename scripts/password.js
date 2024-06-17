@@ -121,7 +121,7 @@ async function update(req, res) {
     }
   );
 
-  res.redirect("/login?passChange=true");
+  res.render("/login", { message: "Password has been changed." });
 }
 
 module.exports = {

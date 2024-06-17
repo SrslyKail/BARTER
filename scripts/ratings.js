@@ -1,7 +1,7 @@
 const ObjectId = require("./modules/databaseConnection").ObjectId;
 const Joi = require("joi");
 
-async function addRatingRoute(req, res) {
+async function addRating(req, res) {
   let rateStatus;
   let refString = req.get("referrer");
   // console.log("referred:", refString);
@@ -66,4 +66,4 @@ async function addRating(ratedUser, ratingUser, rateValue) {
   );
 }
 
-module.exports = { addRatingRoute };
+module.exports = { add: addRating };

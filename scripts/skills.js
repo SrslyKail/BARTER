@@ -187,4 +187,32 @@ async function loadSkillCat(req, res) {
   return;
 }
 
-module.exports = { removeSkill, addSkill, loadSkillPage, loadSkillCat };
+/** middleware function for catching bad skill/category parameters */
+async function validateSkillParam(req, res, next) {
+  const param = req.params;
+  const test = await userSkillsCollection.findOne({ name: param.skill });
+  if (test == null) {
+    res.status(404).json({ message: "Skill not found." });
+  } else {
+    next();
+  }
+}
+
+async function validateCatParam(req, res, next) {
+  const param = req.params;
+  const test = await skillCatCollection.findOne({ name: param.skillCat });
+  if (test == null) {
+    res.status(404).json({ message: "Category not found." });
+  } else {
+    next();
+  }
+}
+
+module.exports = {
+  removeSkill,
+  addSkill,
+  loadSkillPage,
+  loadSkillCat,
+  validateSkillParam,
+  validateCatParam,
+};

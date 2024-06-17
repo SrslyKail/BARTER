@@ -3,16 +3,14 @@
 /* #region requiredModules */
 require("./utils.js");
 require("dotenv").config();
+
 const express = require("express");
 
 const app = express();
 
 const session = require("express-session");
-const bcrypt = require("bcrypt");
 
-const addRatings = require("./scripts/ratings.js").addRatingRoute;
-
-const Joi = require("joi");
+const ratings = require("./scripts/ratings.js");
 
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -24,16 +22,13 @@ const upload = multer({ storage: storage });
 
 /* #endregion requiredModules */
 /* #region userImports */
-const saltRounds = 12;
 
 const port = process.env.PORT || 4000;
 
 const {
   isAuthenticated,
-  createSession,
   getUsername,
   getUserIcon,
-  defaultIcon,
   getUserId,
   refreshCookieTime,
 } = require("./scripts/modules/localSession");
@@ -42,18 +37,19 @@ const {
   getMongoStore,
   databases,
 } = require("./scripts/modules/databaseConnection");
-const { userCollection, skillCatCollection, userSkillsCollection } = databases;
+const { skillCatCollection } = databases;
 
 const log = require("./scripts/modules/logging").log;
 
 const profile = require("./scripts/profile.js");
 const portfolio = require("./scripts/portfolio");
-
 const skills = require("./scripts/skills");
-
 const history = require("./scripts/history");
 const password = require("./scripts/password.js");
+const account = require("./scripts/account.js");
+
 /* #endRegion userImports */
+
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* #endregion secrets */
@@ -104,36 +100,11 @@ app.use((req, res, next) => {
   next();
 });
 
-/** middleware function for catching bad skill/category parameters */
-
-//TODO: CB: Test is we can move these into the skills.js script, or, alternatively, into a middleware script file.
-async function validateSkillParam(req, res, next) {
-  const param = req.params;
-  const test = await userSkillsCollection.findOne({ name: param.skill });
-  if (test == null) {
-    res.status(404).json({ message: "Skill not found." });
-  } else {
-    next();
-  }
-}
-
-async function validateCatParam(req, res, next) {
-  const param = req.params;
-  const test = await skillCatCollection.findOne({ name: param.skillCat });
-  if (test == null) {
-    res.status(404).json({ message: "Category not found." });
-  } else {
-    next();
-  }
-}
-
 async function checkAuth(req, res, next) {
   if (isAuthenticated(req)) {
     next();
   } else {
-    res
-      .status(401)
-      .json({ message: "You are not authorized to submit ratings." });
+    res.status(401).json({ message: "You are not authorized to do that." });
   }
 }
 
@@ -208,13 +179,17 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/category/:skillCat", validateCatParam, skills.loadSkillCat);
+/* #region skillRoutes */
 
-app.get("/skill/:skill", validateSkillParam, skills.loadSkillPage);
+app.get("/category/:skillCat", skills.validateCatParam, skills.loadSkillCat);
+
+app.get("/skill/:skill", skills.validateSkillParam, skills.loadSkillPage);
 
 app.post("/remove-skill/:skillID", checkAuth, skills.removeSkill);
 
 app.post("/add-skill/:skillID", checkAuth, skills.addSkill);
+
+/* #endRegion skillRoutes */
 
 /* #region profileRoutes */
 
@@ -226,35 +201,17 @@ app.post("/editProfile/upload", upload.single("userIcon"), profile.update);
 
 /* #endregion profileRoutes */
 
-/**
- * Portfolio Page.
- */
-app.get("/portfolio", async (req, res) => {
-  data = await setupPortfolio(req, res);
-  if (data) {
-    res.render("portfolio", data);
-  }
-});
+/* #region portfolioRoutes */
+
+app.get("/portfolio", portfolio.load);
 
 app.get("/editPortfolio", portfolio.edit);
 
 app.post("/editPortfolio/upload", upload.single("image"), portfolio.update);
 
-/**
- * Add Portfolio Page.
- */
-app.get("/addPortfolio", async (req, res) => {
-  const username = req.query.username;
+app.get("/addPortfolio", portfolio.add);
 
-  if (!username) {
-    res.redirect("/profile");
-    return;
-  }
-
-  res.render("addPortfolio", {
-    username: username,
-  });
-});
+/* #endRegion portfolioRoutes */
 
 /**
  * History Page.
@@ -263,9 +220,6 @@ app.get("/history/:filter", history.filter);
 
 app.get("/history", history.show);
 
-/**
- * Handles all the resetting code.
- */
 app.get("/passwordReset", password.requestReset);
 
 app.get("/passwordReset/:token", password.reset);
@@ -280,134 +234,13 @@ app.get("/passwordChange", password.change);
 //changing password code
 app.post("/passwordUpdate", password.update);
 
-app.post("/submitUser", async (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
-  var email = req.body.email;
-  let geo = {
-    longitude: Number(req.body.long),
-    latitude: Number(req.body.lat),
-  };
-  var errors = [];
+app.post("/submit-rating", checkAuth, ratings.add);
 
-  //this should be global
-  const userSchema = Joi.object({
-    username: Joi.string().alphanum().max(20).required(),
-    password: Joi.string().max(20).required(),
-    email: Joi.string()
-      .email({
-        minDomainSegments: 2,
-        tlds: { allow: ["com", "net", "ca"] },
-      })
-      .required(),
-  });
+app.post("/submitUser", account.create);
 
-  const validationResult = userSchema.validate({ username, password, email });
-  //Error checking
-  if (validationResult.error != null) {
-    errors.push(validationResult.error.details[0].message);
-  }
+app.get("/login", account.login);
 
-  // Check for duplicate username or email
-  if (await userCollection.findOne({ username: username })) {
-    errors.push(`${username} is already in use!`);
-  }
-  if (await userCollection.findOne({ email: email })) {
-    errors.push(`${email} is already in use!`);
-  } else if (errors.length === 0) {
-    //No errors? Create a user!
-    // Hash password
-    var hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Insert into collection
-    let newDoc = await userCollection.insertOne({
-      username: username,
-      email: email,
-      password: hashedPassword,
-      isAdmin: false,
-      userLocation: {
-        geo: geo,
-      },
-      contactInfo: {
-        email: email,
-      },
-      userIcon: defaultIcon,
-      history: { visited: [], contacted: [] },
-      userSkills: [],
-    });
-
-    createSession(
-      req,
-      username,
-      email,
-      newDoc.insertedId,
-      { visited: [], contacted: [] },
-      false
-    );
-
-    res.redirect("/");
-    return;
-  }
-  //catch-all redirect to signup, sends errors
-  res.render("signup", {
-    errors: errors,
-  });
-  return;
-});
-
-/**Post to submit rating from profile. */
-app.post("/submit-rating", checkAuth, addRatings);
-
-app.get("/login", (req, res) => {
-  var passChange = req.query.passChange;
-  res.render("login", {
-    passChange: passChange,
-  });
-});
-
-/**
- * Post method for login form in login.ejs
- *
- * Uses Joi to validate authentication.
- * Compares the entered password with the bcrypted password in database for authentication.
- *
- * Once successfully logged in, redirects to the main.ejs page.
- */
-app.post("/loggingin", async (req, res) => {
-  var email = req.body.email;
-  var password = req.body.password;
-
-  const emailSchema = Joi.string().email().required();
-  const emailValidationResult = emailSchema.validate(email);
-
-  if (emailValidationResult.error != null) {
-    console.error(emailValidationResult.error);
-    res.redirect("/login");
-    return;
-  }
-
-  const result = await userCollection.find({ email: email }).toArray();
-  if (
-    result.length == 1 &&
-    (await bcrypt.compare(password, result[0].password))
-  ) {
-    const user = result[0];
-    createSession(
-      req,
-      user.username,
-      user.email,
-      user._id,
-      user.history,
-      user.isAdmin,
-      user.userIcon
-    );
-    res.redirect("/");
-    return;
-  } else {
-    res.render("/loginInvalid");
-    return;
-  }
-});
+app.post("/validateLogin", account.validateLogin);
 
 /**
  * Post method for submitting a user from signup
@@ -460,18 +293,6 @@ let server = app.listen(port, () => {
 });
 let io = require("socket.io")(server);
 io.on("connection", (socket) => {
-  socket.on("position", async (position) => {
-    // req.session.position = position.geo;
-    // console.log(position.geo);
-    // if (position.id.length == 24) {
-    //   console.log(position.id);
-    //   await userCollection
-    //     .findOne({
-    //       _id: ObjectId.createFromHexString(position.id),
-    //     })
-    //     .then((col) => {
-    //       console.log(col);
-    //     });
-    // }
-  });
+  // Not used atm; but could be used in the future for a more accurate "find other user" feature.
+  socket.on("position", async (position) => {});
 });

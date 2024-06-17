@@ -97,7 +97,7 @@ async function editPortfolio(req, res) {
   }
 }
 
-async function setupPortfolio(req, res) {
+async function loadPortfolio(req, res) {
   const skill = req.query.skill;
   const username = req.query.id;
   let referrer = req.get("referrer");
@@ -133,7 +133,7 @@ async function setupPortfolio(req, res) {
     });
   }
 
-  return {
+  let data = {
     title: skill,
     images: gallery,
     banner: skillData.image,
@@ -142,9 +142,26 @@ async function setupPortfolio(req, res) {
     currentUser: getUsername(req),
     referrer: referrer,
   };
+
+  res.render("portfolio", data);
+}
+
+async function addPortfolio(req, res) {
+  const username = req.query.username;
+
+  if (!username) {
+    res.redirect("/profile");
+    return;
+  }
+
+  res.render("addPortfolio", {
+    username: username,
+  });
 }
 
 module.exports = {
   edit: editPortfolio,
   update: updatePortfolio,
+  add: addPortfolio,
+  load: loadPortfolio,
 };
