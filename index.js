@@ -58,6 +58,8 @@ const skills = require("./scripts/skills");
 
 const skillsCache = {};
 const skillCatCache = {};
+
+const history = require("./scripts/history");
 /* #endRegion userImports */
 /* #region secrets */
 const node_session_secret = process.env.NODE_SESSION_SECRET;
@@ -290,7 +292,7 @@ app.get("/portfolio", async (req, res) => {
   }
 });
 
-app.get("/editPortfolio", portfolio.edit)
+app.get("/editPortfolio", portfolio.edit);
 
 app.post("/editPortfolio/upload", upload.single("image"), portfolio.update);
 
@@ -313,58 +315,9 @@ app.get("/addPortfolio", async (req, res) => {
 /**
  * History Page.
  */
-app.get("/history/:filter", async (req, res) => {
-  const filter = req.params.filter;
+app.get("/history/:filter", history.filter);
 
-  let users = [];
-
-  //Check current user.
-  let currentUser = getUser(req);
-
-  if (!currentUser) {
-    res.redirect("/");
-    return;
-  }
-
-  currentUser = await userCollection.findOne({
-    username: getUsername(req),
-  });
-
-  // console.log(currentUser.history.visited);
-
-  const data = userCollection.find({
-    _id: { $in: currentUser.history[filter] },
-  });
-  // console.log(typeof data)
-
-  for await (const user of data) {
-    skillNames = userSkillsCollection.find({ _id: { $in: user.userSkills } });
-    let userSkills = [];
-    for await (const skill of skillNames) {
-      userSkills.push(skill);
-    }
-    users.push(
-      new userCard(
-        user.username,
-        userSkills,
-        user.email,
-        user.userIcon,
-        user.userLocation
-      )
-    );
-    // console.log(newUserCard);
-  }
-
-  res.render("history", {
-    data: users,
-    filter: filter,
-    formatProfileIconPath: formatProfileIconPath,
-  });
-});
-
-app.get("/history", (req, res) => {
-  res.render("history", {});
-});
+app.get("/history", history.show);
 
 /**
  * Handles all the resetting code.
